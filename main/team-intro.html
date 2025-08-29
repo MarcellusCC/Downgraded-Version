@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Introduction - Frontend Dev Hub</title>
+    <style>
+        /* Basic CSS */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: white;
+            background: #1a1a2e;
+            min-height: 100vh;
+        }
+
+        /* Basic Header */
+        .header {
+            background: #2a2a3e;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4fd1c7;
+            text-decoration: none;
+        }
+
+        .logo::before {
+            content: "💻";
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #e0e0e0;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-link.active {
+            color: #4fd1c7;
+            background: rgba(79, 209, 199, 0.2);
+        }
+
+        /* Main Content Styles */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 2rem 0;
+            background: #2a2a3e;
+            margin-bottom: 2rem;
+            border: 1px solid #444;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #4fd1c7;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Team Logo Section */
+        .team-logo-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .team-logo-container {
+            display: inline-block;
+            background: #2a2a3e;
+            padding: 1rem;
+            border: 1px solid #444;
+        }
+
+        .team-logo-placeholder {
+            width: 150px;
+            height: 100px;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .team-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4fd1c7;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-name-english {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            font-style: italic;
+        }
+
+        /* Team Overview Section */
+        .team-overview {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .project-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #c0c0c0;
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(79, 209, 199, 0.1), rgba(0, 212, 255, 0.1));
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: #c0c0c0;
+            line-height: 1.6;
+        }
+
+        /* Team Members Section */
+        .team-members {
+            background: #2a2a3e;
+            padding: 2rem;
+            border: 1px solid #444;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .member-card {
+            background: #1a1a2e;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #444;
+        }
+
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+            border: 2px solid #4fd1c7;
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: #4fd1c7;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-skills {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .member-link {
+            display: inline-block;
+            background: #4fd1c7;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+        }
+
+        /* ELO System Preview */
+        .elo-preview {
+            background: linear-gradient(135deg, rgba(79, 209, 199, 0.1), rgba(0, 212, 255, 0.1));
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .elo-title {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .elo-description {
+            font-size: 1.1rem;
+            color: #c0c0c0;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .elo-demo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .elo-rank {
+            background: linear-gradient(135deg, #4fd1c7, #00d4ff);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .team-overview,
+            .team-members,
+            .hero-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .elo-demo {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">Learn Frontend Development</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="team-intro.html" class="nav-link active">Team Intro</a></li>
+                <li><a href="team-profile.html" class="nav-link">Team Profiles</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link">Login</a></li>
+                <li><a href="register.html" class="nav-link">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Meet Team 淘宝</h1>
+            <p class="hero-subtitle">
+                Passionate developers and Programming enthusiasts working together to create an engaging, 
+                interactive learning platform that makes Frontend development accessible to everyone.
+            </p>
+        </section>
+
+        <!-- Team Logo Section -->
+        <section class="team-logo-section">
+            <div class="team-logo-container">
+                <div class="team-logo-placeholder">
+                    🛍️
+                </div>
+                <div class="team-name">淘宝</div>
+                <div class="team-name-english">Team Taobao - Frontend Learning Innovators</div>
+            </div>
+        </section>
+
+        <!-- Team Overview -->
+        <section class="team-overview">
+            <h2 class="section-title">Our Mission</h2>
+            <p class="project-description">
+                We are Team 淘宝 (Team Taobao), a dedicated group of computer science students committed to revolutionizing education through 
+                innovative web technologies. Our e-learning platform combines gamification with comprehensive Frontend development curriculum 
+                to create an engaging learning experience that adapts to each user's skill level.
+            </p>
+            <p class="project-description">
+                Just like Taobao connects buyers and sellers in a vast marketplace, our team connects learners with knowledge 
+                through our innovative Frontend learning platform. We create a marketplace of ideas where students can discover, 
+                explore, and master various Frontend development concepts. Our target audience includes students, 
+                professionals, and anyone curious about Frontend development - whether you're a complete beginner or looking to advance your existing knowledge.
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3 class="feature-title">Interactive Learning</h3>
+                    <p class="feature-description">
+                        Hands-on exercises, coding challenges, and real-world AI projects that reinforce learning through practice.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3 class="feature-title">ELO Rating System</h3>
+                    <p class="feature-description">
+                        Dynamic skill assessment that tracks your progress and matches you with appropriate challenges.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🌟</span>
+                    <h3 class="feature-title">Personalized Paths</h3>
+                    <p class="feature-description">
+                        Adaptive learning algorithms that customize your educational journey based on your interests and pace.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Members -->
+        <section class="team-members">
+            <h2 class="section-title">Our Team Members</h2>
+            
+            <div class="members-grid">
+                <div class="member-card">
+                    <img src="images/team/glenn.png" alt="Glenn" class="member-avatar">
+                    <h3 class="member-name">Glenn (王飞鸿)</h3>
+                    <p class="member-role">Chief Executive Officer</p>
+                    <p class="member-skills">Strategic leadership, project management, and vision development. Guides the team's direction and ensures project success through effective coordination and decision-making.</p>
+                    <a href="teamprofile/glenn-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/marcellus.png" alt="Marcellus" class="member-avatar">
+                    <h3 class="member-name">Marcellus (郑世裕)</h3>
+                    <p class="member-role">Chief Technology Officer</p>
+                    <p class="member-skills">Full-stack development, system architecture, and AI integration. Specializes in React, Node.js, and machine learning implementation for scalable web applications.</p>
+                    <a href="teamprofile/marcellus-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/christian.png" alt="Christian" class="member-avatar">
+                    <h3 class="member-name">Christian (林伟泉)</h3>
+                    <p class="member-role">Chief Information Officer</p>
+                    <p class="member-skills">Database management, information systems, and data security. Ensures optimal data flow and information architecture throughout the platform.</p>
+                    <a href="teamprofile/christian-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/avery.png" alt="Avery" class="member-avatar">
+                    <h3 class="member-name">Avery (西蒙)</h3>
+                    <p class="member-role">Programmer</p>
+                    <p class="member-skills">Software development, algorithm implementation, and code optimization. Focuses on creating efficient, clean code for the ELO rating system and interactive features.</p>
+                    <a href="teamprofile/avery-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/hadrian.png" alt="Hadrian" class="member-avatar">
+                    <h3 class="member-name">Hadrian (陈理宸)</h3>
+                    <p class="member-role">Lead Designer</p>
+                    <p class="member-skills">UI/UX design, visual identity, and user experience optimization. Creates intuitive interfaces and engaging visual designs that enhance the learning experience.</p>
+                    <a href="teamprofile/hadrian-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/egor.png" alt="Egor" class="member-avatar">
+                    <h3 class="member-name">Egor (墨瑟福)</h3>
+                    <p class="member-role">Writer / Designer</p>
+                    <p class="member-skills">Content creation, technical writing, and visual design. Develops educational materials, documentation, and creates engaging content that makes AI concepts accessible to all learners.</p>
+                    <a href="teamprofile/egor-profile.html" class="member-link">View Profile</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Simple click handler for team logo
+        document.querySelector('.team-logo-placeholder').addEventListener('click', function() {
+            this.textContent = '🛍️';
+        });
+    </script>
+</body>
+</html>
