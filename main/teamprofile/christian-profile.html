@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christian's Profile - Frontend Dev Hub</title>
+    <style>
+        /* Basic CSS */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: white;
+            background: #1a1a2e;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4fd1c7;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            background-image: url('../images/Logo.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #e0e0e0;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-link.active {
+            color: #4fd1c7;
+            background: rgba(79, 209, 199, 0.2);
+        }
+
+        /* Main Content Styles */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .profile-image-container {
+            flex-shrink: 0;
+            width: 300px;
+        }
+
+        .profile-image {
+            width: 100%;
+            border-radius: 15px;
+            border: 2px solid #4fd1c7;
+        }
+
+        .profile-content {
+            flex-grow: 1;
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+            color: #4fd1c7;
+            margin-bottom: 1rem;
+        }
+
+        .profile-role {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            margin-bottom: 2rem;
+        }
+
+        .profile-essay {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .profile-essay p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .profile-section {
+                flex-direction: column;
+                padding: 2rem;
+            }
+
+            .profile-image-container {
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="../index.html" class="logo">Learn Frontend Development</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../courses.html" class="nav-link">Learn</a></li>
+                <li><a href="../team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="../login.html" class="nav-link">Login</a></li>
+                <li><a href="../register.html" class="nav-link">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <section class="profile-section">
+            <div class="profile-image-container">
+                <img src="../images/team/christian.png" alt="Christian" class="profile-image">
+            </div>
+            <div class="profile-content">
+                <h1 class="profile-name">Christian (林伟泉)</h1>
+                <h2 class="profile-role">Chief Information Officer</h2>
+                <div class="profile-essay">
+                    <p>
+                        Hello! My name is Christian Limantara, and I am currently an undergraduate student majoring in Computer Science. I am passionate about technology, problem-solving, and how computers can be used to create solutions that improve everyday life. As a Computer Science student, I enjoy learning about programming, algorithms, web development, and how software is built and maintained.
+                    </p>
+                    <p>
+                        Right now, I'm taking a short summer class that focuses on web development. As part of this class, I've been given a project to create a personal information webpage using HTML and CSS. This project has helped me better understand how websites are structured and styled, and it's also given me a chance to be creative while practicing the skills I've learned so far.
+                    </p>
+                    <p>
+                        Outside of my academic work, I enjoy exploring new technologies, watching tech videos, and sometimes playing games or listening to music to relax. I believe that web development is an important skill for the future, and I hope to continue improving my abilities in front-end and back-end development.
+                    </p>
+                    <p>
+                        In the future, I hope to become a skilled software developer or web developer and work on exciting projects that make a real impact. I'm excited to keep learning and growing in this field.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
