@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Frontend Dev Hub</title>
+    <style>
+        /* Master CSS Theme - Based on team-intro.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4fd1c7;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "💻";
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #e0e0e0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-link:hover {
+            color: #4fd1c7;
+            background: rgba(79, 209, 199, 0.1);
+        }
+
+        .nav-link.active {
+            color: #4fd1c7;
+            background: rgba(79, 209, 199, 0.2);
+        }
+
+        /* Form Container */
+        .container {
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 100px;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4fd1c7, #00d4ff);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 28px;
+            background: linear-gradient(135deg, #4fd1c7, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #c0c0c0;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #4fd1c7;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 209, 199, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4fd1c7 0%, #00d4ff 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 209, 199, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #b0b0b0;
+        }
+
+        .toggle-link a {
+            color: #4fd1c7;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-link a:hover {
+            color: #00d4ff;
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success {
+            color: #4ecdc4;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .strength-weak { color: #ff6b6b; }
+        .strength-medium { color: #ffa726; }
+        .strength-strong { color: #4ecdc4; }
+
+        .form-container {
+            transition: all 0.4s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .container {
+                margin-top: 120px;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">Frontend Dev Hub</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link active">Login</a></li>
+                <li><a href="register.html" class="nav-link">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Login Form (Default) -->
+        <div id="loginForm" class="form-container">
+            <h2>Welcome Back</h2>
+            <form id="login">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                    <div class="error" id="loginEmailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                    <div class="error" id="loginPasswordError"></div>
+                </div>
+
+                <button type="submit" class="btn">Sign In</button>
+                <div class="success" id="loginSuccess"></div>
+            </form>
+
+            <div class="toggle-link">
+                Don't have an account? <a href="register.html">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store users in memory (simulating database)
+        let users = [];
+        
+        // Try to load users from localStorage if available
+        try {
+            const savedUsers = localStorage.getItem('users');
+            if (savedUsers) {
+                users = JSON.parse(savedUsers);
+            }
+        } catch (e) {
+            console.log('localStorage not available, using memory storage');
+        }
+
+        function clearForms() {
+            document.getElementById('login').reset();
+            clearErrors();
+        }
+
+        function clearErrors() {
+            const errors = document.querySelectorAll('.error, .success');
+            errors.forEach(error => {
+                error.style.display = 'none';
+                error.textContent = '';
+            });
+        }
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            const strengthIndicator = document.getElementById('passwordStrength');
+            let strength = 0;
+            let feedback = '';
+
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            switch (strength) {
+                case 0:
+                case 1:
+                case 2:
+                    feedback = 'Weak password';
+                    strengthIndicator.className = 'password-strength strength-weak';
+                    break;
+                case 3:
+                case 4:
+                    feedback = 'Medium password';
+                    strengthIndicator.className = 'password-strength strength-medium';
+                    break;
+                case 5:
+                    feedback = 'Strong password';
+                    strengthIndicator.className = 'password-strength strength-strong';
+                    break;
+            }
+
+            strengthIndicator.textContent = password.length > 0 ? feedback : '';
+            return strength >= 3;
+        }
+
+        // Validation functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function showSuccess(elementId, message) {
+            const successElement = document.getElementById(elementId);
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+        }
+
+        // Real-time password strength checking
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupPassword = document.getElementById('signupPassword');
+            if (signupPassword) {
+                signupPassword.addEventListener('input', function(e) {
+                    checkPasswordStrength(e.target.value);
+                });
+            }
+        });
+
+        // Login form handler
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('login').addEventListener('submit', function(e) {
+                e.preventDefault();
+                clearErrors();
+
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                let isValid = true;
+
+                // Validate email
+                if (!validateEmail(email)) {
+                    showError('loginEmailError', 'Please enter a valid email address');
+                    isValid = false;
+                }
+
+                // Validate password
+                if (password.length === 0) {
+                    showError('loginPasswordError', 'Please enter your password');
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    // Check credentials
+                    const user = users.find((u) => u.email === email && u.password === password);
+
+                    if (user) {
+                        // Save user data
+                        try {
+                            localStorage.setItem('loggedInUser', JSON.stringify(user));
+                        } catch (e) {
+                            console.log('localStorage not available');
+                        }
+
+                        showSuccess('loginSuccess', `Welcome back, ${user.name}!`);
+
+                        // Redirect to profile page
+                        setTimeout(() => {
+                            window.location.href = 'my-profile.html';
+                        }, 1500);
+                    } else {
+                        showError('loginPasswordError', 'Invalid email or password');
+                    }
+                }
+            });
+
+            // Sign up form handler
+            document.getElementById('signup').addEventListener('submit', function(e) {
+                e.preventDefault();
+                clearErrors();
+
+                const name = document.getElementById('signupName').value.trim();
+                const email = document.getElementById('signupEmail').value.trim();
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                let isValid = true;
+
+                // Validate name
+                if (name.length < 2) {
+                    showError('nameError', 'Name must be at least 2 characters long');
+                    isValid = false;
+                }
+
+                // Validate email
+                if (!validateEmail(email)) {
+                    showError('emailError', 'Please enter a valid email address');
+                    isValid = false;
+                }
+
+                // Check if email already exists
+                if (users.find(user => user.email === email)) {
+                    showError('emailError', 'Email already registered');
+                    isValid = false;
+                }
+
+                // Validate password
+                if (password.length < 8) {
+                    showError('passwordError', 'Password must be at least 8 characters long');
+                    isValid = false;
+                } else if (!checkPasswordStrength(password)) {
+                    showError('passwordError', 'Password is too weak');
+                    isValid = false;
+                }
+
+                // Confirm password
+                if (password !== confirmPassword) {
+                    showError('confirmError', 'Passwords do not match');
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    // Store user
+                    const newUser = { 
+                        name, 
+                        email, 
+                        password, 
+                        elo: 1200,
+                        avatar: 'default',
+                        background: 'default',
+                        description: 'AI learning enthusiast ready to explore the future of technology!'
+                    };
+                    
+                    users.push(newUser);
+                    
+                    try {
+                        localStorage.setItem('users', JSON.stringify(users));
+                        localStorage.setItem('loggedInUser', JSON.stringify(newUser));
+                    } catch (e) {
+                        console.log('localStorage not available');
+                    }
+                    
+                    showSuccess('signupSuccess', 'Account created successfully! Redirecting...');
+                    
+                    // Redirect to profile page
+                    setTimeout(() => {
+                        window.location.href = 'my-profile.html';
+                    }, 2000);
+                }
+            });
+        });
+
+        // Page load animation
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
