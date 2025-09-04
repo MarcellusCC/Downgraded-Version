@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glenn's Profile - Frontend Dev Hub</title>
+    <style>
+        /* Basic CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff8c00;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff9920;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* Main Content Styles */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .profile-image-container {
+            flex-shrink: 0;
+            width: 300px;
+        }
+
+        .profile-image {
+            width: 100%;
+            border-radius: 15px;
+            border: 2px solid #4fd1c7;
+        }
+
+        .profile-content {
+            flex-grow: 1;
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+            color: #4fd1c7;
+            margin-bottom: 1rem;
+        }
+
+        .profile-role {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            margin-bottom: 2rem;
+        }
+
+        .profile-essay {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .profile-essay p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .profile-section {
+                flex-direction: column;
+                padding: 2rem;
+            }
+
+            .profile-image-container {
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="../index.html" class="logo">Learn Frontend Development</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../courses.html" class="nav-link">Learn</a></li>
+                <li><a href="../team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="../login.html" class="nav-link">Login</a></li>
+                <li><a href="../register.html" class="nav-link">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <section class="profile-section">
+            <div class="profile-image-container">
+                <img src="../images/team/glenn.png" alt="Glenn" class="profile-image">
+            </div>
+            <div class="profile-content">
+                <h1 class="profile-name">Glenn (王飞鸿)</h1>
+                <h2 class="profile-role">Chief Executive Officer</h2>
+                <div class="profile-essay">
+                    <p>
+                        As the CEO of our educational web project "Tao Bao", my greatest strength isn't just in writing code, but in writing the playbook for our team's success. My role is to be the central hub that connects our talented designers and developers, ensuring we are all moving in sync toward a shared, clear vision.
+                    </p>
+                    <p>
+                        I believe a great product is built by a team that feels heard, valued, and motivated. My focus is on cultivating that environment. I excel at identifying each member's unique strengths and assigning tasks that not only move the project forward but also fuel their passion and growth. By fostering open communication and translating complex technical hurdles into clear, actionable goals, I keep the team aligned and productive.
+                    </p>
+                    <p>
+                        While I possess a solid foundational understanding of HTML, CSS, and JavaScript, my true value lies in my ability to bridge the gap between the technical and the practical. I can communicate effectively with both our developers and our target audience, ensuring the final website is not only well-built but also truly meets the needs of beginners. My leadership is about empowering the experts around me to do their best work, making me the perfect fit to guide this project from a simple idea to a impactful learning tool.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

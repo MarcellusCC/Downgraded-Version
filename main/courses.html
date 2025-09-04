@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Development Courses - Frontend Development Learning Hub</title>
+    <link rel="stylesheet" href="navigation.css">
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #0a0a0a;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 140, 0, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 2px 30px rgba(255, 140, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff8c00;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .logo::before {
+            content: "🤖";
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.3));
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #ff8c00;
+            background: rgba(255, 140, 0, 0.1);
+            border-color: rgba(255, 140, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: #000000;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+        }
+
+        .user-menu.show {
+            display: block;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: #cccccc;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ELO Display */
+        .elo-display {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .elo-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            color: #ff8c00;
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        }
+
+        .elo-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #cccccc;
+            margin-top: 0.5rem;
+        }
+
+        /* Lessons Grid */
+        .lessons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .lesson-card {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .lesson-card:hover::before {
+            left: 100%;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(255, 140, 0, 0.2);
+            border-color: #ff8c00;
+        }
+
+        .lesson-level {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+        }
+
+        .lesson-title {
+            font-size: 1.6rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .lesson-description {
+            color: #cccccc;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .lesson-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .lesson-button {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border: none;
+            padding: 1.2rem 2rem;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);
+        }
+
+        .lesson-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 140, 0, 0.4);
+        }
+
+        /* Quiz Preview */
+        .quiz-preview {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .quiz-question {
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 1.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .quiz-option {
+            background: rgba(40, 40, 40, 0.8);
+            border: 2px solid rgba(255, 140, 0, 0.2);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.1), transparent);
+            transition: left 0.3s ease;
+        }
+
+        .quiz-option:hover::before {
+            left: 100%;
+        }
+
+        .quiz-option:hover {
+            border-color: #ff8c00;
+            background: rgba(255, 140, 0, 0.1);
+            transform: translateX(10px);
+        }
+
+        .quiz-option.selected {
+            border-color: #ff8c00;
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(255, 179, 71, 0.1));
+            color: #ff8c00;
+        }
+
+        .quiz-option.correct {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .submit-answer {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 2.5rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);
+        }
+
+        .submit-answer:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 140, 0, 0.4);
+        }
+
+        .submit-answer:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Quiz Feedback */
+        #quiz-feedback {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 1rem;
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .elo-display {
+                position: static;
+                transform: none;
+                margin-bottom: 2rem;
+                width: fit-content;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .lessons-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">Frontend Development Learning Hub</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link active">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+                <div class="user-avatar" onclick="goToProfile()" id="userAvatar">
+                    U
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ELO Display -->
+    <div class="elo-display">
+        <span class="elo-number" id="userElo">1250</span>
+        <span class="elo-label">Your ELO Rating</span>
+    </div>
+
+    <main class="main-container">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="page-title">Frontend Development Learning Modules</h1>
+            <p class="page-subtitle">
+                Interactive lessons designed to build your AI knowledge step by step. 
+                Complete quizzes to increase your ELO rating and unlock advanced content!
+            </p>
+        </section>
+
+        <!-- Lessons Grid -->
+        <div class="lessons-container">
+            <div class="lesson-card" onclick="startLesson('intro-ai')">
+                <span class="lesson-level">Beginner</span>
+                <h3 class="lesson-title">Introduction to Artificial Intelligence</h3>
+                <p class="lesson-description">
+                    Learn the fundamentals of AI, its history, and real-world applications. 
+                    Perfect for beginners with no prior experience.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 5 Topics</span>
+                    <span>⏱️ 30 min</span>
+                    <span>🏆 +50 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+
+            <div class="lesson-card" onclick="startLesson('machine-learning')">
+                <span class="lesson-level">Intermediate</span>
+                <h3 class="lesson-title">Machine Learning Basics</h3>
+                <p class="lesson-description">
+                    Dive into supervised and unsupervised learning, algorithms, 
+                    and how machines learn from data.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 8 Topics</span>
+                    <span>⏱️ 45 min</span>
+                    <span>🏆 +75 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+
+            <div class="lesson-card" onclick="startLesson('neural-networks')">
+                <span class="lesson-level">Advanced</span>
+                <h3 class="lesson-title">Neural Networks & Deep Learning</h3>
+                <p class="lesson-description">
+                    Understand how neural networks work, backpropagation, 
+                    and the foundations of deep learning.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 12 Topics</span>
+                    <span>⏱️ 60 min</span>
+                    <span>🏆 +100 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+
+            <div class="lesson-card" onclick="startLesson('nlp')">
+                <span class="lesson-level">Advanced</span>
+                <h3 class="lesson-title">Natural Language Processing</h3>
+                <p class="lesson-description">
+                    Explore how AI understands and generates human language, 
+                    from chatbots to language models.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 10 Topics</span>
+                    <span>⏱️ 50 min</span>
+                    <span>🏆 +90 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+
+            <div class="lesson-card" onclick="startLesson('computer-vision')">
+                <span class="lesson-level">Expert</span>
+                <h3 class="lesson-title">Computer Vision</h3>
+                <p class="lesson-description">
+                    Learn how AI sees and interprets visual data, image recognition, 
+                    and object detection techniques.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 15 Topics</span>
+                    <span>⏱️ 75 min</span>
+                    <span>🏆 +120 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+
+            <div class="lesson-card" onclick="startLesson('ai-ethics')">
+                <span class="lesson-level">Intermediate</span>
+                <h3 class="lesson-title">AI Ethics & Responsible AI</h3>
+                <p class="lesson-description">
+                    Understand the ethical implications of AI, bias in algorithms, 
+                    and how to build responsible AI systems.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 6 Topics</span>
+                    <span>⏱️ 40 min</span>
+                    <span>🏆 +65 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+        </div>
+
+        <!-- Interactive Quiz Preview -->
+        <section class="quiz-preview">
+            <h2 style="text-align: center; margin-bottom: 3rem; color: #ffffff; font-size: 2.5rem;">
+                🧠 Try a Sample Question
+            </h2>
+            <div class="quiz-question">
+                What is the main goal of supervised learning in machine learning?
+            </div>
+            <div class="quiz-options">
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    A) To find hidden patterns in data without labels
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, true)">
+                    B) To learn from labeled data to make predictions on new data
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    C) To cluster similar data points together
+                </div>
+                <div class="quiz-option" onclick="selectOption(this, false)">
+                    D) To reduce the dimensionality of data
+                </div>
+            </div>
+            <button class="submit-answer" onclick="submitQuizAnswer()" disabled>
+                Submit Answer
+            </button>
+            <div id="quiz-feedback"></div>
+        </section>
+    </main>
+
+    <script>
+        // User and ELO Management
+        let currentELO = 1250;
+        let selectedAnswer = null;
+        let isCorrect = false;
+        let currentUser = null;
+
+        // Check login status and update navigation
+        function checkLoginStatus() {
+            try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                    currentELO = currentUser.elo || 1250;
+                }
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (currentUser) {
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                userMenu.classList.add('show');
+                userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+                userAvatar.title = `Go to ${currentUser.name}'s Profile`;
+                document.getElementById('userElo').textContent = currentELO;
+            } else {
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                userMenu.classList.remove('show');
+            }
+        }
+
+        function goToProfile() {
+            window.location.href = 'my-profile.html';
+        }
+
+        function updateELODisplay(newELO) {
+            currentELO = newELO;
+            document.getElementById('userElo').textContent = newELO;
+            
+            // Update user data
+            if (currentUser) {
+                currentUser.elo = newELO;
+                try {
+                    localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                    
+                    // Update in users array
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const userIndex = users.findIndex(u => u.email === currentUser.email);
+                    if (userIndex !== -1) {
+                        users[userIndex].elo = newELO;
+                        localStorage.setItem('users', JSON.stringify(users));
+                    }
+                } catch (e) {
+                    console.log('Could not save ELO update');
+                }
+            }
+            
+            // Add animation effect
+            const eloElement = document.getElementById('userElo');
+            eloElement.style.transform = 'scale(1.3)';
+            eloElement.style.textShadow = '0 0 25px rgba(255, 140, 0, 0.8)';
+            
+            setTimeout(() => {
+                eloElement.style.transform = 'scale(1)';
+                eloElement.style.textShadow = '0 0 15px rgba(255, 140, 0, 0.5)';
+            }, 500);
+        }
+
+        // Lesson Management
+        function startLesson(lessonId) {
+            console.log('Starting lesson:', lessonId);
+            
+            // Create a more engaging alert with lesson info
+            const lessonInfo = {
+                'intro-ai': 'Introduction to AI - Perfect for beginners!',
+                'machine-learning': 'Machine Learning Basics - Dive into ML algorithms!',
+                'neural-networks': 'Neural Networks - Advanced deep learning concepts!',
+                'nlp': 'Natural Language Processing - How AI understands language!',
+                'computer-vision': 'Computer Vision - Teaching AI to see!',
+                'ai-ethics': 'AI Ethics - Building responsible AI systems!'
+            };
+            
+            alert(`🚀 Starting: ${lessonInfo[lessonId]}\n\n✨ This would navigate to:\n- Interactive content\n- Code examples\n- Practice exercises\n- Progress tracking\n- ELO-based assessments`);
+        }
+
+        // Quiz System
+        function selectOption(element, correct) {
+            // Remove previous selections
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Mark this option as selected
+            element.classList.add('selected');
+            selectedAnswer = element;
+            isCorrect = correct;
+            
+            // Enable submit button
+            document.querySelector('.submit-answer').disabled = false;
+        }
+
+        function submitQuizAnswer() {
+            if (!selectedAnswer) return;
+            
+            // Show correct/incorrect styling
+            document.querySelectorAll('.quiz-option').forEach((option, index) => {
+                if (index === 1) { // Correct answer is index 1 (option B)
+                    option.classList.add('correct');
+                } else if (option.classList.contains('selected') && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedback = document.getElementById('quiz-feedback');
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Excellent! +15 ELO points earned!';
+                feedback.style.color = '#4CAF50';
+                feedback.style.background = 'rgba(76, 175, 80, 0.1)';
+                feedback.style.border = '1px solid #4CAF50';
+                updateELODisplay(currentELO + 15);
+            } else {
+                feedback.innerHTML = '❌ Incorrect. -10 ELO points. The correct answer is B: To learn from labeled data to make predictions on new data.';
+                feedback.style.color = '#f44336';
+                feedback.style.background = 'rgba(244, 67, 54, 0.1)';
+                feedback.style.border = '1px solid #f44336';
+                updateELODisplay(Math.max(currentELO - 10, 800)); // Minimum ELO of 800
+            }
+            
+            // Disable submit button
+            document.querySelector('.submit-answer').disabled = true;
+            
+            // Reset after 4 seconds
+            setTimeout(resetQuiz, 4000);
+        }
+
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.getElementById('quiz-feedback').innerHTML = '';
+            document.getElementById('quiz-feedback').style.background = 'transparent';
+            document.getElementById('quiz-feedback').style.border = 'none';
+            document.querySelector('.submit-answer').disabled = true;
+            selectedAnswer = null;
+        }
+
+        // Page Load Animation and Initialization
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            
+            // Smooth fade in
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.6s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Create floating particles for visual appeal
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: ${2 + Math.random() * 3}px;
+                height: ${2 + Math.random() * 3}px;
+                background: #ff8c00;
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0.7;
+                z-index: 1;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+            `;
+            
+            document.body.appendChild(particle);
+            
+            particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.8 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 200}px)`, opacity: 0 }
+            ], {
+                duration: 5000 + Math.random() * 3000,
+                easing: 'ease-out'
+            }).addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 1000);
+
+        // Enhanced card interactions
+        document.querySelectorAll('.lesson-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

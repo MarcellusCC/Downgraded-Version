@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Battle - Frontend Development Learning Hub</title>
+    <link rel="stylesheet" href="navigation.css">
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #0a0a0a;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 140, 0, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+        }
+
+        .user-menu.show {
+            display: block;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        /* Battle Setup */
+        .battle-setup {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            text-align: center;
+        }
+
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .difficulty-card {
+            background: rgba(40, 40, 40, 0.8);
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            border-radius: 15px;
+            padding: 2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .difficulty-card:hover {
+            background: rgba(255, 140, 0, 0.1);
+            border-color: #ff8c00;
+            transform: translateY(-5px);
+        }
+
+        .difficulty-card.selected {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(255, 179, 71, 0.1));
+            border-color: #ff8c00;
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
+        }
+
+        .difficulty-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #ff8c00;
+        }
+
+        .difficulty-stats {
+            font-size: 0.9rem;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        /* Battle Arena */
+        .battle-arena {
+            display: none;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .battle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .player-info {
+            text-align: center;
+            flex: 1;
+        }
+
+        .player-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff8c00;
+        }
+
+        .vs-divider {
+            font-size: 2rem;
+            color: #ff8c00;
+            margin: 0 2rem;
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        }
+
+        /* Timer */
+        .timer-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .timer {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff8c00;
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .timer.warning {
+            color: #ff6b6b;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Question Container */
+        .question-container {
+            background: rgba(40, 40, 40, 0.8);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .question-number {
+            color: #ff8c00;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            background: rgba(60, 60, 60, 0.8);
+            border: 2px solid rgba(255, 140, 0, 0.2);
+            color: #ffffff;
+            padding: 1.2rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.1), transparent);
+            transition: left 0.3s ease;
+        }
+
+        .option-btn:hover::before {
+            left: 100%;
+        }
+
+        .option-btn:hover {
+            border-color: #ff8c00;
+            background: rgba(255, 140, 0, 0.1);
+            transform: translateX(10px);
+        }
+
+        .option-btn.selected {
+            border-color: #ff8c00;
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(255, 179, 71, 0.1));
+            color: #ff8c00;
+        }
+
+        .option-btn.correct {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .option-btn.incorrect {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .option-btn.ai-selected {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        /* Battle Controls */
+        .battle-controls {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
+        }
+
+        .control-btn.secondary {
+            background: rgba(40, 40, 40, 0.8);
+            color: #ff8c00;
+            border: 2px solid #ff8c00;
+        }
+
+        .control-btn.secondary:hover {
+            background: rgba(255, 140, 0, 0.1);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Battle Results */
+        .battle-results {
+            background: rgba(40, 40, 40, 0.8);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .result-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .result-win {
+            color: #4CAF50;
+            text-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+        }
+
+        .result-lose {
+            color: #f44336;
+            text-shadow: 0 0 15px rgba(244, 67, 54, 0.5);
+        }
+
+        .result-tie {
+            color: #ff8c00;
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        }
+
+        /* AI Thinking Animation */
+        .ai-thinking {
+            display: inline-block;
+            color: #00d4ff;
+            animation: thinking 1s ease-in-out infinite;
+        }
+
+        @keyframes thinking {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Progress Bars */
+        .progress-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .progress-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .progress-label {
+            color: #cccccc;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            background: rgba(40, 40, 40, 0.8);
+            border-radius: 10px;
+            height: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .user-progress {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+        }
+
+        .ai-progress {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .battle-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .vs-divider {
+                margin: 1rem 0;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .progress-section {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .battle-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .control-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 140, 0, 0.3);
+            border-top: 3px solid #ff8c00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">Frontend Development Learning Hub</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link active">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+                <div class="user-avatar" onclick="goToProfile()" id="userAvatar">U</div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="page-title">⚔️ AI Battle Arena</h1>
+            <p class="page-subtitle">
+                Challenge our AI in real-time quiz battles! Choose your difficulty and prove your knowledge 
+                against increasingly intelligent opponents.
+            </p>
+        </section>
+
+        <!-- Battle Setup -->
+        <section class="battle-setup" id="battleSetup">
+            <h2 style="color: #ffffff; margin-bottom: 2rem; font-size: 2rem;">Choose Your Battle Difficulty</h2>
+            
+            <div class="difficulty-grid">
+                <div class="difficulty-card" onclick="selectDifficulty('easy')">
+                    <div class="difficulty-title">🟢 Easy Mode</div>
+                    <div class="difficulty-stats">
+                        AI Response: 20 seconds<br>
+                        AI Accuracy: 50-70%<br>
+                        ELO Gain: +15
+                    </div>
+                </div>
+                
+                <div class="difficulty-card" onclick="selectDifficulty('medium')">
+                    <div class="difficulty-title">🟡 Medium Mode</div>
+                    <div class="difficulty-stats">
+                        AI Response: 15 seconds<br>
+                        AI Accuracy: 70-85%<br>
+                        ELO Gain: +25
+                    </div>
+                </div>
+                
+                <div class="difficulty-card" onclick="selectDifficulty('hard')">
+                    <div class="difficulty-title">🔴 Hard Mode</div>
+                    <div class="difficulty-stats">
+                        AI Response: 10 seconds<br>
+                        AI Accuracy: 75-95%<br>
+                        ELO Gain: +40
+                    </div>
+                </div>
+                
+                <div class="difficulty-card" onclick="selectDifficulty('master')">
+                    <div class="difficulty-title">💀 Master Mode</div>
+                    <div class="difficulty-stats">
+                        AI Response: 7 seconds<br>
+                        AI Accuracy: 95-100%<br>
+                        ELO Gain: +60
+                    </div>
+                </div>
+            </div>
+
+            <div class="battle-controls">
+                <button class="control-btn" onclick="startBattle()" id="startBtn" disabled>
+                    🚀 Start Battle
+                </button>
+            </div>
+        </section>
+
+        <!-- Battle Arena -->
+        <section class="battle-arena" id="battleArena">
+            <div class="battle-header">
+                <div class="player-info">
+                    <div class="player-name" id="playerName">You</div>
+                    <div class="player-score" id="playerScore">0</div>
+                </div>
+                <div class="vs-divider">VS</div>
+                <div class="player-info">
+                    <div class="player-name">AI Opponent <span class="ai-thinking" id="aiThinking" style="display: none;">🤔</span></div>
+                    <div class="player-score" id="aiScore">0</div>
+                </div>
+            </div>
+
+            <div class="timer-container">
+                <div class="timer" id="timer">30</div>
+                <div style="color: #cccccc;">seconds remaining</div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-item">
+                    <div class="progress-label">Your Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill user-progress" id="userProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label">AI Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ai-progress" id="aiProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-number" id="questionNumber">Question 1 of 5</div>
+                <div class="question-text" id="questionText">Loading question...</div>
+                
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Options will be dynamically generated -->
+                </div>
+            </div>
+
+            <div class="battle-controls">
+                <button class="control-btn secondary" onclick="endBattle()">
+                    🏃 Quit Battle
+                </button>
+            </div>
+
+            <div class="battle-results" id="battleResults" style="display: none;">
+                <div class="result-title" id="resultTitle">Battle Complete!</div>
+                <div id="resultDetails"></div>
+                <button class="control-btn" onclick="newBattle()" style="margin-top: 1rem;">
+                    🔄 New Battle
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentUser = null;
+        let currentELO = 1250;
+        let selectedDifficulty = null;
+        let battleState = {
+            currentQuestion: 0,
+            userScore: 0,
+            aiScore: 0,
+            totalQuestions: 5,
+            timer: null,
+            timeLeft: 30,
+            gameActive: false,
+            aiResponseTime: 20,
+            aiAccuracy: 0.6
+        };
+
+        // Question Database
+        const questions = [
+            {
+                question: "What does AI stand for?",
+                options: ["Artificial Intelligence", "Automated Interface", "Advanced Integration", "Algorithmic Implementation"],
+                correct: 0
+            },
+            {
+                question: "Which of the following is a supervised learning algorithm?",
+                options: ["K-means clustering", "Linear Regression", "PCA", "DBSCAN"],
+                correct: 1
+            },
+            {
+                question: "What is the main purpose of a neural network's activation function?",
+                options: ["To store data", "To introduce non-linearity", "To reduce overfitting", "To increase speed"],
+                correct: 1
+            },
+            {
+                question: "In machine learning, what is 'overfitting'?",
+                options: ["Model is too simple", "Model memorizes training data", "Model runs too fast", "Model uses too little data"],
+                correct: 1
+            },
+            {
+                question: "What is the purpose of backpropagation in neural networks?",
+                options: ["Forward data flow", "Update weights based on errors", "Reduce model size", "Increase learning rate"],
+                correct: 1
+            },
+            {
+                question: "Which algorithm is commonly used for classification tasks?",
+                options: ["Linear Regression", "Decision Tree", "PCA", "K-means"],
+                correct: 1
+            },
+            {
+                question: "What does NLP stand for in AI?",
+                options: ["Natural Language Processing", "Neural Logic Programming", "New Learning Protocol", "Network Layer Processing"],
+                correct: 0
+            },
+            {
+                question: "What is the main goal of reinforcement learning?",
+                options: ["Classify data", "Learn through rewards and penalties", "Reduce dimensions", "Cluster similar items"],
+                correct: 1
+            }
+        ];
+
+        // Check login status and update navigation
+        function checkLoginStatus() {
+            try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                    currentELO = currentUser.elo || 1250;
+                }
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (currentUser) {
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                userMenu.classList.add('show');
+                userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+                userAvatar.title = `Go to ${currentUser.name}'s Profile`;
+                document.getElementById('playerName').textContent = currentUser.name;
+            } else {
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                userMenu.classList.remove('show');
+            }
+        }
+
+        function goToProfile() {
+            window.location.href = 'my-profile.html';
+        }
+
+        // Difficulty Selection
+        function selectDifficulty(difficulty) {
+            // Remove previous selection
+            document.querySelectorAll('.difficulty-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked card
+            event.target.closest('.difficulty-card').classList.add('selected');
+            
+            selectedDifficulty = difficulty;
+            
+            // Set AI parameters based on difficulty
+            const difficultySettings = {
+                easy: { responseTime: 20, accuracy: 0.5 + Math.random() * 0.2 },
+                medium: { responseTime: 15, accuracy: 0.7 + Math.random() * 0.15 },
+                hard: { responseTime: 10, accuracy: 0.75 + Math.random() * 0.2 },
+                master: { responseTime: 7, accuracy: 0.95 + Math.random() * 0.05 }
+            };
+
+            battleState.aiResponseTime = difficultySettings[difficulty].responseTime;
+            battleState.aiAccuracy = Math.min(difficultySettings[difficulty].accuracy, 1.0);
+            
+            document.getElementById('startBtn').disabled = false;
+        }
+
+        // Battle Management
+        function startBattle() {
+            document.getElementById('battleSetup').style.display = 'none';
+            document.getElementById('battleArena').style.display = 'block';
+            
+            // Reset battle state
+            battleState.currentQuestion = 0;
+            battleState.userScore = 0;
+            battleState.aiScore = 0;
+            battleState.gameActive = true;
+            battleState.timeLeft = 30;
+            
+            updateScores();
+            loadNextQuestion();
+        }
+
+        function loadNextQuestion() {
+            if (battleState.currentQuestion >= battleState.totalQuestions) {
+                endBattle();
+                return;
+            }
+
+            const question = questions[Math.floor(Math.random() * questions.length)];
+            
+            document.getElementById('questionNumber').textContent = 
+                `Question ${battleState.currentQuestion + 1} of ${battleState.totalQuestions}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Generate options
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = `${String.fromCharCode(65 + index)}) ${option}`;
+                button.onclick = () => selectAnswer(index, question.correct);
+                optionsGrid.appendChild(button);
+            });
+
+            // Start timer
+            startTimer(question.correct);
+            
+            // Schedule AI response
+            scheduleAIResponse(question.correct);
+            
+            // Show AI thinking
+            document.getElementById('aiThinking').style.display = 'inline';
+        }
+
+        function startTimer() {
+            battleState.timeLeft = 30;
+            updateTimer();
+            
+            battleState.timer = setInterval(() => {
+                battleState.timeLeft--;
+                updateTimer();
+                
+                if (battleState.timeLeft <= 0) {
+                    clearInterval(battleState.timer);
+                    // Time's up - move to next question
+                    setTimeout(() => {
+                        nextQuestion();
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = battleState.timeLeft;
+            
+            if (battleState.timeLeft <= 10) {
+                timerElement.classList.add('warning');
+            } else {
+                timerElement.classList.remove('warning');
+            }
+        }
+
+        function scheduleAIResponse(correctAnswer) {
+            setTimeout(() => {
+                if (battleState.gameActive) {
+                    makeAIResponse(correctAnswer);
+                }
+            }, battleState.aiResponseTime * 1000);
+        }
+
+        function makeAIResponse(correctAnswer) {
+            document.getElementById('aiThinking').style.display = 'none';
+            
+            let aiAnswer;
+            if (Math.random() < battleState.aiAccuracy) {
+                // AI answers correctly
+                aiAnswer = correctAnswer;
+            } else {
+                // AI answers incorrectly
+                do {
+                    aiAnswer = Math.floor(Math.random() * 4);
+                } while (aiAnswer === correctAnswer);
+            }
+
+            // Show AI selection
+            const options = document.querySelectorAll('.option-btn');
+            options[aiAnswer].classList.add('ai-selected');
+            
+            // Check if AI got it right
+            if (aiAnswer === correctAnswer) {
+                battleState.aiScore++;
+                options[aiAnswer].classList.add('correct');
+            } else {
+                options[aiAnswer].classList.add('incorrect');
+                options[correctAnswer].classList.add('correct');
+            }
+
+            updateScores();
+            
+            // Move to next question after showing results
+            setTimeout(() => {
+                nextQuestion();
+            }, 2000);
+        }
+
+        function selectAnswer(selectedIndex, correctAnswer) {
+            if (!battleState.gameActive) return;
+
+            // Clear timer
+            clearInterval(battleState.timer);
+            
+            const options = document.querySelectorAll('.option-btn');
+            
+            // Disable all options
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+
+            // Show correct answer
+            options[correctAnswer].classList.add('correct');
+            
+            // Mark user selection
+            options[selectedIndex].classList.add('selected');
+            
+            if (selectedIndex === correctAnswer) {
+                battleState.userScore++;
+            } else {
+                options[selectedIndex].classList.add('incorrect');
+            }
+
+            updateScores();
+            
+            // Hide AI thinking and cancel AI response
+            document.getElementById('aiThinking').style.display = 'none';
+            
+            // Move to next question
+            setTimeout(() => {
+                nextQuestion();
+            }, 2000);
+        }
+
+        function nextQuestion() {
+            battleState.currentQuestion++;
+            
+            // Re-enable options
+            document.querySelectorAll('.option-btn').forEach(option => {
+                option.style.pointerEvents = 'auto';
+                option.className = 'option-btn';
+            });
+            
+            updateProgress();
+            
+            if (battleState.currentQuestion < battleState.totalQuestions) {
+                loadNextQuestion();
+            } else {
+                showBattleResults();
+            }
+        }
+
+        function updateScores() {
+            document.getElementById('playerScore').textContent = battleState.userScore;
+            document.getElementById('aiScore').textContent = battleState.aiScore;
+        }
+
+        function updateProgress() {
+            const userProgress = (battleState.userScore / battleState.totalQuestions) * 100;
+            const aiProgress = (battleState.aiScore / battleState.totalQuestions) * 100;
+            
+            document.getElementById('userProgress').style.width = userProgress + '%';
+            document.getElementById('aiProgress').style.width = aiProgress + '%';
+        }
+
+        function showBattleResults() {
+            battleState.gameActive = false;
+            clearInterval(battleState.timer);
+            
+            const resultsDiv = document.getElementById('battleResults');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDetails = document.getElementById('resultDetails');
+            
+            let eloChange = 0;
+            let resultClass = '';
+            let resultText = '';
+            
+            if (battleState.userScore > battleState.aiScore) {
+                // User wins
+                const difficultyMultiplier = { easy: 15, medium: 25, hard: 40, master: 60 };
+                eloChange = difficultyMultiplier[selectedDifficulty];
+                resultClass = 'result-win';
+                resultText = '🎉 Victory!';
+                resultDetails.innerHTML = `
+                    <p style="color: #4CAF50; margin: 1rem 0;">You defeated the AI ${battleState.userScore}-${battleState.aiScore}!</p>
+                    <p style="color: #ff8c00;">+${eloChange} ELO points earned!</p>
+                `;
+            } else if (battleState.userScore < battleState.aiScore) {
+                // AI wins
+                eloChange = -Math.floor(Math.abs(battleState.userScore - battleState.aiScore) * 5);
+                resultClass = 'result-lose';
+                resultText = '💔 Defeat';
+                resultDetails.innerHTML = `
+                    <p style="color: #f44336; margin: 1rem 0;">The AI won ${battleState.aiScore}-${battleState.userScore}</p>
+                    <p style="color: #ff8c00;">${eloChange} ELO points</p>
+                `;
+            } else {
+                // Tie
+                eloChange = 5;
+                resultClass = 'result-tie';
+                resultText = '🤝 Tie Game';
+                resultDetails.innerHTML = `
+                    <p style="color: #ff8c00; margin: 1rem 0;">Both scored ${battleState.userScore} points!</p>
+                    <p style="color: #ff8c00;">+${eloChange} ELO points for participation!</p>
+                `;
+            }
+
+            resultTitle.textContent = resultText;
+            resultTitle.className = `result-title ${resultClass}`;
+            resultsDiv.style.display = 'block';
+            
+            // Update ELO
+            currentELO = Math.max(currentELO + eloChange, 800);
+            updateELODisplay(currentELO);
+        }
+
+        function updateELODisplay(newELO) {
+            currentELO = newELO;
+            
+            // Update user data
+            if (currentUser) {
+                currentUser.elo = newELO;
+                currentUser.battlesWon = (currentUser.battlesWon || 0) + (battleState.userScore > battleState.aiScore ? 1 : 0);
+                
+                try {
+                    localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const userIndex = users.findIndex(u => u.email === currentUser.email);
+                    if (userIndex !== -1) {
+                        users[userIndex] = currentUser;
+                        localStorage.setItem('users', JSON.stringify(users));
+                    }
+                } catch (e) {
+                    console.log('Could not save battle results');
+                }
+            }
+        }
+
+        function endBattle() {
+            battleState.gameActive = false;
+            clearInterval(battleState.timer);
+            showBattleResults();
+        }
+
+        function newBattle() {
+            document.getElementById('battleSetup').style.display = 'block';
+            document.getElementById('battleArena').style.display = 'none';
+            document.getElementById('battleResults').style.display = 'none';
+            
+            // Reset selections
+            document.querySelectorAll('.difficulty-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            selectedDifficulty = null;
+            document.getElementById('startBtn').disabled = true;
+        }
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            
+            // Page load animation
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.6s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: ${1 + Math.random() * 2}px;
+                height: ${1 + Math.random() * 2}px;
+                background: #ff8c00;
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0.4;
+                z-index: 1;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                box-shadow: 0 0 8px rgba(255, 140, 0, 0.5);
+            `;
+            
+            document.body.appendChild(particle);
+            
+            particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.6 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 100}px)`, opacity: 0 }
+            ], {
+                duration: 5000 + Math.random() * 2000,
+                easing: 'ease-out'
+            }).addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        setInterval(createParticle, 1200);
+    </script>
+</body>
+</html>
