@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Challenges - Frontend Development Learning Hub</title>
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #0a0a0a;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 140, 0, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 2px 30px rgba(255, 140, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff8c00;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo::before {
+            content: "🤖";
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.3));
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #ff8c00;
+            background: rgba(255, 140, 0, 0.1);
+            border-color: rgba(255, 140, 0, 0.3);
+        }
+
+        .nav-link.active {
+            color: #000000;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+        }
+
+        .user-menu.show {
+            display: block;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: #cccccc;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ELO Display */
+        .elo-display {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .elo-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            color: #ff8c00;
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        }
+
+        .elo-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #cccccc;
+            margin-top: 0.5rem;
+        }
+
+        /* Challenge Selection */
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            background: rgba(40, 40, 40, 0.8);
+            color: #ffffff;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            padding: 1rem 2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .difficulty-btn:hover {
+            background: rgba(255, 140, 0, 0.1);
+            border-color: #ff8c00;
+            transform: translateY(-2px);
+        }
+
+        .difficulty-btn.active {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border-color: #ff8c00;
+        }
+
+        /* Challenge Container */
+        .challenge-container {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .challenge-title {
+            font-size: 1.8rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .challenge-difficulty {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            padding: 0.5rem 1.2rem;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .challenge-description {
+            background: rgba(40, 40, 40, 0.6);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #ff8c00;
+            color: #cccccc;
+            line-height: 1.7;
+        }
+
+        .challenge-example {
+            background: rgba(40, 40, 40, 0.8);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .code-input-container {
+            margin: 2rem 0;
+        }
+
+        .code-input {
+            width: 100%;
+            height: 200px;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            outline: none;
+            tab-size: 2;
+        }
+
+        .code-input:focus {
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.1);
+        }
+
+        .challenge-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: rgba(40, 40, 40, 0.8);
+            color: #ff8c00;
+            border: 2px solid #ff8c00;
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 140, 0, 0.1);
+        }
+
+        /* Feedback Section */
+        .feedback-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-correct {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+        }
+
+        .feedback-incorrect {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+        }
+
+        .feedback-neutral {
+            background: rgba(40, 40, 40, 0.6);
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            color: #cccccc;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .elo-display {
+                position: static;
+                transform: none;
+                margin-bottom: 2rem;
+                width: fit-content;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .challenge-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .challenge-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">Frontend Development Learning Hub</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link active">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+                <div class="user-avatar" onclick="goToProfile()" id="userAvatar">U</div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ELO Display -->
+    <div class="elo-display">
+        <span class="elo-number" id="userElo">1250</span>
+        <span class="elo-label">Your ELO Rating</span>
+    </div>
+
+    <main class="main-container">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="page-title">Coding Challenges</h1>
+            <p class="page-subtitle">
+                Solve progressively difficult coding challenges tailored to your ELO rating. 
+                Test your skills and climb the leaderboard!
+            </p>
+        </section>
+
+        <!-- Difficulty Selector -->
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" onclick="selectDifficulty('beginner', this)">
+                🟢 Beginner (800-1200 ELO)
+            </button>
+            <button class="difficulty-btn" onclick="selectDifficulty('intermediate', this)">
+                🟡 Intermediate (1200-1600 ELO)
+            </button>
+            <button class="difficulty-btn" onclick="selectDifficulty('advanced', this)">
+                🔴 Advanced (1600+ ELO)
+            </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-text" id="progressText">0/5 Challenges Completed</div>
+        </div>
+
+        <!-- Challenge Container -->
+        <div class="challenge-container">
+            <div class="challenge-header">
+                <h2 class="challenge-title" id="challengeTitle">Hello World Challenge</h2>
+                <span class="challenge-difficulty" id="challengeDifficulty">Beginner</span>
+            </div>
+
+            <div class="challenge-description" id="challengeDescription">
+                <h3 style="color: #ff8c00; margin-bottom: 1rem;">📝 Challenge Description:</h3>
+                <p>Create a function called <code style="background: rgba(255, 140, 0, 0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">greet</code> that takes a name as a parameter and returns "Hello, [name]!"</p>
+                
+                <div class="challenge-example">
+                    <strong style="color: #ff8c00;">Example:</strong><br>
+                    <span style="color: #4ecdc4;">greet("Alice")</span> should return <span style="color: #ffb347;">"Hello, Alice!"</span>
+                </div>
+            </div>
+
+            <div class="code-input-container">
+                <label for="codeInput" style="display: block; margin-bottom: 1rem; color: #ff8c00; font-weight: 600;">
+                    💻 Your Solution:
+                </label>
+                <textarea 
+                    id="codeInput" 
+                    class="code-input" 
+                    placeholder="function greet(name) {
+    // Write your code here
+    
+}"
+                ></textarea>
+            </div>
+
+            <div class="challenge-actions">
+                <button class="action-btn" onclick="runTests()">
+                    🧪 Run Tests
+                </button>
+                <button class="action-btn secondary" onclick="getHint()">
+                    💡 Get Hint
+                </button>
+                <button class="action-btn secondary" onclick="nextChallenge()">
+                    ⏭️ Next Challenge
+                </button>
+                <button class="action-btn secondary" onclick="resetCode()">
+                    🔄 Reset
+                </button>
+            </div>
+
+            <div class="feedback-container feedback-neutral" id="feedbackContainer">
+                <p>Write your solution and click "Run Tests" to check if it's correct!</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentUser = null;
+        let currentELO = 1250;
+        let currentDifficulty = 'beginner';
+        let currentChallengeIndex = 0;
+        let completedChallenges = 0;
+
+        // Challenge Database
+        const challenges = {
+            beginner: [
+                {
+                    title: "Hello World Challenge",
+                    description: "Create a function called <code>greet</code> that takes a name as a parameter and returns \"Hello, [name]!\"",
+                    example: "greet(\"Alice\") should return \"Hello, Alice!\"",
+                    starter: "function greet(name) {\n    // Write your code here\n    \n}",
+                    solution: "function greet(name) {\n    return \"Hello, \" + name + \"!\";\n}",
+                    tests: [
+                        { input: "Alice", expected: "Hello, Alice!" },
+                        { input: "Bob", expected: "Hello, Bob!" },
+                        { input: "Charlie", expected: "Hello, Charlie!" }
+                    ],
+                    points: 25
+                },
+                {
+                    title: "Sum Two Numbers",
+                    description: "Create a function called <code>add</code> that takes two numbers and returns their sum",
+                    example: "add(3, 5) should return 8",
+                    starter: "function add(a, b) {\n    // Write your code here\n    \n}",
+                    solution: "function add(a, b) {\n    return a + b;\n}",
+                    tests: [
+                        { input: [3, 5], expected: 8 },
+                        { input: [10, -2], expected: 8 },
+                        { input: [0, 0], expected: 0 }
+                    ],
+                    points: 30
+                },
+                {
+                    title: "Find Maximum",
+                    description: "Create a function called <code>findMax</code> that takes an array of numbers and returns the largest number",
+                    example: "findMax([1, 5, 3, 9, 2]) should return 9",
+                    starter: "function findMax(numbers) {\n    // Write your code here\n    \n}",
+                    solution: "function findMax(numbers) {\n    return Math.max(...numbers);\n}",
+                    tests: [
+                        { input: [[1, 5, 3, 9, 2]], expected: 9 },
+                        { input: [[10, 20, 5]], expected: 20 },
+                        { input: [[-1, -5, -2]], expected: -1 }
+                    ],
+                    points: 35
+                }
+            ],
+            intermediate: [
+                {
+                    title: "Reverse String",
+                    description: "Create a function called <code>reverseString</code> that takes a string and returns it reversed",
+                    example: "reverseString(\"hello\") should return \"olleh\"",
+                    starter: "function reverseString(str) {\n    // Write your code here\n    \n}",
+                    solution: "function reverseString(str) {\n    return str.split('').reverse().join('');\n}",
+                    tests: [
+                        { input: "hello", expected: "olleh" },
+                        { input: "world", expected: "dlrow" },
+                        { input: "AI", expected: "IA" }
+                    ],
+                    points: 50
+                },
+                {
+                    title: "Count Vowels",
+                    description: "Create a function called <code>countVowels</code> that counts the number of vowels (a, e, i, o, u) in a string",
+                    example: "countVowels(\"hello\") should return 2",
+                    starter: "function countVowels(str) {\n    // Write your code here\n    \n}",
+                    solution: "function countVowels(str) {\n    const vowels = 'aeiouAEIOU';\n    return str.split('').filter(char => vowels.includes(char)).length;\n}",
+                    tests: [
+                        { input: "hello", expected: 2 },
+                        { input: "Frontend Development Learning", expected: 5 },
+                        { input: "xyz", expected: 0 }
+                    ],
+                    points: 60
+                }
+            ],
+            advanced: [
+                {
+                    title: "Fibonacci Sequence",
+                    description: "Create a function called <code>fibonacci</code> that returns the nth number in the Fibonacci sequence",
+                    example: "fibonacci(6) should return 8 (sequence: 0, 1, 1, 2, 3, 5, 8)",
+                    starter: "function fibonacci(n) {\n    // Write your code here\n    \n}",
+                    solution: "function fibonacci(n) {\n    if (n <= 1) return n;\n    let a = 0, b = 1;\n    for (let i = 2; i <= n; i++) {\n        [a, b] = [b, a + b];\n    }\n    return b;\n}",
+                    tests: [
+                        { input: 0, expected: 0 },
+                        { input: 6, expected: 8 },
+                        { input: 10, expected: 55 }
+                    ],
+                    points: 100
+                }
+            ]
+        };
+
+        // Check login status and update navigation
+        function checkLoginStatus() {
+            try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                    currentELO = currentUser.elo || 1250;
+                }
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (currentUser) {
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                userMenu.classList.add('show');
+                userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+                userAvatar.title = `Go to ${currentUser.name}'s Profile`;
+                document.getElementById('userElo').textContent = currentELO;
+            } else {
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                userMenu.classList.remove('show');
+            }
+        }
+
+        function goToProfile() {
+            window.location.href = 'my-profile.html';
+        }
+
+        // Difficulty Selection
+        function selectDifficulty(difficulty, button) {
+            // Update active button
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+
+            currentDifficulty = difficulty;
+            currentChallengeIndex = 0;
+            completedChallenges = 0;
+            loadChallenge();
+            updateProgress();
+        }
+
+        // Load Challenge
+        function loadChallenge() {
+            const challengeSet = challenges[currentDifficulty];
+            const challenge = challengeSet[currentChallengeIndex];
+
+            if (!challenge) {
+                // All challenges completed
+                showFeedback('🎉 Congratulations! You\'ve completed all challenges in this difficulty level!', 'correct');
+                return;
+            }
+
+            document.getElementById('challengeTitle').textContent = challenge.title;
+            document.getElementById('challengeDifficulty').textContent = currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
+            
+            const descriptionHTML = `
+                <h3 style="color: #ff8c00; margin-bottom: 1rem;">📝 Challenge Description:</h3>
+                <p>${challenge.description}</p>
+                <div class="challenge-example">
+                    <strong style="color: #ff8c00;">Example:</strong><br>
+                    <span style="color: #4ecdc4;">${challenge.example}</span>
+                </div>
+            `;
+            document.getElementById('challengeDescription').innerHTML = descriptionHTML;
+            
+            document.getElementById('codeInput').value = challenge.starter;
+            
+            showFeedback('Write your solution and click "Run Tests" to check if it\'s correct!', 'neutral');
+        }
+
+        // Test Runner
+        function runTests() {
+            const challengeSet = challenges[currentDifficulty];
+            const challenge = challengeSet[currentChallengeIndex];
+            const userCode = document.getElementById('codeInput').value;
+
+            try {
+                // Create a safe environment to run user code
+                const testFunction = new Function(userCode + '\n\n' + 
+                    'return typeof ' + challenge.title.split(' ')[0].toLowerCase() + ' === "function" ? ' + 
+                    challenge.title.split(' ')[0].toLowerCase() + ' : null;'
+                );
+
+                const userFunction = testFunction();
+
+                if (!userFunction) {
+                    showFeedback('❌ Function not found. Make sure you define the correct function name.', 'incorrect');
+                    return;
+                }
+
+                // Run all tests
+                let passedTests = 0;
+                const totalTests = challenge.tests.length;
+
+                for (let test of challenge.tests) {
+                    try {
+                        let result;
+                        if (Array.isArray(test.input)) {
+                            result = userFunction(...test.input);
+                        } else {
+                            result = userFunction(test.input);
+                        }
+
+                        if (result === test.expected) {
+                            passedTests++;
+                        }
+                    } catch (error) {
+                        showFeedback(`❌ Runtime Error: ${error.message}`, 'incorrect');
+                        return;
+                    }
+                }
+
+                // Check results
+                if (passedTests === totalTests) {
+                    // All tests passed
+                    const points = challenge.points;
+                    currentELO += points;
+                    completedChallenges++;
+                    
+                    updateELODisplay(currentELO);
+                    updateProgress();
+                    
+                    showFeedback(`✅ Correct! All tests passed! +${points} ELO points earned!`, 'correct');
+                    
+                    // Save progress
+                    if (currentUser) {
+                        currentUser.elo = currentELO;
+                        currentUser.challengesSolved = (currentUser.challengesSolved || 0) + 1;
+                        try {
+                            localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                            const users = JSON.parse(localStorage.getItem('users') || '[]');
+                            const userIndex = users.findIndex(u => u.email === currentUser.email);
+                            if (userIndex !== -1) {
+                                users[userIndex] = currentUser;
+                                localStorage.setItem('users', JSON.stringify(users));
+                            }
+                        } catch (e) {
+                            console.log('Could not save progress');
+                        }
+                    }
+                } else {
+                    const lostPoints = Math.floor(challenge.points / 3);
+                    currentELO = Math.max(currentELO - lostPoints, 800);
+                    updateELODisplay(currentELO);
+                    
+                    showFeedback(`❌ ${passedTests}/${totalTests} tests passed. Try again! -${lostPoints} ELO`, 'incorrect');
+                }
+
+            } catch (error) {
+                showFeedback(`❌ Syntax Error: ${error.message}`, 'incorrect');
+            }
+        }
+
+        // Helper Functions
+        function showFeedback(message, type) {
+            const container = document.getElementById('feedbackContainer');
+            container.innerHTML = `<p>${message}</p>`;
+            container.className = `feedback-container feedback-${type}`;
+        }
+
+        function updateELODisplay(newELO) {
+            currentELO = newELO;
+            const eloElement = document.getElementById('userElo');
+            eloElement.textContent = newELO;
+            
+            // Animation effect
+            eloElement.style.transform = 'scale(1.3)';
+            eloElement.style.textShadow = '0 0 25px rgba(255, 140, 0, 0.8)';
+            
+            setTimeout(() => {
+                eloElement.style.transform = 'scale(1)';
+                eloElement.style.textShadow = '0 0 15px rgba(255, 140, 0, 0.5)';
+            }, 500);
+        }
+
+        function updateProgress() {
+            const totalChallenges = challenges[currentDifficulty].length;
+            const percentage = (completedChallenges / totalChallenges) * 100;
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${completedChallenges}/${totalChallenges} Challenges Completed`;
+        }
+
+        function getHint() {
+            const challengeSet = challenges[currentDifficulty];
+            const challenge = challengeSet[currentChallengeIndex];
+            
+            const hints = {
+                'Hello World Challenge': '💡 Hint: Use string concatenation with the + operator or template literals with backticks (`)',
+                'Sum Two Numbers': '💡 Hint: Use the + operator to add the two parameters together',
+                'Find Maximum': '💡 Hint: You can use Math.max() with the spread operator (...) or a loop',
+                'Reverse String': '💡 Hint: Convert the string to an array, reverse it, then join back to a string',
+                'Count Vowels': '💡 Hint: Create a string of vowels and check each character of the input string',
+                'Fibonacci Sequence': '💡 Hint: Use iteration with two variables to track the previous two numbers'
+            };
+
+            const hint = hints[challenge.title] || '💡 Think about the problem step by step!';
+            showFeedback(hint, 'neutral');
+        }
+
+        function nextChallenge() {
+            const challengeSet = challenges[currentDifficulty];
+            if (currentChallengeIndex < challengeSet.length - 1) {
+                currentChallengeIndex++;
+                loadChallenge();
+            } else {
+                showFeedback('🎉 You\'ve reached the last challenge in this difficulty!', 'correct');
+            }
+        }
+
+        function resetCode() {
+            const challengeSet = challenges[currentDifficulty];
+            const challenge = challengeSet[currentChallengeIndex];
+            document.getElementById('codeInput').value = challenge.starter;
+            showFeedback('Code reset to starter template', 'neutral');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                runTests();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('codeInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.max(200, this.scrollHeight) + 'px';
+        });
+
+        // Tab handling for code input
+        document.getElementById('codeInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            loadChallenge();
+            updateProgress();
+            
+            // Auto-select difficulty based on ELO
+            if (currentELO >= 1600) {
+                selectDifficulty('advanced', document.querySelectorAll('.difficulty-btn')[2]);
+            } else if (currentELO >= 1200) {
+                selectDifficulty('intermediate', document.querySelectorAll('.difficulty-btn')[1]);
+            }
+        });
+
+        // Create floating particles for visual appeal
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: ${1 + Math.random() * 2}px;
+                height: ${1 + Math.random() * 2}px;
+                background: #ff8c00;
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0.5;
+                z-index: 1;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                box-shadow: 0 0 8px rgba(255, 140, 0, 0.5);
+            `;
+            
+            document.body.appendChild(particle);
+            
+            particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.7 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 150}px)`, opacity: 0 }
+            ], {
+                duration: 4000 + Math.random() * 2000,
+                easing: 'ease-out'
+            }).addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        setInterval(createParticle, 1500);
+    </script>
+</body>
+</html>
