@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Avery's Profile - Frontend Dev Hub</title>
+  <style>
+    /* ===== Base ===== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+      line-height:1.5; color:#fff; background:#000; min-height:100vh; overflow-x:hidden; position:relative;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    body::before{
+      content:''; position:fixed; inset:0;
+      background:linear-gradient(to bottom right, rgba(255,140,0,.03) 0%, transparent 70%);
+      pointer-events:none; z-index:-1;
+    }
+
+    /* ===== Header (exact same look as my-profile.html) ===== */
+    .header{
+      background:rgba(0,0,0,.97);
+      padding:1.25rem 0; position:fixed; top:0; left:0; right:0; z-index:1000; transition:all .3s ease;
+    }
+    .header::after{
+      content:''; position:absolute; bottom:0; left:0; width:100%; height:1px;
+      background:linear-gradient(to right, transparent, rgba(255,140,0,.2), transparent);
+    }
+    .nav-container{
+      max-width:1600px; margin:0 auto; padding:0 3rem;
+      display:grid; grid-template-columns:auto 1fr auto; gap:3rem; align-items:center;
+    }
+    .logo{
+      font-size:1.25rem; font-weight:500; color:#fff; text-decoration:none;
+      display:flex; align-items:center; gap:.8rem; transition:all .3s ease; letter-spacing:.5px;
+    }
+    .logo:hover{ transform:scale(1.05); text-shadow:0 0 20px rgba(255,140,0,.5); }
+    .logo::before{
+      content:""; display:inline-block; width:24px; height:24px;
+      background:linear-gradient(135deg,#ff8c00,#ffb347);
+      mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E") no-repeat center / contain;
+      margin-right:.5rem;
+    }
+    .nav-menu{ display:flex; list-style:none; gap:2.5rem; justify-content:center; flex-wrap:nowrap; margin:0; padding:0; }
+    .nav-link{
+      text-decoration:none; color:rgba(255,255,255,.7); font-weight:400; transition:all .3s ease;
+      padding:.5rem 1rem; position:relative; font-size:.95rem; letter-spacing:.3px;
+    }
+    .nav-link::after{
+      content:''; position:absolute; bottom:0; left:0; width:100%; height:1px; background:#ff8c00;
+      transform:scaleX(0); transform-origin:right; transition:transform .3s ease;
+    }
+    .nav-link:hover{ color:#fff; }
+    .nav-link:hover::after{ transform:scaleX(1); transform-origin:left; }
+    .nav-link.active{ color:#ff8c00; font-weight:500; }
+    .nav-link.active::after{ transform:scaleX(1); }
+
+    /* ===== User menu (same structure/ids as my-profile.html) ===== */
+    .user-menu{ display:none; position:relative; align-items:center; gap:1rem; }
+    .user-menu.show{ display:flex; }
+    .user-profile-container{ display:flex; align-items:center; gap:.75rem; position:relative; }
+
+    .user-avatar{
+      width:40px; height:40px; border-radius:50%;
+      background:linear-gradient(135deg,#ff8c00,#ffb347);
+      display:flex; align-items:center; justify-content:center; color:#000; font-weight:bold; cursor:pointer;
+      border:2px solid rgba(255,140,0,.3); font-size:1rem; transition:all .3s ease; overflow:hidden;
+    }
+    .user-avatar:hover{ transform:scale(1.1); box-shadow:0 0 15px rgba(255,140,0,.4); }
+    .user-avatar img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+    .elo-progress-container{ display:flex; flex-direction:column; align-items:flex-start; gap:.3rem; }
+    .elo-rank-header{ display:flex; align-items:center; gap:.5rem; }
+    .elo-rank-icon{ width:16px; height:16px; border-radius:3px; transition:all .3s ease; }
+    .elo-rank-text{ font-size:.75rem; font-weight:600; color:#fff; letter-spacing:.5px; }
+    .elo-progress-bar{ width:80px; height:6px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; position:relative; }
+    .elo-progress-fill{ height:100%; border-radius:3px; transition:all .5s ease; position:relative; overflow:hidden; }
+    .elo-progress-fill::after{
+      content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent); animation:shimmer 2s infinite;
+    }
+    @keyframes shimmer{ 0%{left:-100%} 100%{left:100%} }
+    .elo-current-rating{ font-size:.7rem; color:rgba(255,255,255,.6); font-weight:500; }
+
+    /* ELO rank colors (same classes) */
+    .rank-beginner{ background:linear-gradient(135deg,#4CAF50,#66BB6A); }
+    .rank-intermediate{ background:linear-gradient(135deg,#FF9800,#FFB74D); }
+    .rank-advanced{ background:linear-gradient(135deg,#F44336,#EF5350); }
+    .rank-expert{ background:linear-gradient(135deg,#9C27B0,#BA68C8); }
+    .rank-master{ background:linear-gradient(135deg,#3F51B5,#7986CB); }
+    .rank-grandmaster{ background:linear-gradient(135deg,#FFD700,#FFC107); }
+
+    /* ===== Page layout ===== */
+    .main-container{ max-width:1200px; margin:0 auto; padding:2rem; margin-top:6rem; }
+
+    .profile-section{
+      background:linear-gradient(135deg, rgba(20,20,20,.9), rgba(30,30,30,.9));
+      border-radius:25px; padding:4rem; margin-bottom:4rem;
+      border:1px solid rgba(255,140,0,.2); display:flex; gap:4rem; align-items:flex-start; position:relative; overflow:hidden;
+      animation:fadeIn 1s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    .profile-section::before{
+      content:''; position:absolute; inset:0; background:linear-gradient(to right, rgba(255,140,0,.05), transparent);
+      pointer-events:none; opacity:.5;
+    }
+    .profile-image-container{ flex-shrink:0; width:300px; position:relative; z-index:1; }
+    .profile-image{ width:100%; border-radius:15px; border:2px solid #ff8c00; box-shadow:0 10px 30px rgba(255,140,0,.2); transition:all .3s ease; }
+    .profile-image:hover{ transform:scale(1.02); box-shadow:0 15px 40px rgba(255,140,0,.3); }
+    .profile-content{ flex-grow:1; position:relative; z-index:1; }
+    .profile-name{ font-size:3rem; color:#ff8c00; margin-bottom:1rem; font-weight:600; letter-spacing:-.5px; position:relative; }
+    .profile-name::after{ content:''; display:block; width:60px; height:3px; background:#ff8c00; margin-top:1rem; }
+    .profile-role{ font-size:1.3rem; color:rgba(255,255,255,.7); margin-bottom:2.5rem; font-weight:500; }
+    .profile-essay{ color:rgba(255,255,255,.9); font-size:1.1rem; line-height:1.8; text-align:justify; }
+    .profile-essay p{ margin-bottom:2rem; color:rgba(255,255,255,.7); }
+
+    @keyframes fadeIn{ from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+
+    /* ===== Responsive ===== */
+    @media (max-width:1200px){
+      .nav-container{ grid-template-columns:1fr; gap:1.5rem; padding:0 1.5rem; }
+      .nav-menu{ gap:1.5rem; flex-wrap:wrap; justify-content:center; }
+      .profile-section{ padding:3rem; gap:3rem; }
+      .profile-name{ font-size:2.5rem; }
+    }
+    @media (max-width:768px){
+      .nav-menu{ gap:1rem; }
+      .main-container{ padding:1rem; margin-top:8rem; }
+      .profile-section{ flex-direction:column; padding:2rem; }
+      .profile-image-container{ width:100%; max-width:300px; margin:0 auto 2rem; }
+      .profile-content{ text-align:center; }
+      .profile-name::after{ margin:1rem auto 0; }
+    }
+    @media (max-width:480px){ .profile-name{ font-size:2rem; } .profile-role{ font-size:1.1rem; } .profile-essay{ font-size:1rem; } }
+  </style>
+</head>
+<body>
+  <!-- ===== Header (copied & adapted links for teamprofile/) ===== -->
+  <header class="header">
+    <nav class="nav-container">
+      <!-- NOTE: avery-profile.html is inside /main/teamprofile/, so go up one level for other pages -->
+      <a href="../index.html" class="logo">WebVantage</a>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="../team-intro.html" class="nav-link">Team</a></li>
+        <li><a href="../courses.html" class="nav-link">Courses</a></li>
+        <li><a href="../code-editor.html" class="nav-link">Code Editor</a></li>
+        <li><a href="../challenges.html" class="nav-link">Challenges</a></li>
+        <li><a href="../ai-battle.html" class="nav-link">AI Battle</a></li>
+        <li><a href="../leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="../login.html" class="nav-link" id="loginLink">Login</a></li>
+        <li><a href="../register.html" class="nav-link" id="registerLink">Register</a></li>
+      </ul>
+
+      <!-- Logged-in user menu (same ids/classes as my-profile.html) -->
+      <div class="user-menu" id="userMenu">
+        <div class="user-profile-container">
+          <div class="user-avatar" id="userAvatar" title="Open your profile"></div>
+          <div class="elo-progress-container">
+            <div class="elo-rank-header">
+              <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+              <span class="elo-rank-text" id="eloRankText">Beginner</span>
+            </div>
+            <div class="elo-progress-bar">
+              <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+            </div>
+            <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+    <main class="main-container">
+        <section class="profile-section">
+            <div class="profile-image-container">
+                <img src="../images/team/marcellus.png" alt="Marcellus" class="profile-image">
+            </div>
+            <div class="profile-content">
+                <h1 class="profile-name">Marcellus (郑世裕)</h1>
+                <h2 class="profile-role">Chief Technology Officer</h2>
+                <div class="profile-essay">
+                    <p>
+                        Hello everyone, my name is Marcellus and my Chinese name is 郑世荣. I am currently serving as the Chief Technology Officer (CTO) of my team, TaoBao. My role is to make sure that our website is both running and fully aligned with the requirements set by our teacher. Beyond that, I also have to make sure that our platform not only functions smoothly, but also is a fun website to learn Frontend development from.
+                    </p>
+                    <p>
+                        As the CTO of Team TaoBao, my primary responsibility lies in overseeing the development and technical performance of our website. This includes making sure that the structure, layout, and functionality of the site are good. I firmly believe that a good website is one that seamlessly combines usability, aesthetics, and performance. Therefore, my job is not only about writing and reviewing code, but also about ensuring that our end product is fast and easy to use. Another important aspect of my work as CTO is quality assurance. I run frequent checks on the website, test different functions, and review the technical aspects to spot errors. 
+                    </p>
+                    <p>
+                        Being part of TaoBao and serving as its CTO is a meaningful experience that motivates me to keep improving myself.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+
+  <!-- ===== Scripts ===== -->
+  <!-- If you already have auth.js that manages login state, keep it; header JS below still ensures parity -->
+  <script src="../auth.js" defer></script>
+  <script>
+    /* Mirror ELO + avatar logic so header matches my-profile.html exactly */
+    const ELO_RANKS = {
+      beginner:{min:0,max:1399,name:'Beginner',class:'rank-beginner'},
+      intermediate:{min:1400,max:1799,name:'Intermediate',class:'rank-intermediate'},
+      advanced:{min:1800,max:2199,name:'Advanced',class:'rank-advanced'},
+      expert:{min:2200,max:2599,name:'Expert',class:'rank-expert'},
+      master:{min:2600,max:2999,name:'Master',class:'rank-master'},
+      grandmaster:{min:3000,max:9999,name:'Grandmaster',class:'rank-grandmaster'}
+    };
+
+    function getCurrentRank(elo){
+      for(const r of Object.values(ELO_RANKS)){ if(elo>=r.min && elo<=r.max) return r; }
+      return ELO_RANKS.beginner;
+    }
+    function getRankProgress(elo, rank){
+      const span = rank.max - rank.min; const prog = elo - rank.min;
+      return Math.min(100, Math.max(0, (prog / span) * 100));
+    }
+
+    function loadUserAvatarHeader(currentUser){
+      const navAvatar = document.getElementById('userAvatar');
+      if(!navAvatar) return;
+      if(currentUser.avatarImage){
+        navAvatar.innerHTML = `<img src="${currentUser.avatarImage}" alt="Profile Avatar">`;
+      } else if (currentUser.avatar && currentUser.avatar !== 'default'){
+        navAvatar.textContent = currentUser.avatar;
+      } else {
+        navAvatar.textContent = (currentUser.name || 'U').charAt(0).toUpperCase();
+      }
+    }
+
+    function updateELOHeader(currentUser){
+      const currentELO = (currentUser && currentUser.elo!==undefined) ? currentUser.elo : 1250;
+      const rank = getCurrentRank(currentELO);
+      const progress = getRankProgress(currentELO, rank);
+      const rankIcon = document.getElementById('eloRankIcon');
+      const rankText = document.getElementById('eloRankText');
+      const progressFill = document.getElementById('eloProgressFill');
+      const currentRating = document.getElementById('eloCurrentRating');
+      if(rankIcon) rankIcon.className = `elo-rank-icon ${rank.class}`;
+      if(rankText) rankText.textContent = rank.name;
+      if(progressFill){ progressFill.className = `elo-progress-fill ${rank.class}`; progressFill.style.width = `${progress}%`; }
+      if(currentRating) currentRating.textContent = `${currentELO} ELO`;
+    }
+
+    function syncHeaderState(){
+      const loginLink = document.getElementById('loginLink');
+      const registerLink = document.getElementById('registerLink');
+      const userMenu = document.getElementById('userMenu');
+
+      let currentUser = null;
+      try{
+        const raw = localStorage.getItem('loggedInUser');
+        if(raw) currentUser = JSON.parse(raw);
+      }catch(e){}
+
+      if(currentUser){
+        if(loginLink) loginLink.style.display = 'none';
+        if(registerLink) registerLink.style.display = 'none';
+        if(userMenu) userMenu.classList.add('show');
+
+        loadUserAvatarHeader(currentUser);
+        updateELOHeader(currentUser);
+      }else{
+        if(loginLink) loginLink.style.display = 'block';
+        if(registerLink) registerLink.style.display = 'block';
+        if(userMenu) userMenu.classList.remove('show');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initial sync
+      syncHeaderState();
+
+      // Keep header in sync if other pages update the same storage keys
+      window.addEventListener('userUpdated', syncHeaderState);
+      window.addEventListener('eloUpdated', syncHeaderState);
+      window.addEventListener('avatarUpdated', syncHeaderState);
+
+      // Avatar click -> go to my-profile at parent folder
+      const avatar = document.getElementById('userAvatar');
+      if(avatar){ avatar.addEventListener('click', () => location.href = '../my-profile.html'); }
+    });
+  </script>
+</body>
+</html>

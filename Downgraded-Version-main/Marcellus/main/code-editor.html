@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor - Frontend Development Learning Hub</title>
+    <style>
+        /* Professional Black Theme with Orange Accents - Matching index.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu.show {
+            display: flex;
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* ELO Progress Bar */
+        .elo-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .elo-rank-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elo-rank-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .elo-rank-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .elo-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .elo-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elo-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .elo-current-rating {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* ELO Rank Colors */
+        .rank-beginner {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        .rank-intermediate {
+            background: linear-gradient(135deg, #FF9800, #FFB74D);
+        }
+
+        .rank-advanced {
+            background: linear-gradient(135deg, #F44336, #EF5350);
+        }
+
+        .rank-expert {
+            background: linear-gradient(135deg, #9C27B0, #BA68C8);
+        }
+
+        .rank-master {
+            background: linear-gradient(135deg, #3F51B5, #7986CB);
+        }
+
+        .rank-grandmaster {
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+        }
+
+        /* Main Container */
+        .main-container {
+            margin-top: 100px;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.95));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 30%, rgba(255, 140, 0, 0.02) 50%, transparent 70%),
+                linear-gradient(to right, rgba(255, 140, 0, 0.05), transparent);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, 
+                transparent,
+                rgba(255, 140, 0, 0.3),
+                transparent
+            );
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Editor Container */
+        .editor-container {
+            display: flex;
+            height: calc(100vh - 300px);
+            min-height: 600px;
+            margin: 2rem;
+            background: rgba(15, 15, 15, 0.95);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+        }
+
+        .editor {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            border-right: 1px solid rgba(255, 140, 0, 0.2);
+            background: rgba(20, 20, 20, 0.9);
+        }
+
+        .editor-header {
+            padding: 0 0 15px 0;
+            color: #ff8c00;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: calc(100% - 100px);
+            resize: none;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: #ff8c00;
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.2);
+        }
+
+        .run-button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .run-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.4);
+        }
+
+        .run-button:active {
+            transform: translateY(0);
+        }
+
+        .preview {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            background: rgba(25, 25, 25, 0.95);
+        }
+
+        .preview-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.1), rgba(30, 30, 30, 0.9));
+            color: #ff8c00;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            border-radius: 0 0 8px 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header {
+                padding: 2rem 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .editor-container {
+                flex-direction: column;
+                margin: 1rem;
+                height: auto;
+                min-height: 80vh;
+            }
+            
+            .editor, .preview {
+                width: 100%;
+                min-height: 40vh;
+            }
+            
+            textarea {
+                font-size: 14px;
+                padding: 15px;
+                height: 300px;
+            }
+            
+            .run-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                text-align: center;
+            }
+            
+            .editor-container {
+                margin: 0.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">WebVantage</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+                <div class="user-profile-container">
+                    <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar">
+                        U
+                    </div>
+                    <div class="elo-progress-container">
+                        <div class="elo-rank-header">
+                            <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+                            <span class="elo-rank-text" id="eloRankText">Beginner</span>
+                        </div>
+                        <div class="elo-progress-bar">
+                            <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width: 60%"></div>
+                        </div>
+                        <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <section class="page-header loading">
+            <h1 class="page-title">Code Editor</h1>
+            <p class="page-subtitle">
+                Write, test, and preview your HTML, CSS, and JavaScript code in real-time with our professional development environment.
+            </p>
+        </section>
+
+        <!-- Editor Container -->
+        <div class="editor-container loading">
+            <div class="editor">
+                <div class="editor-header">📝 Code Editor</div>
+                <textarea id="code" placeholder="Write your HTML code here..."><!DOCTYPE html>
+<html>
+<head>
+    <title>My First Web Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #ff8c00;
+        }
+        p {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome! 👋</h1>
+    <p>This is my first web page.</p>
+    <button onclick="sayHello()">Click me!</button>
+
+    <script>
+        function sayHello() {
+            alert('Hello, friend! �');
+        }
+    </script>
+</body>
+</html></textarea>
+                <button class="run-button" onclick="runCode()">▶ Run Code</button>
+            </div>
+            <div class="preview">
+                <div class="preview-header">
+                    <span>👁️ Live Preview</span>
+                </div>
+                <iframe id="output"></iframe>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Check login status and update navigation
+        function checkLoginStatus() {
+            let loggedInUser = null;
+            
+            try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    loggedInUser = JSON.parse(userData);
+                }
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (loggedInUser) {
+                // Hide login/register links
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                
+                // Show user menu
+                userMenu.classList.add('show');
+                updateHeaderAvatarFromUser(loggedInUser);
+            } else {
+                // Show login/register links
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                
+                // Hide user menu
+                userMenu.classList.remove('show');
+            }
+        }
+
+        function toggleUserDropdown() {
+            // For now, just navigate to profile
+            window.location.href = 'my-profile.html';
+        }
+
+        function runCode() {
+            let code = document.getElementById('code').value;
+            let iframe = document.getElementById('output').contentWindow.document;
+            iframe.open();
+            iframe.write(code);
+            iframe.close();
+        }
+
+        // Page load animations
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            
+            const elements = document.querySelectorAll('.loading');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.animationDelay = `${index * 0.2}s`;
+                    el.classList.add('loaded');
+                }, index * 200);
+            });
+
+            // Auto-run code on page load
+            runCode();
+        });
+    </script>
+
+    <!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Elo.initHeader();          // paint header ELO once + wire up listeners
+  });
+</script>
+<script src="auth.js" defer></script>
+</body>
+</html>

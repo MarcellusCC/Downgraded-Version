@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Frontend Development Learning Hub</title>
+    <link rel="stylesheet" href="navigation.css">
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu.show {
+            display: flex;
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* ELO Progress Bar */
+        .elo-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .elo-rank-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elo-rank-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .elo-rank-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .elo-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .elo-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elo-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .elo-current-rating {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* ELO Rank Colors */
+        .rank-beginner {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        .rank-intermediate {
+            background: linear-gradient(135deg, #FF9800, #FFB74D);
+        }
+
+        .rank-advanced {
+            background: linear-gradient(135deg, #F44336, #EF5350);
+        }
+
+        .rank-expert {
+            background: linear-gradient(135deg, #9C27B0, #BA68C8);
+        }
+
+        .rank-master {
+            background: linear-gradient(135deg, #3F51B5, #7986CB);
+        }
+
+        .rank-grandmaster {
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Leaderboard Section */
+        .leaderboard-section {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .leaderboard-header {
+            display: grid;
+            grid-template-columns: 80px 1fr auto auto auto;
+            gap: 2rem;
+            padding: 1rem 2rem;
+            background: rgba(15, 15, 15, 0.95);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            color: #ff8c00;
+        }
+
+        .leaderboard-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto auto auto;
+            gap: 2rem;
+            padding: 1.5rem 2rem;
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(40, 40, 40, 0.9);
+            transform: translateX(10px);
+            border-color: #ff8c00;
+        }
+
+        .rank {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #ff8c00;
+        }
+
+        .player {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .player-name {
+            font-weight: 500;
+        }
+
+        .elo {
+            font-weight: 600;
+            color: #ff8c00;
+        }
+
+        .battles {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .win-rate {
+            font-weight: 500;
+            color: #4CAF50;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(40, 40, 40, 0.8);
+            color: #ffffff;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 140, 0, 0.1);
+            border-color: #ff8c00;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border-color: #ff8c00;
+        }
+
+        /* Your Stats Section */
+        .your-stats {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff8c00;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff8c00;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .leaderboard-header,
+            .leaderboard-item {
+                grid-template-columns: 50px 1fr auto;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .battles,
+            .win-rate {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-section {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">WebVantage</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+  <div class="user-profile-container">
+    <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar">U</div>
+    <div class="elo-progress-container">
+      <div class="elo-rank-header">
+        <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+        <span class="elo-rank-text" id="eloRankText">Beginner</span>
+      </div>
+      <div class="elo-progress-bar">
+        <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+      </div>
+      <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+    </div>
+  </div>
+</div>
+
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="page-title">🏆 Global Leaderboard</h1>
+            <p class="page-subtitle">
+                Track your progress and compete with other learners worldwide. 
+                Rise through the ranks by completing challenges and winning AI battles!
+            </p>
+        </section>
+
+        <!-- Your Stats -->
+        <section class="your-stats" id="yourStats">
+            <h2 style="font-size: 2rem; color: #ff8c00;">Your Performance</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="userElo">1250</div>
+                    <div class="stat-label">ELO Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="userRank">--</div>
+                    <div class="stat-label">Global Rank</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="userBattles">0</div>
+                    <div class="stat-label">Battles Won</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="userChallenges">0</div>
+                    <div class="stat-label">Challenges Completed</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <button class="filter-btn active" onclick="filterLeaderboard('all')">All Time</button>
+            <button class="filter-btn" onclick="filterLeaderboard('monthly')">Monthly</button>
+            <button class="filter-btn" onclick="filterLeaderboard('weekly')">Weekly</button>
+        </div>
+
+        <!-- Leaderboard -->
+        <section class="leaderboard-section">
+            <div class="leaderboard-header">
+                <div>Rank</div>
+                <div>Player</div>
+                <div>ELO</div>
+                <div>Battles</div>
+                <div>Win Rate</div>
+            </div>
+            <div id="leaderboardContainer">
+                <!-- Leaderboard items will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentUser = null;
+        let leaderboardData = [];
+
+        // Check login status and update navigation
+        function checkLoginStatus() {
+            try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                    updateUserStats(currentUser);
+                }
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (currentUser) {
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                userMenu.classList.add('show');
+                updateHeaderAvatarFromUser(currentUser);
+                userAvatar.title = `Go to ${currentUser.name}'s Profile`;
+            } else {
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                userMenu.classList.remove('show');
+                document.getElementById('yourStats').style.display = 'none';
+            }
+        }
+
+        function goToProfile() {
+            window.location.href = 'my-profile.html';
+        }
+
+        function updateUserStats(user) {
+            document.getElementById('userElo').textContent = user.elo || 1250;
+            document.getElementById('userBattles').textContent = user.battlesWon || 0;
+            document.getElementById('userChallenges').textContent = user.challengesSolved || 0;
+            
+            // Calculate rank
+            const rank = leaderboardData.findIndex(player => player.name === user.name) + 1;
+            document.getElementById('userRank').textContent = rank > 0 ? `#${rank}` : '--';
+        }
+
+        function filterLeaderboard(timeframe) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // In a real application, we would fetch different data based on timeframe
+            loadLeaderboard(timeframe);
+        }
+
+        function loadLeaderboard(timeframe) {
+            // Simulate loading leaderboard data
+            // In a real application, this would be fetched from a server
+            leaderboardData = [
+                {
+                    name: "AlphaCode",
+                    elo: 2150,
+                    battles: 245,
+                    winRate: "78%",
+                    avatar: "A"
+                },
+                {
+                    name: "ByteMaster",
+                    elo: 1950,
+                    battles: 180,
+                    winRate: "72%",
+                    avatar: "B"
+                },
+                {
+                    name: "QuantumDev",
+                    elo: 1850,
+                    battles: 156,
+                    winRate: "69%",
+                    avatar: "Q"
+                },
+                {
+                    name: "NeuralNinja",
+                    elo: 1780,
+                    battles: 134,
+                    winRate: "65%",
+                    avatar: "N"
+                },
+                {
+                    name: "CodeWarrior",
+                    elo: 1720,
+                    battles: 120,
+                    winRate: "62%",
+                    avatar: "C"
+                }
+            ];
+
+            // Add current user to leaderboard if logged in
+            if (currentUser) {
+                const userEntry = {
+                    name: currentUser.name,
+                    elo: currentUser.elo || 1250,
+                    battles: currentUser.battlesWon || 0,
+                    winRate: "0%",
+                    avatar: currentUser.name.charAt(0).toUpperCase()
+                };
+
+                if (currentUser.battlesWon && currentUser.totalBattles) {
+                    userEntry.winRate = Math.round((currentUser.battlesWon / currentUser.totalBattles) * 100) + "%";
+                }
+
+                leaderboardData.push(userEntry);
+            }
+
+            // Sort by ELO
+            leaderboardData.sort((a, b) => b.elo - a.elo);
+
+            // Update the display
+            const container = document.getElementById('leaderboardContainer');
+            container.innerHTML = '';
+
+            leaderboardData.forEach((player, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                
+                // Highlight the current user
+                if (currentUser && player.name === currentUser.name) {
+                    item.style.background = 'linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(20, 20, 20, 0.9))';
+                    item.style.borderColor = '#ff8c00';
+                }
+
+                item.innerHTML = `
+                    <div class="rank">#${index + 1}</div>
+                    <div class="player">
+                        <div class="player-avatar">${player.avatar}</div>
+                        <span class="player-name">${player.name}</span>
+                    </div>
+                    <div class="elo">${player.elo}</div>
+                    <div class="battles">${player.battles}</div>
+                    <div class="win-rate">${player.winRate}</div>
+                `;
+
+                container.appendChild(item);
+            });
+
+            // Update user stats if logged in
+            if (currentUser) {
+                updateUserStats(currentUser);
+            }
+        }
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            loadLeaderboard('all');
+            
+            // Page load animation
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.6s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: ${2 + Math.random() * 3}px;
+                height: ${2 + Math.random() * 3}px;
+                background: #ff8c00;
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0.5;
+                z-index: 1;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+            `;
+            
+            document.body.appendChild(particle);
+            
+            particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.6 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 200}px)`, opacity: 0 }
+            ], {
+                duration: 4000 + Math.random() * 2000,
+                easing: 'ease-out'
+            }).addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 1000);
+    </script>
+    <script>
+  // Consistent avatar → profile navigation on all pages
+  function toggleUserDropdown() {
+    window.location.href = 'my-profile.html';
+  }
+
+  // Extra safety: bind click if the HTML didn't include the inline onclick
+  document.addEventListener('DOMContentLoaded', () => {
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+      avatar.addEventListener('click', () => window.location.href = 'my-profile.html');
+    }
+  });
+    </script>
+
+<!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Elo.initHeader();          // paint header ELO once + wire up listeners
+  });
+</script>
+<script src="auth.js" defer></script>
+</body>
+</html>
