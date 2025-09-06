@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Introduction - Frontend Dev Hub</title>
+    <link rel="stylesheet" href="navigation.css">
+    <style>
+        /* Professional Black Theme with Orange Accents - Matching index.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu.show {
+            display: flex;
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* ELO Progress Bar */
+        .elo-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .elo-rank-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elo-rank-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .elo-rank-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .elo-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .elo-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elo-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .elo-current-rating {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* ELO Rank Colors */
+        .rank-beginner {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        .rank-intermediate {
+            background: linear-gradient(135deg, #FF9800, #FFB74D);
+        }
+
+        .rank-advanced {
+            background: linear-gradient(135deg, #F44336, #EF5350);
+        }
+
+        .rank-expert {
+            background: linear-gradient(135deg, #9C27B0, #BA68C8);
+        }
+
+        .rank-master {
+            background: linear-gradient(135deg, #3F51B5, #7986CB);
+        }
+
+        .rank-grandmaster {
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+        }
+
+        /* Main Content Styles */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.95));
+            position: relative;
+            overflow: hidden;
+            margin: -2rem -2rem 4rem -2rem;
+            border-radius: 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 140, 0, 0.05), transparent);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            position: relative;
+        }
+
+        .hero-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: #ff8c00;
+            margin: 1.5rem auto 0;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* Team Logo Section */
+        .team-logo-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            margin: 4rem 0;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .team-logo-container {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.1), rgba(20, 20, 20, 0.8));
+            border-radius: 20px;
+            padding: 3rem;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .team-logo-container:hover {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.15), rgba(20, 20, 20, 0.9));
+            border-color: #ff8c00;
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 140, 0, 0.3);
+        }
+
+        .team-logo-placeholder {
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(255, 140, 0, 0.1));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #ff8c00;
+            margin: 0 auto 1.5rem;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .team-logo-placeholder:hover {
+            transform: scale(1.05);
+            border-color: #ff8c00;
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.2);
+        }
+
+        .team-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff8c00;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+        }
+
+        .team-name-english {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        /* Team Overview Section */
+        .team-overview {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            margin-bottom: 4rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: #ff8c00;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .project-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(15, 15, 15, 0.95);
+            border-radius: 15px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 140, 0, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff8c00, transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: left;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff8c00, transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: right;
+        }
+
+        .feature-card:hover {
+            background: rgba(20, 20, 20, 0.95);
+            transform: translateY(-5px);
+        }
+
+        .feature-card:hover::before,
+        .feature-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            display: block;
+            color: #ff8c00;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            color: #ffb347;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .feature-card:hover .feature-title {
+            color: #ff8c00;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        /* Team Members Section */
+        .team-members {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .member-card {
+            background: rgba(15, 15, 15, 0.95);
+            border-radius: 15px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 140, 0, 0.1);
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, #ff8c00, transparent);
+            transition: height 0.4s ease;
+        }
+
+        .member-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff8c00, transparent);
+            transition: width 0.4s ease;
+        }
+
+        .member-card:hover {
+            background: rgba(20, 20, 20, 0.95);
+            transform: translateY(-5px);
+        }
+
+        .member-card:hover::before {
+            height: 100%;
+        }
+
+        .member-card:hover::after {
+            width: 100%;
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1.5rem;
+            display: block;
+            border: 3px solid #ff8c00;
+            box-shadow: 0 10px 20px rgba(255, 140, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover .member-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 140, 0, 0.3);
+        }
+
+        .member-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: #ff8c00;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .member-skills {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .member-link {
+            display: inline-block;
+            background: #ff8c00;
+            color: #000000;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        .member-link:hover {
+            background: #ffb347;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        /* ELO System Preview */
+        .elo-preview {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            text-align: center;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .elo-title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .elo-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: #ff8c00;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .elo-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .elo-demo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .elo-rank {
+            background: rgba(15, 15, 15, 0.95);
+            color: #ffffff;
+            padding: 1.2rem 2.5rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elo-rank::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .elo-rank:hover {
+            transform: translateY(-5px);
+            border-color: #ff8c00;
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.2);
+        }
+
+        .elo-rank:hover::before {
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .team-overview,
+            .team-members,
+            .hero-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .elo-demo {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Accessibility */
+        .nav-link:focus,
+        .member-link:focus {
+            outline: 2px solid #4fd1c7;
+            outline-offset: 2px;
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-section,
+        .team-overview,
+        .team-members,
+        .elo-preview {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">WebVantage</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+  <div class="user-profile-container">
+    <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar">U</div>
+    <div class="elo-progress-container">
+      <div class="elo-rank-header">
+        <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+        <span class="elo-rank-text" id="eloRankText">Beginner</span>
+      </div>
+      <div class="elo-progress-bar">
+        <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+      </div>
+      <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+    </div>
+  </div>
+</div>
+
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Meet Team 淘宝</h1>
+            <p class="hero-subtitle">
+                Passionate developers and AI enthusiasts working together to create an engaging, 
+                interactive learning platform that makes artificial intelligence accessible to everyone.
+            </p>
+        </section>
+
+        <!-- Team Logo Section -->
+        <section class="team-logo-section">
+            <div class="team-logo-container">
+                <div class="team-logo-placeholder">
+                    🛍️
+                </div>
+                <div class="team-name">淘宝</div>
+                <div class="team-name-english">Team Taobao - Frontend Development Learning Innovators</div>
+            </div>
+        </section>
+
+        <!-- Team Overview -->
+        <section class="team-overview">
+            <h2 class="section-title">Our Mission</h2>
+            <p class="project-description">
+                We are Team 淘宝 (Team Taobao), a dedicated group of computer science students committed to revolutionizing AI education through 
+                innovative web technologies. Our e-learning platform combines gamification with comprehensive AI curriculum 
+                to create an engaging learning experience that adapts to each user's skill level.
+            </p>
+            <p class="project-description">
+                Just like Taobao connects buyers and sellers in a vast marketplace, our team connects learners with knowledge 
+                through our innovative Frontend Development learning platform. We create a marketplace of ideas where students can discover, 
+                explore, and master artificial intelligence concepts. Our target audience includes students, 
+                professionals, and anyone curious about AI - whether you're a complete beginner or looking to advance your existing knowledge.
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3 class="feature-title">Interactive Learning</h3>
+                    <p class="feature-description">
+                        Hands-on exercises, coding challenges, and real-world AI projects that reinforce learning through practice.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3 class="feature-title">ELO Rating System</h3>
+                    <p class="feature-description">
+                        Dynamic skill assessment that tracks your progress and matches you with appropriate challenges.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🌟</span>
+                    <h3 class="feature-title">Personalized Paths</h3>
+                    <p class="feature-description">
+                        Adaptive learning algorithms that customize your educational journey based on your interests and pace.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Members -->
+        <section class="team-members">
+            <h2 class="section-title">Our Team Members</h2>
+            
+            <div class="members-grid">
+                <div class="member-card">
+                    <img src="images/team/glenn.png" alt="Glenn" class="member-avatar">
+                    <h3 class="member-name">Glenn (王飞鸿)</h3>
+                    <p class="member-role">Chief Executive Officer</p>
+                    <p class="member-skills">Strategic leadership, project management, and vision development. Guides the team's direction and ensures project success through effective coordination and decision-making.</p>
+                    <a href="teamprofile/glenn-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/marcellus.png" alt="Marcellus" class="member-avatar">
+                    <h3 class="member-name">Marcellus (郑世裕)</h3>
+                    <p class="member-role">Chief Technology Officer</p>
+                    <p class="member-skills">Full-stack development, system architecture, and AI integration. Specializes in React, Node.js, and machine learning implementation for scalable web applications.</p>
+                    <a href="teamprofile/marcellus-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/christian.png" alt="Christian" class="member-avatar">
+                    <h3 class="member-name">Christian (林伟泉)</h3>
+                    <p class="member-role">Chief Information Officer</p>
+                    <p class="member-skills">Database management, information systems, and data security. Ensures optimal data flow and information architecture throughout the platform.</p>
+                    <a href="teamprofile/christian-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/avery.png" alt="Avery" class="member-avatar">
+                    <h3 class="member-name">Avery (西蒙)</h3>
+                    <p class="member-role">Programmer</p>
+                    <p class="member-skills">Software development, algorithm implementation, and code optimization. Focuses on creating efficient, clean code for the ELO rating system and interactive features.</p>
+                    <a href="teamprofile/avery-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/hadrian.png" alt="Hadrian" class="member-avatar">
+                    <h3 class="member-name">Hadrian (陈理宸)</h3>
+                    <p class="member-role">Lead Designer</p>
+                    <p class="member-skills">UI/UX design, visual identity, and user experience optimization. Creates intuitive interfaces and engaging visual designs that enhance the learning experience.</p>
+                    <a href="teamprofile/hadrian-profile.html" class="member-link">View Profile</a>
+                </div>
+
+                <div class="member-card">
+                    <img src="images/team/egor.png" alt="Egor" class="member-avatar">
+                    <h3 class="member-name">Egor (墨瑟福)</h3>
+                    <p class="member-role">Writer / Designer</p>
+                    <p class="member-skills">Content creation, technical writing, and visual design. Develops educational materials, documentation, and creates engaging content that makes AI concepts accessible to all learners.</p>
+                    <a href="teamprofile/egor-profile.html" class="member-link">View Profile</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ELO System Preview -->
+        <section class="elo-preview">
+            <h2 class="elo-title">🎮 ELO Rating System Preview</h2>
+            <p class="elo-description">
+                Our innovative ELO-based progression system tracks your Frontend Development learning journey. Answer questions correctly to 
+                increase your rating, unlock advanced topics, and compete with learners worldwide. The system adapts to 
+                your skill level, ensuring you're always appropriately challenged.
+            </p>
+            <div class="elo-demo">
+                <div class="elo-rank">Beginner: 800-1200</div>
+                <div class="elo-rank">Intermediate: 1200-1600</div>
+                <div class="elo-rank">Advanced: 1600-2000</div>
+                <div class="elo-rank">Expert: 2000+</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript for Enhanced Interactions -->
+    <script>
+        // Check login status and update navigation
+        function checkLoginStatus() {
+            let loggedInUser = null;
+            
+            try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    loggedInUser = JSON.parse(userData);
+                }
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (loggedInUser) {
+                // Hide login/register links
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                
+                // Show user menu
+                userMenu.classList.add('show');
+                updateHeaderAvatarFromUser(currentUser);
+                userAvatar.title = loggedInUser.name;
+            } else {
+                // Show login/register links
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                
+                // Hide user menu
+                userMenu.classList.remove('show');
+            }
+        }
+
+        function toggleUserDropdown() {
+            // For now, just navigate to profile
+            window.location.href = 'my-profile.html';
+        }
+
+        // Add smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                console.log('Navigating to:', this.getAttribute('href'));
+            });
+        });
+
+        // Add hover effects for member cards
+        document.querySelectorAll('.member-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Simulate ELO rating animation
+        const eloRanks = document.querySelectorAll('.elo-rank');
+        eloRanks.forEach((rank, index) => {
+            rank.addEventListener('click', function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.boxShadow = '0 10px 25px rgba(79, 209, 199, 0.4)';
+                
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                }, 200);
+            });
+        });
+
+        // Add loading animation for page
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Dynamic team logo animation
+        document.querySelector('.team-logo-placeholder').addEventListener('click', function() {
+            const emojis = ['🛏️', '🛒', '💼', '📦', '🎯'];
+            let i = 0;
+            const interval = setInterval(() => {
+                this.textContent = emojis[i % emojis.length];
+                i++;
+                if (i > 10) clearInterval(interval);
+            }, 200);
+        });
+
+        // Feature cards interactive animation
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const icon = this.querySelector('.feature-icon');
+                icon.style.animation = 'none';
+                icon.offsetHeight; // Trigger reflow
+                icon.style.animation = 'bounce 0.6s ease';
+            });
+        });
+
+        // Add bounce animation for feature icons
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce {
+                0%, 20%, 60%, 100% { transform: translateY(0); }
+                40% { transform: translateY(-20px); }
+                80% { transform: translateY(-10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Elo.initHeader();          // paint header ELO once + wire up listeners
+  });
+    </script>
+
+<script src="auth.js" defer></script>
+</body>
+</html>

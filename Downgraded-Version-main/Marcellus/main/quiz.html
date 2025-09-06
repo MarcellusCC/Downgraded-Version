@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz — WebVantage</title>
+  <link rel="stylesheet" href="navigation.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+      line-height:1.5;color:#fff;background:#000;min-height:100vh;overflow-x:hidden;position:relative;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    }
+    body::before{content:'';position:fixed;inset:0;background:linear-gradient(to bottom right, rgba(255,140,0,.03), transparent 70%);pointer-events:none;z-index:-1}
+
+    /* Header */
+    .header {
+      background: rgba(0, 0, 0, 0.97);
+      padding: 1.25rem 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent,
+        rgba(255, 140, 0, 0.2),
+        transparent
+      );
+    }
+
+    .nav-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #ffffff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+      justify-content: center;
+      flex-wrap: nowrap;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 400;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      position: relative;
+      font-size: 0.95rem;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: #ff8c00;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
+    }
+
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .nav-link.active {
+      color: #ff8c00;
+      font-weight: 500;
+    }
+
+    .nav-link.active::after {
+      transform: scaleX(1);
+    }
+
+    /* User Menu */
+    .user-menu {
+      display: none;
+      position: relative;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-menu.show {
+      display: flex;
+    }
+
+    .user-profile-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+    }
+
+    .user-avatar {
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#ff8c00,#ffb347);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#000;
+      font-weight:bold;
+      cursor:pointer;
+      border:2px solid rgba(255,140,0,.3);
+      transition:.3s;
+      overflow:hidden; 
+    }
+    .user-avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;          /* ✨ important: fill the circle nicely */
+      display:block;
+      border-radius:50%;
+    }
+
+    /* ELO Progress */
+    .elo-progress-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+
+    .elo-rank-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .elo-rank-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+    }
+
+    .elo-rank-text {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .elo-progress-bar {
+      width: 80px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .elo-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: all 0.5s ease;
+    }
+
+    .elo-current-rating {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    /* Rank Colors */
+    .rank-beginner { background: linear-gradient(135deg, #4CAF50, #66BB6A); }
+    .rank-intermediate { background: linear-gradient(135deg, #FF9800, #FFB74D); }
+    .rank-advanced { background: linear-gradient(135deg, #F44336, #EF5350); }
+    .rank-expert { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+
+    /* Page */
+    .main-container{max-width:1400px;margin:0 auto;padding:2rem}
+    .page-header{padding:8rem 2rem;background:linear-gradient(135deg, rgba(0,0,0,.95), rgba(20,20,20,.95));margin:-2rem -2rem 2rem;position:relative;overflow:hidden}
+    .page-header::before{content:'';position:absolute;inset:0;background:linear-gradient(to right, rgba(255,140,0,.05), transparent);opacity:.5}
+    .page-title{font-size:3rem;font-weight:600}
+    .page-title::after{content:'';display:block;width:80px;height:4px;background:#ff8c00;margin-top:1.25rem}
+    .page-subtitle{font-size:1.1rem;color:rgba(255,255,255,.75);max-width:720px;margin-top:1rem}
+
+    /* Switcher */
+    .mode-switch{display:flex;gap:10px;align-items:center;justify-content:flex-start;margin:-1rem 0 1.5rem}
+    .mode-link{display:inline-flex;align-items:center;justify-content:center;padding:.6rem 1.1rem;border:1px solid rgba(255,140,0,.25);border-radius:999px;text-decoration:none;color:#fff;background:rgba(20,20,20,.7);transition:.2s;font-size:.95rem;letter-spacing:.3px}
+    .mode-link:hover{transform:translateY(-1px);border-color:#ff8c00;box-shadow:0 6px 16px rgba(255,140,0,.25)}
+    .mode-link[aria-current="page"]{background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border-color:transparent;font-weight:600}
+
+    /* Quiz UI */
+    .quiz-preview{
+      background:linear-gradient(135deg, rgba(20,20,20,.9), rgba(30,30,30,.9));
+      border-radius:25px; padding:4rem 2rem; margin-top:2rem;
+      box-shadow:0 20px 60px rgba(0,0,0,.3); border:1px solid rgba(255,140,0,.2); backdrop-filter: blur(15px);
+    }
+    .quiz-heading{ text-align:center; margin-bottom:3rem; color:#fff; font-size:2.2rem; }
+    .quiz-meta{ text-align:center; color:#bbb; margin:-2rem 0 2rem; font-size:.95rem; }
+    .quiz-question{font-size:1.4rem;color:#fff;margin-bottom:2rem;text-align:center;font-weight:500;min-height:3.2rem}
+    .quiz-options{display:grid;gap:1.2rem;max-width:820px;margin:0 auto}
+    .quiz-option{background:rgba(40,40,40,.8);border:2px solid rgba(255,140,0,.2);padding:1.2rem 1.6rem;border-radius:15px;cursor:pointer;transition:.25s;color:#fff;position:relative;overflow:hidden}
+    .quiz-option::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,140,0,.1),transparent);transition:left .25s}
+    .quiz-option:hover::before{left:100%}
+    .quiz-option:hover{border-color:#ff8c00;background:rgba(255,140,0,.08);transform:translateX(6px)}
+    .quiz-option.selected{border-color:#ff8c00;background:linear-gradient(135deg, rgba(255,140,0,.18), rgba(255,179,71,.08));color:#ff8c00}
+    .quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,.18);color:#4CAF50}
+    .quiz-option.incorrect{border-color:#f44336;background:rgba(244,67,54,.18);color:#f44336}
+
+    .submit-answer{
+      background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border:none;padding:1.1rem 2.4rem;border-radius:30px;
+      font-weight:bold;cursor:pointer;margin:2rem auto 0;display:block;transition:.25s;font-size:1rem;box-shadow:0 8px 20px rgba(255,140,0,.3)
+    }
+    .submit-answer:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(255,140,0,.4)}
+    .submit-answer:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+    #quiz-feedback{margin-top:1.2rem;text-align:center;font-size:1.05rem;font-weight:600;padding:1rem;border-radius:10px;min-height:58px;display:flex;align-items:center;justify-content:center}
+
+    @media (max-width:768px){
+      .elo-display{ position:static; transform:none; margin:1rem auto 0; width:fit-content; }
+      .page-title{font-size:2.4rem}
+      .nav-container{grid-template-columns:auto 1fr;gap:1rem}
+      .nav-menu{gap:1rem;justify-content:center}
+      .main-container{padding:1rem}
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Navigation -->
+<header class="header">
+    <nav class="nav-container">
+        <a href="index.html" class="logo">WebVantage</a>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="team-intro.html" class="nav-link">Team</a></li>
+            <li><a href="courses.html" class="nav-link">Courses</a></li>
+            <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+            <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+            <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+            <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+            <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+            <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+        </ul>
+        <div class="user-menu" id="userMenu">
+            <div class="user-profile-container">
+                <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar"></div>
+                <div class="elo-progress-container">
+                    <div class="elo-rank-header">
+                        <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+                        <span class="elo-rank-text" id="eloRankText">Beginner</span>
+                    </div>
+                    <div class="elo-progress-bar">
+                        <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:50%"></div>
+                    </div>
+                    <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+  </header>
+
+  <main class="main-container">
+    <section class="page-header">
+      <h1 class="page-title">Quiz</h1>
+      <p class="page-subtitle">Answer questions to increase your ELO and unlock advanced content.</p>
+    </section>
+
+    <nav class="mode-switch" aria-label="Page switcher">
+      <a href="learn.html" class="mode-link" data-page="learn">Learn</a>
+      <a href="quiz.html"  class="mode-link" data-page="quiz" aria-current="page">Quiz</a>
+    </nav>
+
+    <!-- Quiz -->
+    <section class="quiz-preview">
+      <h2 class="quiz-heading">🧠 Quiz</h2>
+      <div class="quiz-meta" id="quizMeta">Loading…</div>
+      <div class="quiz-question" id="quizQuestion"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <button class="submit-answer" id="submitBtn" disabled>Submit Answer</button>
+      <div id="quiz-feedback"></div>
+    </section>
+  </main>
+
+  <script>
+    /*************** ELO MODULE ***************/
+    const Elo = (() => {
+      const MIN = 800;
+      let el = null, user = null, rating = 1250;
+
+      function readLogin(){
+        try { return JSON.parse(localStorage.getItem('loggedInUser')||'null'); } catch { return null; }
+      }
+      function writeLogin(u){
+        try {
+          localStorage.setItem('loggedInUser', JSON.stringify(u));
+          const users = JSON.parse(localStorage.getItem('users')||'[]');
+          const i = users.findIndex(x => x.email === u.email);
+          if (i !== -1) { users[i].elo = u.elo; localStorage.setItem('users', JSON.stringify(users)); }
+        } catch {}
+      }
+      function readRating(){
+        try{
+          const u = readLogin();
+          if (u && typeof u.elo === 'number') return u.elo;
+          const f = localStorage.getItem('userElo');
+          return f ? parseInt(f,10) : 1250;
+        }catch{ return 1250; }
+      }
+      function persist(){
+        try{
+          if (user){ user.elo = rating; writeLogin(user); }
+          localStorage.setItem('userElo', String(rating));
+        }catch{}
+      }
+      function paint(){
+        if (!el) return;
+        el.textContent = String(rating);
+        el.style.transform = 'scale(1.3)';
+        el.style.textShadow = '0 0 25px rgba(255,140,0,.8)';
+        setTimeout(() => {
+          el.style.transform = 'scale(1)';
+          el.style.textShadow = '0 0 15px rgba(255,140,0,.5)';
+        }, 400);
+      }
+
+      return {
+        init({ displaySelector = '#userElo' } = {}){
+          user   = readLogin();
+          rating = readRating();
+          el     = document.querySelector(displaySelector);
+          if (el) el.textContent = rating;
+        },
+        get(){ return rating; },
+        set(v){
+          rating = Math.max(MIN, Math.floor(v));
+          try { if (user){ user.elo = rating; writeLogin(user); } } catch {}
+          persist(); paint(); return rating;
+        },
+        adjust(d){ return this.set(rating + d); }
+      };
+    })();
+
+
+    const CONTENT_RANKS = {
+    BEGINNER:     { min: 800,  max: 1199 },
+    INTERMEDIATE: { min: 1200, max: 1599 },
+    ADVANCED:     { min: 1600, max: 1999 },
+    EXPERT:       { min: 2000, max: Infinity }
+  };
+
+  function getUserRank(elo) {
+    if (elo >= CONTENT_RANKS.EXPERT.min) return 'EXPERT';
+    if (elo >= CONTENT_RANKS.ADVANCED.min) return 'ADVANCED';
+    if (elo >= CONTENT_RANKS.INTERMEDIATE.min) return 'INTERMEDIATE';
+    return 'BEGINNER';
+  }
+
+  function canAccessContent(userElo, requiredElo) {
+    const userRank     = getUserRank(userElo);
+    const requiredRank = getUserRank(requiredElo);
+    if (userRank === 'EXPERT') return true;
+    if (userRank === 'ADVANCED') return requiredRank !== 'EXPERT';
+    return requiredRank === 'BEGINNER';
+  }
+    /*************** QUESTION DATABASE ***************/
+    const QUESTION_DATABASE = {
+      HTML: {
+        beginner: [
+          { id:'html1', question:"Which tag defines the largest heading?", options:["<h6>","<h1>","<head>","<title>"], correct:1 },
+          { id:'html2', question:"Which tag is used to insert a line break?", options:["<break>","<lb>","<br>","<newline>"], correct:2 },
+          { id:'html3', question:"What is the correct HTML tag for inserting an image?", options:["<image>","<img>","<picture>","<src>"], correct:1 },
+          { id:'html4', question:"Which attribute specifies a unique identifier for an element?", options:["class","id","name","ref"], correct:1 },
+          { id:'html5', question:"Which tag is used for creating an unordered list?", options:["<ul>","<ol>","<li>","<list>"], correct:0 }
+        ],
+        expert: [] // you can fill later
+      },
+      CSS: {
+        intermediate: [
+          { id:'css1', question:"Which property sets the background color?", options:["background-style","background-color","color","bg-color"], correct:1 },
+          { id:'css2', question:"Which property changes text size?", options:["font-size","text-size","size","font-style"], correct:0 },
+          { id:'css3', question:"How do you select all <p> elements inside a <div>?", options:["div p","div.p","div+p","div>p"], correct:0 },
+          { id:'css4', question:"Which unit is relative to root element font size?", options:["em","rem","%","px"], correct:1 },
+          { id:'css5', question:"Which property sets space inside border?", options:["margin","padding","border-spacing","gap"], correct:1 }
+        ],
+        expert: []
+      },
+      JavaScript: {
+        advanced: [
+          { id:'js1', question:"Which keyword declares a variable that can change?", options:["const","let","var","static"], correct:1 },
+          { id:'js2', question:"Which method prints output to console?", options:["print()","log()","console.log()","display()"], correct:2 },
+          { id:'js3', question:"What will 3 === '3' return?", options:["true","false","error","undefined"], correct:1 },
+          { id:'js4', question:"Which method removes last element of array?", options:["pop()","shift()","remove()","slice()"], correct:0 },
+          { id:'js5', question:"Which function converts JSON string to object?", options:["JSON.parse()","JSON.stringify()","JSON.convert()","JSON.toObject()"], correct:0 }
+        ],
+        expert: []
+      }
+    };
+
+    /*************** ELO CHANGES ***************/
+    const ELO_CHANGES = {
+      beginner:{ win:15, lose:-10 },
+      intermediate:{ win:25, lose:-15 },
+      advanced:{ win:40, lose:-20 },
+      expert:{ win:60, lose:-30 }
+    };
+    function getEloChange(currentElo, isWin, difficulty) {
+      const changes = ELO_CHANGES[difficulty] || ELO_CHANGES.beginner;
+      let change = isWin ? changes.win : changes.lose;
+      if (currentElo < 1000) change *= 1.2;
+      if (currentElo > 2000) change *= 0.8;
+      return Math.floor(change);
+    }
+
+    /*************** QUIZ STATE ***************/
+    const QUIZ_PROGRESS_KEY = 'quizProgress';
+    const metaEl = document.getElementById('quizMeta');
+    const qEl = document.getElementById('quizQuestion');
+    const optsEl = document.getElementById('quizOptions');
+    const submitBtn = document.getElementById('submitBtn');
+    const fb = document.getElementById('quiz-feedback');
+
+    let currentQuestion = null;
+    let selectedIndex = null;
+    let currentDifficulty = 'beginner';
+
+    function readProgress() {
+      try { return JSON.parse(localStorage.getItem(QUIZ_PROGRESS_KEY) || '{}'); } catch { return {}; }
+    }
+    function saveProgress(id) {
+      try {
+        const p = readProgress(); p[id] = true;
+        localStorage.setItem(QUIZ_PROGRESS_KEY, JSON.stringify(p));
+      } catch {}
+    }
+
+    // Robust pool selector with fallback so "No questions" never appears
+    function pickPoolByElo(elo){
+      const db = (typeof QUESTION_DATABASE === 'object') ? QUESTION_DATABASE : {};
+      const get = (cat, tier) =>
+        (db[cat] && Array.isArray(db[cat][tier])) ? db[cat][tier] : [];
+
+      let pool = [];
+      if (elo >= 2000) {
+        currentDifficulty = 'expert';
+        pool = [...get('HTML','expert'), ...get('CSS','expert'), ...get('JavaScript','expert')];
+      } else if (elo >= 1600) {
+        currentDifficulty = 'advanced';
+        pool = get('JavaScript','advanced');
+      } else if (elo >= 1200) {
+        currentDifficulty = 'intermediate';
+        pool = get('CSS','intermediate');
+      } else {
+        currentDifficulty = 'beginner';
+        pool = get('HTML','beginner');
+      }
+
+      // Fallback to everything we have if chosen tier is empty
+      if (!pool || pool.length === 0) {
+        currentDifficulty = 'beginner';
+        pool = [
+          ...get('HTML','beginner'),
+          ...get('CSS','intermediate'),
+          ...get('JavaScript','advanced')
+        ].filter(Boolean);
+      }
+      return pool;
+    }
+
+    function loadQuestion(){
+      const elo = Elo.get();
+      const pool = pickPoolByElo(elo) || [];
+      metaEl.textContent = `Difficulty: ${currentDifficulty.toUpperCase()} • ELO ${elo}`;
+
+      // Filter out completed
+      const progress = readProgress();
+      let available = pool.filter(q => !progress[q.id]);
+
+      // If exhausted, reset progress (for that tier) and reuse pool
+      if (available.length === 0) {
+        localStorage.removeItem(QUIZ_PROGRESS_KEY);
+        available = pool.slice();
+      }
+
+      if (available.length === 0) {
+        qEl.textContent = 'No questions available yet.';
+        optsEl.innerHTML = '';
+        submitBtn.disabled = true;
+        return;
+      }
+
+      currentQuestion = available[Math.floor(Math.random() * available.length)];
+      selectedIndex = null;
+      fb.textContent = ''; fb.style.background='transparent'; fb.style.border='none';
+
+      qEl.textContent = currentQuestion.question;
+      optsEl.innerHTML = '';
+      currentQuestion.options.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-option';
+        // Use textContent to render tags like <h1> literally
+        div.textContent = `${String.fromCharCode(65+i)}) ${opt}`;
+        div.onclick = () => {
+          document.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));
+          div.classList.add('selected');
+          selectedIndex = i;
+          submitBtn.disabled = false;
+        };
+        optsEl.appendChild(div);
+      });
+
+      submitBtn.disabled = true;
+    }
+
+    function grade(){
+      if (selectedIndex == null || !currentQuestion) return;
+
+      const options = Array.from(document.querySelectorAll('.quiz-option'));
+      options.forEach((el, i) => {
+        if (i === currentQuestion.correct) el.classList.add('correct');
+      });
+
+      const won = selectedIndex === currentQuestion.correct;
+      if (!won) options[selectedIndex].classList.add('incorrect');
+
+      // Feedback + ELO update
+      const delta = getEloChange(Elo.get(), won, currentDifficulty);
+      if (won) {
+        fb.innerHTML = `✅ Correct! <b>+${delta}</b> ELO`;
+        fb.style.color='#4CAF50'; fb.style.background='rgba(76,175,80,.1)'; fb.style.border='1px solid #4CAF50';
+        Elo.adjust(delta);
+        saveProgress(currentQuestion.id);
+      } else {
+        fb.innerHTML = `❌ Incorrect. <b>${delta}</b> ELO. Correct answer is <b>${String.fromCharCode(65+currentQuestion.correct)}</b>.`;
+        fb.style.color='#f44336'; fb.style.background='rgba(244,67,54,.1)'; fb.style.border='1px solid #f44336';
+        Elo.adjust(delta); // negative
+      }
+
+      submitBtn.disabled = true;
+
+      // Load next question after short pause
+      setTimeout(() => {
+        options.forEach(o=>o.classList.remove('selected','correct','incorrect'));
+        loadQuestion();
+      }, 1800);
+    }
+
+    submitBtn.addEventListener('click', grade);
+
+    /*************** INIT ***************/
+    window.addEventListener('load', () => {
+      Elo.init({ displaySelector: '#userElo' });
+      loadQuestion();
+    });
+  </script>
+  <script>
+  function readUnifiedELO() {
+    try {
+      const u = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+      if (u && typeof u.elo === 'number') return u.elo;
+    } catch {}
+    const fallback = parseInt(localStorage.getItem('userElo') || '1250', 10);
+    return isNaN(fallback) ? 1250 : fallback;
+  }
+
+  function syncELOEverywhere() {
+    const elo = readUnifiedELO();
+
+    // Header rank badge + progress
+    if (typeof updateELODisplay === 'function') {
+      updateELODisplay(elo);
+    }
+
+    // Floating badge(s)
+    const badge = document.getElementById('userElo');
+    if (badge) badge.textContent = elo;
+
+    const coursesBadge = document.getElementById('eloValueCourses');
+    if (coursesBadge) coursesBadge.textContent = elo;
+  }
+
+  window.addEventListener('load', syncELOEverywhere);
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Auth.syncHeaderState();   // paints avatar + ELO consistently
+  });
+</script>
+
+
+<script>
+  // Consistent avatar → profile navigation on all pages
+  function toggleUserDropdown() {
+    window.location.href = 'my-profile.html';
+  }
+
+  // Extra safety: bind click if the HTML didn't include the inline onclick
+  document.addEventListener('DOMContentLoaded', () => {
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+      avatar.addEventListener('click', () => window.location.href = 'my-profile.html');
+    }
+  });
+  </script>
+
+<!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Elo.initHeader();          // paint header ELO once + wire up listeners
+  });
+</script>
+
+<script src="auth.js" defer></script>
+</body>
+</html>

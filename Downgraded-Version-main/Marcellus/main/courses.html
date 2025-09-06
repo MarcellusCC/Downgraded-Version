@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Development Courses - Frontend Development Learning Hub</title>
+    <link rel="stylesheet" href="navigation.css">
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+/* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu.show {
+            display: flex;
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* ELO Progress Bar */
+        .elo-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .elo-rank-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elo-rank-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .elo-rank-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .elo-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .elo-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elo-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .elo-current-rating {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* ELO Rank Colors */
+        .rank-beginner {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        .rank-intermediate {
+            background: linear-gradient(135deg, #FF9800, #FFB74D);
+        }
+
+        .rank-advanced {
+            background: linear-gradient(135deg, #F44336, #EF5350);
+        }
+
+        .rank-expert {
+            background: linear-gradient(135deg, #9C27B0, #BA68C8);
+        }
+
+        .rank-master {
+            background: linear-gradient(135deg, #3F51B5, #7986CB);
+        }
+
+        .rank-grandmaster {
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+        }
+
+        /* Main Content */
+    .main-container{max-width:1200px;margin:0 auto;padding:8rem 2rem 4rem}
+    .page-title{font-size:3rem;font-weight:600;margin-bottom:1rem}
+    .page-title::after{content:'';display:block;width:80px;height:4px;background:#ff8c00;margin-top:1.25rem}
+    .page-subtitle{color:rgba(255,255,255,.75);margin-bottom:3rem;max-width:720px}
+
+    /* Cards */
+    .course-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+    .course-card{
+      background:rgba(20,20,20,.9);border:1px solid rgba(255,140,0,.2);border-radius:16px;
+      padding:2rem;text-align:center;transition:.3s
+    }
+    .course-card:hover{transform:translateY(-5px);border-color:#ff8c00}
+    .course-card h3{margin-bottom:1rem;color:#ff8c00}
+    .course-card p{color:#ccc;margin-bottom:1.5rem}
+    .course-card a{
+      background:#ff8c00;color:#000;padding:.8rem 1.5rem;border-radius:30px;text-decoration:none;font-weight:600;transition:.25s
+    }
+    .course-card a:hover{background:#ffb347}
+
+    /* ELO Progress */
+    .elo-progress-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+
+    .elo-rank-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .elo-rank-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+    }
+
+    .elo-rank-text {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .elo-progress-bar {
+      width: 80px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .elo-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: all 0.5s ease;
+    }
+
+    .elo-current-rating {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    /* Rank Colors */
+    .rank-beginner { background: linear-gradient(135deg, #4CAF50, #66BB6A); }
+    .rank-intermediate { background: linear-gradient(135deg, #FF9800, #FFB74D); }
+    .rank-advanced { background: linear-gradient(135deg, #F44336, #EF5350); }
+    .rank-expert { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+
+    @media (max-width:768px){
+      .elo-display{ position:static; transform:none; margin:1rem auto 0; width:fit-content; }
+      .main-container{padding:6.5rem 1rem 2rem}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header class="header">
+    <nav class="nav-container">
+        <a href="index.html" class="logo">WebVantage</a>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="team-intro.html" class="nav-link">Team</a></li>
+            <li><a href="courses.html" class="nav-link">Courses</a></li>
+            <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+            <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+            <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+            <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+            <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+            <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+        </ul>
+        <div class="user-menu" id="userMenu">
+  <div class="user-profile-container">
+    <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar">U</div>
+    <div class="elo-progress-container">
+      <div class="elo-rank-header">
+        <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+        <span class="elo-rank-text" id="eloRankText">Beginner</span>
+      </div>
+      <div class="elo-progress-bar">
+        <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+      </div>
+      <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+    </div>
+  </div>
+</div>
+
+    </nav>
+  </header>
+
+  <!-- Page Content -->
+  <main class="main-container">
+    <h1 class="page-title">Courses</h1>
+    <p class="page-subtitle">Choose between structured learning materials or challenge yourself with quizzes. Your ELO carries across both.</p>
+
+    <div class="course-options">
+      <div class="course-card" id="learn">
+        <h3>📖 Learn</h3>
+        <p>Study safe, non-executable frontend examples with clear explanations.</p>
+        <a href="learn.html">Start Learning</a>
+      </div>
+      <div class="course-card" id="quiz">
+        <h3>🧠 Quiz</h3>
+        <p>Test your knowledge interactively and earn ELO points.</p>
+        <a href="quiz.html">Take a Quiz</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentUser = null;
+
+    function checkLoginStatus(){
+      try{
+        const raw = localStorage.getItem('loggedInUser');
+        if (raw){ currentUser = JSON.parse(raw); }
+      }catch{}
+
+      const login = document.getElementById('loginLink');
+      const register = document.getElementById('registerLink');
+      const userMenu = document.getElementById('userMenu');
+      const avatar = document.getElementById('userAvatar');
+
+      if (currentUser){
+        login.style.display='none';
+        register.style.display='none';
+        userMenu.classList.add('show');
+        avatar.textContent = (currentUser.name?.[0] || currentUser.email?.[0] || 'U').toUpperCase();
+        avatar.title = currentUser.name ? `${currentUser.name}'s Profile` : 'Profile';
+      } else {
+        login.style.display='block';
+        register.style.display='block';
+        userMenu.classList.remove('show');
+      }
+    }
+
+    function goToProfile(){ window.location.href='my-profile.html'; }
+
+    // Shared ELO helpers
+    function getELO(){
+      try{
+        const user = JSON.parse(localStorage.getItem('loggedInUser')||'null');
+        if (user && typeof user.elo === 'number') return user.elo;
+        const fallback = localStorage.getItem('userElo');
+        return fallback ? parseInt(fallback,10) : 1250;
+      }catch{return 1250;}
+    }
+
+    // ELO and User Menu functionality
+    function updateUserMenu() {
+  const currentUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  const loginLink = document.getElementById('loginLink');
+  const registerLink = document.getElementById('registerLink');
+  const userMenu = document.getElementById('userMenu');
+  
+  if (currentUser) {
+    loginLink.style.display = 'none';
+    registerLink.style.display = 'none';
+    userMenu.classList.add('show');
+    
+    // Update avatar
+    const avatar = document.getElementById('userAvatar');
+    updateHeaderAvatarFromUser(currentUser); // <-- ADD THIS LINE HERE
+    
+    // Update ELO
+    updateELODisplay(currentUser.elo || 1200);
+  } else {
+    loginLink.style.display = 'block';
+    registerLink.style.display = 'block';
+    userMenu.classList.remove('show');
+  }
+}
+
+    function updateELODisplay(elo) {
+        const rank = getCurrentRank(elo);
+        const progress = getRankProgress(elo, rank);
+        
+        document.getElementById('eloRankIcon').className = `elo-rank-icon ${rank.class}`;
+        document.getElementById('eloRankText').textContent = rank.name;
+        document.getElementById('eloProgressFill').className = `elo-progress-fill ${rank.class}`;
+        document.getElementById('eloProgressFill').style.width = `${progress}%`;
+        document.getElementById('eloCurrentRating').textContent = `${elo} ELO`;
+    }
+
+    window.addEventListener('load', ()=>{
+      const el = document.getElementById('eloValueCourses');
+      if (el) el.textContent = getELO();
+      checkLoginStatus();
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', updateUserMenu);
+  </script>
+
+  <script>
+  // Consistent avatar → profile navigation on all pages
+  function toggleUserDropdown() {
+    window.location.href = 'my-profile.html';
+  }
+
+  // Extra safety: bind click if the HTML didn't include the inline onclick
+  document.addEventListener('DOMContentLoaded', () => {
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+      avatar.addEventListener('click', () => window.location.href = 'my-profile.html');
+    }
+  });
+  </script>
+<!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Elo.initHeader();          // paint header ELO once + wire up listeners
+  });
+</script>
+<script src="auth.js" defer></script>
+
+</body>
+</html>
