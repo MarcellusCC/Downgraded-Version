@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - WebVantage</title>
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu.show {
+            display: flex;
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* ELO Progress Bar */
+        .elo-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .elo-rank-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elo-rank-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .elo-rank-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .elo-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .elo-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elo-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .elo-current-rating {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* ELO Rank Colors */
+        .rank-beginner {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        .rank-intermediate {
+            background: linear-gradient(135deg, #FF9800, #FFB74D);
+        }
+
+        .rank-advanced {
+            background: linear-gradient(135deg, #F44336, #EF5350);
+        }
+
+        .rank-expert {
+            background: linear-gradient(135deg, #9C27B0, #BA68C8);
+        }
+
+        .rank-master {
+            background: linear-gradient(135deg, #3F51B5, #7986CB);
+        }
+
+        .rank-grandmaster {
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 6rem;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            margin-bottom: 4rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 140, 0, 0.05), transparent);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .profile-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-size: cover;
+            background-position: center;
+            border-radius: 25px;
+        }
+
+        .profile-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #ff8c00;
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 140, 0, 0.5);
+        }
+
+        .avatar-edit {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #ff8c00;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-edit:hover {
+            background: #ffb347;
+            transform: scale(1.1);
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .profile-email {
+            color: #ff8c00;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .elo-display {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .profile-description {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #c0c0c0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Profile Settings Grid */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .settings-card {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, #ff8c00, transparent);
+            transition: height 0.4s ease;
+        }
+
+        .settings-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff8c00, transparent);
+            transition: width 0.4s ease;
+        }
+
+        .settings-card:hover::before {
+            height: 100%;
+        }
+
+        .settings-card:hover::after {
+            width: 100%;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            border-radius: 10px;
+            background: rgba(15, 15, 15, 0.95);
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #ff8c00;
+            background: rgba(20, 20, 20, 0.95);
+            box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Avatar Selection */
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .avatar-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .avatar-option:hover, .avatar-option.selected {
+            border-color: #ff8c00;
+            background: rgba(255, 140, 0, 0.2);
+            transform: scale(1.1);
+        }
+
+        .avatar-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* File Upload */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+
+        .file-input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-btn {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-block;
+        }
+
+        .file-upload-btn:hover {
+            background: linear-gradient(135deg, #ffb347, #ffc107);
+            transform: translateY(-2px);
+        }
+
+        /* Background Selection */
+        .background-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .background-option {
+            height: 60px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .background-option:hover, .background-option.selected {
+            border-color: #ff8c00;
+            transform: scale(1.05);
+        }
+
+        .bg1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .bg2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .bg3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .bg4 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .bg5 { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .bg6 { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .btn {
+            background: #ff8c00;
+            color: #000000;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+            letter-spacing: 0.5px;
+            border-radius: 10px;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #000000;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #ffb347;
+            transform: translateY(-2px);
+        }
+
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .btn.secondary {
+            background: transparent;
+            border: 1px solid #ff8c00;
+            color: #ff8c00;
+        }
+
+        .btn.secondary::after {
+            background: #ff8c00;
+        }
+
+        .btn.secondary:hover {
+            background: rgba(255, 140, 0, 0.05);
+        }
+
+        .btn.danger {
+            background: #ff3333;
+            color: #ffffff;
+        }
+
+        .btn.danger:hover {
+            background: #ff4444;
+            box-shadow: 0 10px 25px rgba(255, 51, 51, 0.4);
+        }
+
+        /* Learning Progress */
+        .progress-section {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            margin-top: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-title {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .progress-title::after {
+            content: '';
+            width: 60px;
+            height: 2px;
+            background: #ff8c00;
+            position: absolute;
+            bottom: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .progress-item {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-item:hover {
+            transform: translateY(-5px);
+            border-color: #ff8c00;
+        }
+
+        .progress-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff8c00;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .progress-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95));
+            border-radius: 25px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #c0c0c0;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #ff8c00;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1200px) {
+            .nav-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 1.5rem;
+            }
+
+            .nav-menu {
+                gap: 1.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .user-profile-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .elo-progress-container {
+                align-items: center;
+            }
+
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-container {
+                padding: 1rem;
+                margin-top: 8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .progress-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-header,
+        .settings-card,
+        .progress-section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">WebVantage</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+                <div class="user-profile-container">
+                    <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar">
+                        U
+                    </div>
+                    <div class="elo-progress-container">
+                        <div class="elo-rank-header">
+                            <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+                            <span class="elo-rank-text" id="eloRankText">Beginner</span>
+                        </div>
+                        <div class="elo-progress-bar">
+                            <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width: 60%"></div>
+                        </div>
+                        <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Profile Header -->
+        <section class="profile-header" id="profileHeader">
+            <div class="profile-background" id="profileBg"></div>
+            <div class="profile-content">
+                <div class="avatar-container">
+                    <div class="profile-avatar" id="profileAvatar" onclick="openAvatarModal()">🧑‍💻</div>
+                    <button class="avatar-edit" onclick="openAvatarModal()">✏️</button>
+                </div>
+                <h1 class="profile-name" id="profileName">Loading...</h1>
+                <p class="profile-email" id="profileEmail">Loading...</p>
+                <div class="elo-display">
+                    <span id="eloRating">1200</span> ELO
+                </div>
+                <div class="profile-description" id="profileDescription" onclick="editDescription()">
+                    Click to add a description about yourself...
+                </div>
+                <div class="btn-group">
+                    <button class="btn" onclick="openBackgroundModal()">🎨 Change Background</button>
+                    <a href="courses.html" class="btn secondary">📚 Continue Learning</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Settings Grid -->
+        <div class="profile-grid">
+            <!-- Account Information -->
+            <div class="settings-card">
+                <h3 class="card-title">👤 Account Information</h3>
+                <div class="form-group">
+                    <label class="form-label" for="displayName">Display Name</label>
+                    <input type="text" id="displayName" class="form-input" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="userEmail">Email Address</label>
+                    <input type="email" id="userEmail" class="form-input" readonly>
+                </div>
+                <button class="btn" onclick="updateProfile()">💾 Save Changes</button>
+            </div>
+
+            <!-- Learning Preferences -->
+            <div class="settings-card">
+                <h3 class="card-title">⚙️ Learning Preferences</h3>
+                <div class="form-group">
+                    <label class="form-label" for="learningGoal">Learning Goal</label>
+                    <select id="learningGoal" class="form-input">
+                        <option value="beginner">Complete Beginner</option>
+                        <option value="career">Career Development</option>
+                        <option value="academic">Academic Research</option>
+                        <option value="hobby">Personal Interest</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="studyTime">Study Time per Week</label>
+                    <select id="studyTime" class="form-input">
+                        <option value="1-3">1-3 hours</option>
+                        <option value="4-7">4-7 hours</option>
+                        <option value="8-15">8-15 hours</option>
+                        <option value="15+">15+ hours</option>
+                    </select>
+                </div>
+                <button class="btn secondary" onclick="updatePreferences()">📊 Update Preferences</button>
+            </div>
+        </div>
+
+        <!-- Learning Progress -->
+        <section class="progress-section">
+            <h3 class="progress-title">📈 Your Learning Progress</h3>
+            <div class="progress-stats">
+                <div class="progress-item">
+                    <span class="progress-number" id="coursesCompleted">12</span>
+                    <span class="progress-label">Courses Completed</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-number" id="hoursLearned">47</span>
+                    <span class="progress-label">Hours Learned</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-number" id="streakDays">15</span>
+                    <span class="progress-label">Day Streak</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-number" id="globalRank">2,847</span>
+                    <span class="progress-label">Global Rank</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Account Actions -->
+        <section class="settings-card" style="margin-top: 2rem;">
+            <h3 class="card-title">🔧 Account Actions</h3>
+            <div class="btn-group">
+                <button class="btn secondary" onclick="downloadProgress()">💾 Download Progress</button>
+                <button class="btn secondary" onclick="resetProgress()">🔄 Reset Progress</button>
+                <button class="btn danger" onclick="logout()">🚪 Logout</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Avatar Selection Modal -->
+    <div id="avatarModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('avatarModal')">&times;</button>
+            <h3 class="modal-title">Choose Your Avatar</h3>
+            
+            <!-- Upload Custom Avatar -->
+            <div class="form-group">
+                <label class="form-label">Upload Custom Photo</label>
+                <div class="file-upload">
+                    <input type="file" id="avatarUpload" class="file-input" accept="image/*" onchange="handleAvatarUpload(this)">
+                    <div class="file-upload-btn">📸 Upload Photo</div>
+                </div>
+            </div>
+            
+            <!-- Preview uploaded image -->
+            <div id="uploadPreview" style="display: none; margin: 1rem 0; text-align: center;">
+                <img id="previewImage" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #ff8c00;">
+            </div>
+            
+            <!-- Emoji/Icon Avatars -->
+            <div class="form-group">
+                <label class="form-label">Or Choose an Icon</label>
+                <div class="avatar-grid">
+                    <div class="avatar-option" data-avatar="🧑‍💻" onclick="selectAvatar(this)">🧑‍💻</div>
+                    <div class="avatar-option" data-avatar="👨‍🔬" onclick="selectAvatar(this)">👨‍🔬</div>
+                    <div class="avatar-option" data-avatar="👩‍🔬" onclick="selectAvatar(this)">👩‍🔬</div>
+                    <div class="avatar-option" data-avatar="🤖" onclick="selectAvatar(this)">🤖</div>
+                    <div class="avatar-option" data-avatar="⚡" onclick="selectAvatar(this)">⚡</div>
+                    <div class="avatar-option" data-avatar="🚀" onclick="selectAvatar(this)">🚀</div>
+                    <div class="avatar-option" data-avatar="💎" onclick="selectAvatar(this)">💎</div>
+                    <div class="avatar-option" data-avatar="🌟" onclick="selectAvatar(this)">🌟</div>
+                    <div class="avatar-option" data-avatar="🎯" onclick="selectAvatar(this)">🎯</div>
+                    <div class="avatar-option" data-avatar="🏆" onclick="selectAvatar(this)">🏆</div>
+                    <div class="avatar-option" data-avatar="🔥" onclick="selectAvatar(this)">🔥</div>
+                    <div class="avatar-option" data-avatar="💻" onclick="selectAvatar(this)">💻</div>
+                    <div class="avatar-option" data-avatar="🎮" onclick="selectAvatar(this)">🎮</div>
+                    <div class="avatar-option" data-avatar="🧠" onclick="selectAvatar(this)">🧠</div>
+                    <div class="avatar-option" data-avatar="⭐" onclick="selectAvatar(this)">⭐</div>
+                    <div class="avatar-option" data-avatar="🎪" onclick="selectAvatar(this)">🎪</div>
+                </div>
+            </div>
+            <button class="btn" style="margin-top: 1rem; width: 100%;" onclick="saveAvatar()">Save Avatar</button>
+        </div>
+    </div>
+
+    <!-- Background Selection Modal -->
+    <div id="backgroundModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('backgroundModal')">&times;</button>
+            <h3 class="modal-title">Choose Background Theme</h3>
+            <div class="background-grid">
+                <div class="background-option bg1" data-bg="bg1" onclick="selectBackground(this)"></div>
+                <div class="background-option bg2" data-bg="bg2" onclick="selectBackground(this)"></div>
+                <div class="background-option bg3" data-bg="bg3" onclick="selectBackground(this)"></div>
+                <div class="background-option bg4" data-bg="bg4" onclick="selectBackground(this)"></div>
+                <div class="background-option bg5" data-bg="bg5" onclick="selectBackground(this)"></div>
+                <div class="background-option bg6" data-bg="bg6" onclick="selectBackground(this)"></div>
+            </div>
+            <button class="btn" style="margin-top: 1rem; width: 100%;" onclick="saveBackground()">Save Background</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let selectedAvatarTemp = null;
+        let selectedBackgroundTemp = null;
+        let uploadedAvatarData = null;
+
+        // ELO System Configuration
+        const ELO_RANKS = {
+            beginner: { min: 0, max: 1399, name: 'Beginner', class: 'rank-beginner' },
+            intermediate: { min: 1400, max: 1799, name: 'Intermediate', class: 'rank-intermediate' },
+            advanced: { min: 1800, max: 2199, name: 'Advanced', class: 'rank-advanced' },
+            expert: { min: 2200, max: 2599, name: 'Expert', class: 'rank-expert' },
+            master: { min: 2600, max: 2999, name: 'Master', class: 'rank-master' },
+            grandmaster: { min: 3000, max: 9999, name: 'Grandmaster', class: 'rank-grandmaster' }
+        };
+
+        // Load user data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            updateUserMenu();
+            loadUserPreferences();
+        });
+
+        function loadUserData() {
+    try {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        if (loggedInUser) {
+            currentUser = JSON.parse(loggedInUser);
+            
+            // Update profile display
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            // FIX: Properly read ELO value from user data
+            document.getElementById('eloRating').textContent = (currentUser && currentUser.elo !== undefined) ? currentUser.elo : 1250;
+            
+            // Update form fields
+            document.getElementById('displayName').value = currentUser.name;
+            document.getElementById('userEmail').value = currentUser.email;
+            
+            // Load avatar
+            loadUserAvatar();
+            
+            // Load description
+            if (currentUser.description) {
+                document.getElementById('profileDescription').textContent = currentUser.description;
+                document.getElementById('profileDescription').style.fontStyle = 'normal';
+            }
+            
+            // Load background
+            if (currentUser.background && currentUser.background !== 'default') {
+                applyBackground(currentUser.background);
+            }
+            
+            // Update ELO progress
+            updateELOProgress();
+        } else {
+            // Redirect to login if no user found
+            window.location.href = 'login.html';
+        }
+    } catch (e) {
+        console.log('Error loading user data:', e);
+        window.location.href = 'login.html';
+    }
+}
+
+        function loadUserAvatar() {
+            const profileAvatar = document.getElementById('profileAvatar');
+            const navAvatar = document.getElementById('userAvatar');
+            
+            if (currentUser.avatarImage) {
+                // Custom uploaded image
+                profileAvatar.innerHTML = `<img src="${currentUser.avatarImage}" alt="Profile Avatar">`;
+                navAvatar.innerHTML = `<img src="${currentUser.avatarImage}" alt="Profile Avatar">`;
+            } else if (currentUser.avatar && currentUser.avatar !== 'default') {
+                // Emoji avatar
+                profileAvatar.textContent = currentUser.avatar;
+                navAvatar.textContent = currentUser.avatar;
+            } else {
+                // Default avatars
+                profileAvatar.textContent = '🧑‍💻';
+                navAvatar.textContent = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
+            }
+        }
+
+        function updateELOProgress() {
+    // FIX: Use the actual ELO value from user data, not a default
+    const currentELO = (currentUser && currentUser.elo !== undefined) ? currentUser.elo : 1250;
+    const rank = getCurrentRank(currentELO);
+    const progress = getRankProgress(currentELO, rank);
+    
+    // Update rank display
+    const rankIcon = document.getElementById('eloRankIcon');
+    const rankText = document.getElementById('eloRankText');
+    const progressFill = document.getElementById('eloProgressFill');
+    const currentRating = document.getElementById('eloCurrentRating');
+    
+    rankIcon.className = `elo-rank-icon ${rank.class}`;
+    rankText.textContent = rank.name;
+    progressFill.className = `elo-progress-fill ${rank.class}`;
+    progressFill.style.width = `${progress}%`;
+    currentRating.textContent = `${currentELO} ELO`;
+}
+
+        function getCurrentRank(elo) {
+            for (const [key, rank] of Object.entries(ELO_RANKS)) {
+                if (elo >= rank.min && elo <= rank.max) {
+                    return rank;
+                }
+            }
+            return ELO_RANKS.beginner; // Default to beginner
+        }
+
+        function getRankProgress(elo, rank) {
+            const rankRange = rank.max - rank.min;
+            const currentProgress = elo - rank.min;
+            return Math.min(100, Math.max(0, (currentProgress / rankRange) * 100));
+        }
+
+        function updateUserMenu() {
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            
+            if (currentUser) {
+                // Hide login/register links
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                
+                // Show user menu
+                userMenu.classList.add('show');
+                loadUserAvatar();
+                updateELOProgress();
+            } else {
+                // Show login/register links
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                
+                // Hide user menu
+                userMenu.classList.remove('show');
+            }
+        }
+
+        function loadUserPreferences() {
+            if (currentUser.learningGoal) {
+                document.getElementById('learningGoal').value = currentUser.learningGoal;
+            }
+            if (currentUser.studyTime) {
+                document.getElementById('studyTime').value = currentUser.studyTime;
+            }
+        }
+
+        function toggleUserDropdown() {
+            // For now, just stay on the profile page
+            // In a full app, this might show a dropdown menu
+        }
+
+        // Modal functions
+        function openAvatarModal() {
+            document.getElementById('avatarModal').style.display = 'block';
+            // Clear previous selections
+            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('uploadPreview').style.display = 'none';
+            
+            // Highlight current avatar if it's an emoji
+            if (currentUser.avatar && !currentUser.avatarImage) {
+                const currentAvatarOption = document.querySelector(`[data-avatar="${currentUser.avatar}"]`);
+                if (currentAvatarOption) {
+                    currentAvatarOption.classList.add('selected');
+                }
+            }
+        }
+
+        function openBackgroundModal() {
+            document.getElementById('backgroundModal').style.display = 'block';
+            // Highlight current background if any
+            if (currentUser.background) {
+                const currentBgOption = document.querySelector(`[data-bg="${currentUser.background}"]`);
+                if (currentBgOption) {
+                    currentBgOption.classList.add('selected');
+                }
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            // Clear selections
+            document.querySelectorAll('.avatar-option, .background-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+        }
+
+        // Avatar upload handling
+        function handleAvatarUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Validate file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification('Image size must be less than 2MB', 'error');
+                    return;
+                }
+                
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    showNotification('Please select a valid image file', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedAvatarData = e.target.result;
+                    
+                    // Show preview
+                    const previewImage = document.getElementById('previewImage');
+                    previewImage.src = uploadedAvatarData;
+                    document.getElementById('uploadPreview').style.display = 'block';
+                    
+                    // Clear emoji selections
+                    document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+                    selectedAvatarTemp = null;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Avatar selection
+        function selectAvatar(element) {
+            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedAvatarTemp = element.dataset.avatar;
+            
+            // Clear uploaded image
+            uploadedAvatarData = null;
+            document.getElementById('uploadPreview').style.display = 'none';
+            document.getElementById('avatarUpload').value = '';
+        }
+
+        function saveAvatar() {
+  if (uploadedAvatarData) {
+    // Save uploaded image
+    currentUser.avatarImage = uploadedAvatarData;
+    currentUser.avatar = null; // clear emoji
+  } else if (selectedAvatarTemp) {
+    // Save emoji
+    currentUser.avatar = selectedAvatarTemp;
+    currentUser.avatarImage = null; // clear custom image
+  } else {
+    // nothing chosen
+    return;
+  }
+
+  // Persist once, with the same key all pages read
+  try { localStorage.setItem('loggedInUser', JSON.stringify(currentUser)); } catch {}
+
+  // Update this page's UI
+  loadUserAvatar();
+
+  // Notify same-tab pages/components
+  window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: { source: 'profile' } }));
+
+  // Close + toast
+  closeModal('avatarModal');
+  showNotification('Avatar updated! ✨');
+}
+
+        // Background selection
+        function selectBackground(element) {
+            document.querySelectorAll('.background-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedBackgroundTemp = element.dataset.bg;
+            // Preview the background
+            applyBackground(selectedBackgroundTemp);
+        }
+
+        function saveBackground() {
+            if (selectedBackgroundTemp) {
+                currentUser.background = selectedBackgroundTemp;
+                saveUserData();
+                closeModal('backgroundModal');
+                showNotification('Background updated successfully! 🎨');
+            }
+        }
+
+        function applyBackground(bgClass) {
+            const bgElement = document.getElementById('profileBg');
+            bgElement.className = `profile-background ${bgClass}`;
+        }
+
+        // Description editing
+        function editDescription() {
+            const descElement = document.getElementById('profileDescription');
+            const currentDesc = currentUser.description || '';
+            
+            const newDesc = prompt('Enter your profile description:', currentDesc);
+            if (newDesc !== null) {
+                currentUser.description = newDesc.trim();
+                descElement.textContent = newDesc.trim() || 'Click to add a description about yourself...';
+                descElement.style.fontStyle = newDesc.trim() ? 'normal' : 'italic';
+                saveUserData();
+                showNotification('Description updated! 📝');
+            }
+        }
+
+        // Profile updates
+        function updateProfile() {
+            const newName = document.getElementById('displayName').value.trim();
+            
+            if (newName.length < 2) {
+                showNotification('Name must be at least 2 characters long', 'error');
+                return;
+            }
+
+            currentUser.name = newName;
+            document.getElementById('profileName').textContent = newName;
+            
+            // Update in users array
+            updateUserInStorage();
+            saveUserData();
+            updateUserMenu();
+            
+            showNotification('Profile updated successfully! 👤');
+        }
+
+        function updatePreferences() {
+            currentUser.learningGoal = document.getElementById('learningGoal').value;
+            currentUser.studyTime = document.getElementById('studyTime').value;
+            saveUserData();
+            showNotification('Preferences saved! ⚙️');
+        }
+
+        // Data management
+        function saveUserData() {
+            try {
+                localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                window.dispatchEvent(new CustomEvent('userUpdated'));
+            } catch (e) {
+                console.log('Could not save to localStorage');
+            }
+        }
+
+        function saveELOChange(newELO) {
+    if (currentUser) {
+        currentUser.elo = newELO;
+        localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+        
+        // Dispatch an event to notify other pages of the change
+        window.dispatchEvent(new CustomEvent('eloUpdated', { 
+            detail: { newElo: newELO } 
+        }));
+    }
+}
+
+        function updateUserInStorage() {
+            try {
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                const userIndex = users.findIndex(u => u.email === currentUser.email);
+                if (userIndex >= 0) {
+                    users[userIndex] = currentUser;
+                    localStorage.setItem('users', JSON.stringify(users));
+                }
+            } catch (e) {
+                console.log('Could not update users in localStorage');
+            }
+        }
+
+        // Utility functions
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ff5722)' : 'linear-gradient(135deg, #ff8c00, #ffb347)'};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                z-index: 3000;
+                font-weight: 600;
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function downloadProgress() {
+            const progressData = {
+                user: currentUser.name,
+                email: currentUser.email,
+                elo: currentUser.elo,
+                rank: getCurrentRank(currentUser.elo || 1200).name,
+                coursesCompleted: document.getElementById('coursesCompleted').textContent,
+                hoursLearned: document.getElementById('hoursLearned').textContent,
+                streak: document.getElementById('streakDays').textContent,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(progressData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `webvantage-progress-${currentUser.name.replace(/\s+/g, '-')}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showNotification('Progress data downloaded! 💾');
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset your learning progress? This action cannot be undone.')) {
+                // Reset stats
+                currentUser.elo = 1200;
+                document.getElementById('eloRating').textContent = '1200';
+                document.getElementById('coursesCompleted').textContent = '0';
+                document.getElementById('hoursLearned').textContent = '0';
+                document.getElementById('streakDays').textContent = '0';
+                document.getElementById('globalRank').textContent = 'Unranked';
+                
+                updateELOProgress();
+                saveUserData();
+                updateUserInStorage();
+                showNotification('Progress has been reset! 🔄');
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    localStorage.removeItem('loggedInUser');
+                } catch (e) {
+                    console.log('Could not clear localStorage');
+                }
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+
+            .profile-header {
+                animation: profileGlow 4s ease-in-out infinite alternate;
+            }
+
+            @keyframes profileGlow {
+                from { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+                to { box-shadow: 0 10px 30px rgba(255, 140, 0, 0.2); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Load page with fade in effect
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+    <script src="auth.js" defer></script>
+</body>
+</html>

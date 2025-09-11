@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Development Courses - WebVantage</title>
+    <link rel="stylesheet" href="navigation.css">
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, 
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                rgba(255, 140, 0, 0.4),
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+        }
+
+        .user-menu.show {
+            display: block;
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar { 
+  overflow: hidden; 
+  font-size: 1rem;          /* keeps initials sized like other pages */
+}
+
+/* Make any uploaded avatar image fill the 40×40 circle */
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        }
+
+        /* ELO Progress in Navigation */
+        .elo-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .elo-rank-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elo-rank-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+
+        .elo-rank-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .elo-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .elo-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+        }
+
+        .elo-current-rating {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* Rank Colors */
+        .rank-beginner { background: linear-gradient(135deg, #4CAF50, #66BB6A); }
+        .rank-intermediate { background: linear-gradient(135deg, #FF9800, #FFB74D); }
+        .rank-advanced { background: linear-gradient(135deg, #F44336, #EF5350); }
+        .rank-expert { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: left;
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.95));
+            position: relative;
+            overflow: hidden;
+            margin: -2rem -2rem 4rem -2rem;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 140, 0, 0.05), transparent);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: #ff8c00;
+            margin-top: 1.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        
+
+        .elo-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            color: #ff8c00;
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        }
+
+        .elo-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #cccccc;
+            margin-top: 0.5rem;
+        }
+
+        /* Course Options */
+        .course-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .course-card {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 140, 0, 0.1);
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, #ff8c00, transparent);
+            transition: height 0.4s ease;
+        }
+
+        .course-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff8c00, transparent);
+            transition: width 0.4s ease;
+        }
+
+        .course-card:hover {
+            background: rgba(20, 20, 20, 0.95);
+            transform: translateY(-5px);
+        }
+
+        .course-card:hover::before {
+            height: 100%;
+        }
+
+        .course-card:hover::after {
+            width: 100%;
+        }
+
+        .course-card h3 {
+            font-size: 2rem;
+            color: #ff8c00;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .course-card p {
+            color: #cccccc;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        .course-card a {
+            background: #ff8c00;
+            color: #000000;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+        }
+
+        .course-card a:hover {
+            background: #ffb347;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 140, 0, 0.4);
+        }
+
+        /* Lessons Grid */
+        .lessons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .lesson-card {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 2.5rem;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 140, 0, 0.1);
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, #ff8c00, transparent);
+            transition: height 0.4s ease;
+        }
+
+        .lesson-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff8c00, transparent);
+            transition: width 0.4s ease;
+        }
+
+        .lesson-card:hover {
+            background: rgba(20, 20, 20, 0.95);
+            transform: translateY(-5px);
+        }
+
+        .lesson-card:hover::before {
+            height: 100%;
+        }
+
+        .lesson-card:hover::after {
+            width: 100%;
+        }
+
+        .lesson-level {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+        }
+
+        .lesson-title {
+            font-size: 1.6rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .lesson-description {
+            color: #cccccc;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .lesson-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .lesson-button {
+            background: #ff8c00;
+            color: #000000;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            letter-spacing: 0.5px;
+            border-radius: 8px;
+        }
+
+        .lesson-button::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #000000;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .lesson-button:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Quiz Preview */
+        .quiz-preview {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .quiz-question {
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 1.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .quiz-option {
+            background: rgba(40, 40, 40, 0.8);
+            border: 2px solid rgba(255, 140, 0, 0.2);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.1), transparent);
+            transition: left 0.3s ease;
+        }
+
+        .quiz-option:hover::before {
+            left: 100%;
+        }
+
+        .quiz-option:hover {
+            border-color: #ff8c00;
+            background: rgba(255, 140, 0, 0.1);
+            transform: translateX(10px);
+        }
+
+        .quiz-option.selected {
+            border-color: #ff8c00;
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(255, 179, 71, 0.1));
+            color: #ff8c00;
+        }
+
+        .quiz-option.correct {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .submit-answer {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 2.5rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);
+        }
+
+        .submit-answer:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 140, 0, 0.4);
+        }
+
+        .submit-answer:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Quiz Feedback */
+        #quiz-feedback {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 1rem;
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .elo-display {
+                position: static;
+                transform: none;
+                margin-bottom: 2rem;
+                width: fit-content;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .lessons-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .course-options {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .user-profile-container {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+<header class="header">
+  <nav class="nav-container">
+    <a href="index.html" class="logo">WebVantage</a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="team-intro.html" class="nav-link">Team</a></li>
+      <li><a href="courses.html" class="nav-link active">Courses</a></li>
+      <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+      <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+      <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+      <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+      <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+      <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+    </ul>
+    <!-- User menu for logged in state -->
+    <div class="user-menu" id="userMenu">
+      <div class="user-profile-container">
+        <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar">U</div>
+        <div class="elo-progress-container">
+          <div class="elo-rank-header">
+            <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+            <span class="elo-rank-text" id="eloRankText">Beginner</span>
+          </div>
+          <div class="elo-progress-bar">
+            <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+          </div>
+          <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+
+    <!-- ELO Display -->
+    <div class="elo-display">
+        <span class="elo-number" id="userElo">1250</span>
+        <span class="elo-label">Your ELO Rating</span>
+    </div>
+
+    <main class="main-container">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="page-title">Frontend Development Learning Hub</h1>
+            <p class="page-subtitle">
+                Master HTML, CSS, and JavaScript through interactive lessons and challenges. 
+                Complete quizzes to increase your ELO rating and unlock advanced content!
+            </p>
+        </section>
+
+        
+        <!-- Lessons Grid -->
+        <div class="lessons-container">
+            <div class="lesson-card" onclick="startLesson('html-basics')">
+                <span class="lesson-level">Beginner</span>
+                <h3 class="lesson-title">HTML Fundamentals</h3>
+                <p class="lesson-description">
+                    Learn the building blocks of the web. Understand HTML structure, semantic elements, and best practices.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 8 Topics</span>
+                    <span>⏱️ 45 min</span>
+                    <span>🏆 +50 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+
+            <div class="lesson-card" onclick="startLesson('css-styling')">
+                <span class="lesson-level">Beginner</span>
+                <h3 class="lesson-title">CSS Styling & Layout</h3>
+                <p class="lesson-description">
+                    Master CSS selectors, properties, flexbox, grid, and responsive design principles.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 12 Topics</span>
+                    <span>⏱️ 60 min</span>
+                    <span>🏆 +75 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+
+            <div class="lesson-card" onclick="startLesson('javascript-basics')">
+                <span class="lesson-level">Intermediate</span>
+                <h3 class="lesson-title">JavaScript Essentials</h3>
+                <p class="lesson-description">
+                    Dive into JavaScript fundamentals, DOM manipulation, events, and modern ES6+ features.
+                </p>
+                <div class="lesson-stats">
+                    <span>📚 15 Topics</span>
+                    <span>⏱️ 90 min</span>
+                    <span>🏆 +100 ELO</span>
+                </div>
+                <button class="lesson-button">Start Learning</button>
+            </div>
+    <script>
+        // User and ELO Management
+        let currentELO = 1250;
+        let selectedAnswer = null;
+        let isCorrect = false;
+        let currentUser = null;
+
+        // Rank system
+        function getCurrentRank(elo) {
+            if (elo >= 1800) return { name: 'Expert', class: 'rank-expert', min: 1800, max: 2500 };
+            if (elo >= 1500) return { name: 'Advanced', class: 'rank-advanced', min: 1500, max: 1799 };
+            if (elo >= 1200) return { name: 'Intermediate', class: 'rank-intermediate', min: 1200, max: 1499 };
+            return { name: 'Beginner', class: 'rank-beginner', min: 800, max: 1199 };
+        }
+
+        function getRankProgress(elo, rank) {
+            const progress = ((elo - rank.min) / (rank.max - rank.min)) * 100;
+            return Math.max(0, Math.min(100, progress));
+        }
+
+        // Check login status and update navigation
+        function checkLoginStatus() {
+            try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                    currentELO = currentUser.elo || 1250;
+                }
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (currentUser) {
+                // Hide login/register links
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                
+                // Show user menu
+                userMenu.classList.add('show');
+                
+                // Update avatar
+                userAvatar.textContent = (currentUser.name ? currentUser.name.charAt(0) : currentUser.email.charAt(0)).toUpperCase();
+                userAvatar.title = `Go to ${currentUser.name || currentUser.email}'s Profile`;
+                
+                // Update ELO displays
+                document.getElementById('userElo').textContent = currentELO;
+                updateELOProgress(currentELO);
+            } else {
+                // Show login/register links
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                
+                // Hide user menu
+                userMenu.classList.remove('show');
+                
+                // Set default ELO
+                document.getElementById('userElo').textContent = currentELO;
+            }
+        }
+
+        function updateELOProgress(elo) {
+            const rank = getCurrentRank(elo);
+            const progress = getRankProgress(elo, rank);
+            
+            // Update rank display in navigation
+            const rankIcon = document.getElementById('eloRankIcon');
+            const rankText = document.getElementById('eloRankText');
+            const progressFill = document.getElementById('eloProgressFill');
+            const currentRating = document.getElementById('eloCurrentRating');
+            
+            if (rankIcon) rankIcon.className = `elo-rank-icon ${rank.class}`;
+            if (rankText) rankText.textContent = rank.name;
+            if (progressFill) {
+                progressFill.className = `elo-progress-fill ${rank.class}`;
+                progressFill.style.width = `${progress}%`;
+            }
+            if (currentRating) currentRating.textContent = `${elo} ELO`;
+        }
+
+        function goToProfile() {
+            window.location.href = 'my-profile.html';
+        }
+
+        function updateELODisplay(newELO) {
+            currentELO = newELO;
+            document.getElementById('userElo').textContent = newELO;
+            updateELOProgress(newELO);
+            
+            // Update user data
+            if (currentUser) {
+                currentUser.elo = newELO;
+                try {
+                    localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                    
+                    // Update in users array
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const userIndex = users.findIndex(u => u.email === currentUser.email);
+                    if (userIndex !== -1) {
+                        users[userIndex].elo = newELO;
+                        localStorage.setItem('users', JSON.stringify(users));
+                    }
+                } catch (e) {
+                    console.log('Could not save ELO update');
+                }
+            }
+            
+            // Add animation effect
+            const eloElement = document.getElementById('userElo');
+            eloElement.style.transform = 'scale(1.3)';
+            eloElement.style.textShadow = '0 0 25px rgba(255, 140, 0, 0.8)';
+            
+            setTimeout(() => {
+                eloElement.style.transform = 'scale(1)';
+                eloElement.style.textShadow = '0 0 15px rgba(255, 140, 0, 0.5)';
+            }, 500);
+        }
+
+        // Lesson Management
+        function startLesson(lessonId) {
+    const lessonUrls = {
+        'html-basics': 'learn-html.html',
+        'css-styling': 'learn-css.html',
+        'javascript-basics': 'learn-javascript.html'
+    };
+    
+    if (lessonUrls[lessonId]) {
+        window.location.href = lessonUrls[lessonId];
+    }
+}
+
+        // Quiz System
+        function selectOption(element, correct) {
+            // Remove previous selections
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Mark this option as selected
+            element.classList.add('selected');
+            selectedAnswer = element;
+            isCorrect = correct;
+            
+            // Enable submit button
+            document.querySelector('.submit-answer').disabled = false;
+        }
+
+        function submitQuizAnswer() {
+            if (!selectedAnswer) return;
+            
+            // Show correct/incorrect styling
+            document.querySelectorAll('.quiz-option').forEach((option, index) => {
+                if (index === 1) { // Correct answer is index 1 (option B)
+                    option.classList.add('correct');
+                } else if (option.classList.contains('selected') && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback
+            const feedback = document.getElementById('quiz-feedback');
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Excellent! +15 ELO points earned! Flexbox is the modern way to create flexible layouts.';
+                feedback.style.color = '#4CAF50';
+                feedback.style.background = 'rgba(76, 175, 80, 0.1)';
+                feedback.style.border = '1px solid #4CAF50';
+                updateELODisplay(currentELO + 15);
+            } else {
+                feedback.innerHTML = '❌ Incorrect. -10 ELO points. The correct answer is B: display: flex creates a flexible container for layout.';
+                feedback.style.color = '#f44336';
+                feedback.style.background = 'rgba(244, 67, 54, 0.1)';
+                feedback.style.border = '1px solid #f44336';
+                updateELODisplay(Math.max(currentELO - 10, 800)); // Minimum ELO of 800
+            }
+            
+            // Disable submit button
+            document.querySelector('.submit-answer').disabled = true;
+            
+            // Reset after 4 seconds
+            setTimeout(resetQuiz, 4000);
+        }
+
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.getElementById('quiz-feedback').innerHTML = '';
+            document.getElementById('quiz-feedback').style.background = 'transparent';
+            document.getElementById('quiz-feedback').style.border = 'none';
+            document.querySelector('.submit-answer').disabled = true;
+            selectedAnswer = null;
+        }
+
+        // Page Load Animation and Initialization
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            
+            // Smooth fade in
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.6s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Also check on DOMContentLoaded for faster loading
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+        });
+
+        // Create floating particles for visual appeal
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: ${2 + Math.random() * 3}px;
+                height: ${2 + Math.random() * 3}px;
+                background: #ff8c00;
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0.7;
+                z-index: 1;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+            `;
+            
+            document.body.appendChild(particle);
+            
+            particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.8 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 200}px)`, opacity: 0 }
+            ], {
+                duration: 5000 + Math.random() * 3000,
+                easing: 'ease-out'
+            }).addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 1000);
+
+        // Enhanced card interactions
+        document.querySelectorAll('.lesson-card, .course-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Listen for storage changes to sync ELO across tabs
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'loggedInUser') {
+                checkLoginStatus();
+            }
+        });
+    </script>
+
+    <!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Elo.initHeader(); // paint header ELO once + wire up listeners
+  });
+</script>
+<script src="auth.js" defer></script>
+<script>
+  // Consistent avatar → profile navigation on all pages
+  function toggleUserDropdown() {
+    window.location.href = 'my-profile.html';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+      avatar.addEventListener('click', () => window.location.href = 'my-profile.html');
+    }
+  });
+</script>
+
+</body>
+</html>

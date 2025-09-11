@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Battle - Frontend Development Learning Hub</title>
+  <link rel="stylesheet" href="navigation.css">
+  <style>
+    /* Professional Black Theme with Orange Accents */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height:1.6;color:#fff;background:#0a0a0a;min-height:100vh;position:relative;
+    }
+    body::before{
+      content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(255,140,0,.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,140,0,.05) 0%, transparent 50%);
+      pointer-events:none;z-index:-1;
+    }
+
+    /* Header */
+    .header{background:rgba(0,0,0,.97);padding:1.25rem 0;position:fixed;top:0;left:0;right:0;z-index:1000;transition:all .3s ease}
+    .header::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(255,140,0,.2),transparent)}
+    .nav-container{max-width:1600px;margin:0 auto;padding:0 3rem;display:grid;grid-template-columns:auto 1fr auto;gap:3rem;align-items:center}
+    .logo{font-size:1.25rem;font-weight:500;color:#fff;text-decoration:none;display:flex;align-items:center;gap:.8rem;transition:all .3s;letter-spacing:.5px}
+    .logo:hover{transform:scale(1.05);text-shadow:0 0 20px rgba(255,140,0,.5)}
+    .logo::before{
+      content:"";display:inline-block;width:24px;height:24px;background:linear-gradient(135deg,#ff8c00,#ffb347);
+      mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+      mask-size:contain;mask-repeat:no-repeat;margin-right:.5rem;
+    }
+    .nav-menu{display:flex;list-style:none;gap:2.5rem;justify-content:center;flex-wrap:nowrap}
+    .nav-link{ text-decoration:none;color:rgba(255,255,255,.7);font-weight:400;transition:all .3s ease;padding:.5rem 1rem;position:relative;font-size:.95rem;letter-spacing:.3px}
+    .nav-link::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:#ff8c00;transform:scaleX(0);transform-origin:right;transition:transform .3s}
+    .nav-link:hover{color:#fff}.nav-link:hover::after{transform:scaleX(1);transform-origin:left}
+    .nav-link.active{color:#ff8c00;font-weight:500}.nav-link.active::after{transform:scaleX(1)}
+
+    /* User Menu */
+    .user-menu{display:none;position:relative;align-items:center;gap:1rem}
+    .user-menu.show{display:flex}
+    .user-profile-container{display:flex;align-items:center;gap:.75rem;position:relative}
+    .user-avatar{
+      width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff8c00,#ffb347);
+      display:flex;align-items:center;justify-content:center;color:#000;font-weight:bold;cursor:pointer;border:2px solid rgba(255,140,0,.3);
+      font-size:1rem;transition:all .3s ease;overflow:hidden;object-fit:cover
+    }
+    .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 15px rgba(255,140,0,.4)}
+    .user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+
+    /* ELO badge (nav) */
+    .elo-progress-container{display:flex;flex-direction:column;align-items:flex-start;gap:.3rem}
+    .elo-rank-header{display:flex;align-items:center;gap:.5rem}
+    .elo-rank-icon{width:16px;height:16px;border-radius:3px;transition:all .3s}
+    .elo-rank-text{font-size:.75rem;font-weight:600;color:#fff;letter-spacing:.5px}
+    .elo-progress-bar{width:80px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;position:relative}
+    .elo-progress-fill{height:100%;border-radius:3px;transition:all .5s ease;position:relative;overflow:hidden}
+    .elo-progress-fill::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2s infinite}
+    @keyframes shimmer{0%{left:-100%}100%{left:100%}}
+    .elo-current-rating{font-size:.7rem;color:rgba(255,255,255,.6);font-weight:500}
+    .rank-beginner{background:linear-gradient(135deg,#4CAF50,#66BB6A)}
+    .rank-intermediate{background:linear-gradient(135deg,#FF9800,#FFB74D)}
+    .rank-advanced{background:linear-gradient(135deg,#F44336,#EF5350)}
+    .rank-expert{background:linear-gradient(135deg,#9C27B0,#BA68C8)}
+    .rank-master{background:linear-gradient(135deg,#3F51B5,#7986CB)}
+    .rank-grandmaster{background:linear-gradient(135deg,#FFD700,#FFC107)}
+
+    /* Main */
+    .main-container{max-width:1400px;margin:0 auto;padding:2rem}
+    .page-header{
+      text-align:center;padding:4rem 2rem;background:linear-gradient(135deg,rgba(20,20,20,.9),rgba(30,30,30,.9));
+      border-radius:25px;margin-bottom:3rem;box-shadow:0 20px 60px rgba(0,0,0,.3);border:1px solid rgba(255,140,0,.2)
+    }
+    .page-title{
+      font-size:clamp(2.5rem,5vw,4rem);color:#fff;margin-bottom:1.5rem;
+      background:linear-gradient(135deg,#ffffff,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700
+    }
+
+    /* Setup */
+    .battle-setup{background:linear-gradient(135deg,rgba(20,20,20,.9),rgba(30,30,30,.9));border-radius:25px;padding:3rem;margin-bottom:3rem;border:1px solid rgba(255,140,0,.2);text-align:center}
+    .difficulty-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:2rem}
+    .difficulty-card{background:rgba(40,40,40,.8);border:2px solid rgba(255,140,0,.3);border-radius:15px;padding:2rem 1.5rem;cursor:pointer;transition:all .3s;text-align:center}
+    .difficulty-card:hover{background:rgba(255,140,0,.1);border-color:#ff8c00;transform:translateY(-5px)}
+    .difficulty-card.selected{background:linear-gradient(135deg,rgba(255,140,0,.2),rgba(255,179,71,.1));border-color:#ff8c00;box-shadow:0 8px 25px rgba(255,140,0,.3)}
+    .difficulty-title{font-size:1.2rem;font-weight:bold;margin-bottom:.5rem;color:#ff8c00}
+    .difficulty-stats{font-size:.9rem;color:#ccc;line-height:1.5}
+
+    /* Arena */
+    .battle-arena{display:none;background:linear-gradient(135deg,rgba(20,20,20,.9),rgba(30,30,30,.9));border-radius:25px;padding:3rem;border:1px solid rgba(255,140,0,.2)}
+    .battle-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding:1.25rem;background:rgba(40,40,40,.6);border-radius:15px;border:1px solid rgba(255,140,0,.2)}
+    .player-info{text-align:center;flex:1}
+    .player-name{font-size:1.2rem;font-weight:bold;margin-bottom:.25rem}
+    .player-score{font-size:2rem;font-weight:bold;color:#ff8c00}
+    .vs-divider{font-size:2rem;color:#ff8c00;margin:0 2rem;text-shadow:0 0 15px rgba(255,140,0,.5)}
+
+    /* Round / timer strip (always visible summary) */
+    .strip{
+      display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;margin:1rem 0 2rem;
+      background:rgba(40,40,40,.5);border:1px solid rgba(255,140,0,.2);border-radius:12px;padding:.75rem 1rem
+    }
+    .strip-item{ text-align:center;font-size:.95rem;color:#ddd }
+    .strip-strong{ color:#ffb347;font-weight:600 }
+
+    /* Timer */
+    .timer-container{text-align:center;margin-bottom:1.25rem}
+    .timer{font-size:3rem;font-weight:bold;color:#ff8c00;text-shadow:0 0 20px rgba(255,140,0,.5);margin-bottom:.5rem}
+    .timer.warning{color:#ff6b6b;animation:pulse 1s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+    /* Question */
+    .question-container{background:rgba(40,40,40,.8);border-radius:20px;padding:2rem;margin-bottom:1.25rem;border:1px solid rgba(255,140,0,.2)}
+    .question-number{color:#ff8c00;font-weight:bold;margin-bottom:.75rem;font-size:1.05rem}
+    .question-text{font-size:1.25rem;color:#fff;margin-bottom:1.5rem;line-height:1.6}
+    .options-grid{display:grid;gap:1rem}
+    .option-btn{
+      background:rgba(60,60,60,.8);border:2px solid rgba(255,140,0,.2);color:#fff;padding:1.1rem 1.25rem;border-radius:12px;cursor:pointer;transition:all .25s;text-align:left;font-size:1rem;position:relative;overflow:hidden
+    }
+    .option-btn::before{
+      content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,140,0,.1),transparent);transition:left .3s
+    }
+    .option-btn:hover::before{left:100%}
+    .option-btn:hover{border-color:#ff8c00;background:rgba(255,140,0,.1);transform:translateX(8px)}
+    .option-btn.selected{border-color:#ff8c00;background:linear-gradient(135deg,rgba(255,140,0,.2),rgba(255,179,71,.1));color:#ff8c00}
+    .option-btn.correct{border-color:#4CAF50;background:rgba(76,175,80,.2);color:#4CAF50}
+    .option-btn.incorrect{border-color:#f44336;background:rgba(244,67,54,.2);color:#f44336}
+    .option-btn.ai-selected{border-color:#00d4ff;background:rgba(0,212,255,.2);color:#00d4ff}
+
+    /* Controls */
+    .battle-controls{display:flex;justify-content:center;gap:1rem;margin:1.5rem 0;flex-wrap:wrap}
+    .control-btn{
+      background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border:none;padding:.9rem 1.5rem;border-radius:16px;font-weight:600;cursor:pointer;transition:all .2s;
+      box-shadow:0 4px 15px rgba(255,140,0,.3)
+    }
+    .control-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(255,140,0,.4)}
+    .control-btn.secondary{background:rgba(40,40,40,.8);color:#ff8c00;border:2px solid #ff8c00}
+    .control-btn.secondary:hover{background:rgba(255,140,0,.1)}
+    .control-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+    /* Progress */
+    .progress-section{display:flex;justify-content:space-between;gap:2rem;margin:1.25rem 0}
+    .progress-item{flex:1;text-align:center}
+    .progress-label{color:#ccc;margin-bottom:.4rem;font-weight:500}
+    .progress-bar{background:rgba(40,40,40,.8);border-radius:10px;height:12px;overflow:hidden;border:1px solid rgba(255,140,0,.2)}
+    .progress-fill{height:100%;transition:width .5s ease;border-radius:10px}
+    .user-progress{background:linear-gradient(135deg,#ff8c00,#ffb347)}
+    .ai-progress{background:linear-gradient(135deg,#00d4ff,#0099cc)}
+
+    /* Results detail (kept, but not relied on for visibility) */
+    .battle-results{background:rgba(40,40,40,.8);border-radius:20px;padding:1.5rem;margin-top:1rem;text-align:center;border:1px solid rgba(255,140,0,.2);display:none}
+    .result-title{font-size:1.6rem;font-weight:800;margin-bottom:.5rem}
+    .result-win{color:#4CAF50;text-shadow:0 0 15px rgba(76,175,80,.5)}
+    .result-lose{color:#f44336;text-shadow:0 0 15px rgba(244,67,54,.5)}
+    .result-tie{color:#ff8c00;text-shadow:0 0 15px rgba(255,140,0,.5)}
+
+    /* NEW: Floating result banner (always visible under the navbar) */
+    .result-banner{
+      position:fixed;top:76px;left:50%;transform:translateX(-50%);
+      background:linear-gradient(135deg, rgba(40,40,40,.98), rgba(25,25,25,.98));
+      border:1px solid rgba(255,140,0,.35);border-radius:14px;padding:.8rem 1rem;z-index:1500;display:none;
+      box-shadow:0 10px 30px rgba(0,0,0,.45);backdrop-filter:blur(8px);align-items:center;gap:.6rem
+    }
+    .result-chip{font-weight:800}
+    .result-chip.win{color:#18d26e}
+    .result-chip.lose{color:#ff6b6b}
+    .result-chip.tie{color:#ffb347}
+    .result-meta{color:#ccc;font-size:.95rem}
+    .rb-actions{display:flex;gap:.5rem;margin-left:.75rem}
+    .rb-btn{border:1px solid rgba(255,140,0,.5);background:transparent;color:#ffb347;border-radius:10px;padding:.35rem .6rem;cursor:pointer}
+    .rb-btn:hover{background:rgba(255,140,0,.1)}
+
+    /* Responsive */
+    @media (max-width:768px){
+      .main-container{padding:1rem}
+      .battle-header{flex-direction:column;gap:1rem}
+      .vs-divider{margin:1rem 0}
+      .nav-menu{flex-wrap:wrap;gap:1rem;justify-content:center}
+      .nav-container{flex-direction:column;gap:1rem;text-align:center}
+      .progress-section{flex-direction:column;gap:1rem}
+      .battle-controls{flex-direction:column;align-items:center}
+      .control-btn{width:100%;max-width:320px}
+      .result-banner{top:70px;width:calc(100% - 1.5rem)}
+    }
+
+    /* Misc */
+    .loading-spinner{width:30px;height:30px;border:3px solid rgba(255,140,0,.3);border-top:3px solid #ff8c00;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto}
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <!-- Header Navigation -->
+  <header class="header">
+    <nav class="nav-container">
+      <a href="index.html" class="logo">WebVantage</a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="team-intro.html" class="nav-link">Team</a></li>
+        <li><a href="courses.html" class="nav-link">Courses</a></li>
+        <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+        <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+        <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+        <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+      </ul>
+      <div class="user-menu" id="userMenu">
+        <div class="user-profile-container">
+          <div class="user-avatar" id="userAvatar" title="My Profile" onclick="window.location.href='my-profile.html'">U</div>
+          <div class="elo-progress-container">
+            <div class="elo-rank-header">
+              <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+              <span class="elo-rank-text" id="eloRankText">Beginner</span>
+            </div>
+            <div class="elo-progress-bar">
+              <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+            </div>
+            <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Floating result banner -->
+  <div id="resultBanner" class="result-banner">
+    <span id="rbChip" class="result-chip">—</span>
+    <span id="rbMeta" class="result-meta">Calculating…</span>
+    <div class="rb-actions">
+      <button class="rb-btn" onclick="scrollToDetails()">Details</button>
+      <button class="rb-btn" onclick="newBattle()">New Battle</button>
+    </div>
+  </div>
+
+  <main class="main-container" style="margin-top:4.5rem">
+    <section class="page-header">
+      <h1 class="page-title">⚔️ AI Battle Arena</h1>
+      <p class="page-subtitle">Challenge our AI in real-time quiz battles! Choose your difficulty, answer 5 rounds, and if the score ties, <b>speed decides</b>.</p>
+    </section>
+
+    <!-- Battle Setup -->
+    <section class="battle-setup" id="battleSetup">
+      <h2 style="color:#fff;margin-bottom:2rem;font-size:2rem">Choose Your Battle Difficulty</h2>
+      <div class="difficulty-grid">
+        <div class="difficulty-card" onclick="selectDifficulty('easy')">
+          <div class="difficulty-title">🟢 Easy</div>
+          <div class="difficulty-stats">AI Response: 20s<br>AI Accuracy: 50–70%<br>ELO Win: +5</div>
+        </div>
+        <div class="difficulty-card" onclick="selectDifficulty('medium')">
+          <div class="difficulty-title">🟡 Intermediate</div>
+          <div class="difficulty-stats">AI Response: 15s<br>AI Accuracy: 70–85%<br>ELO Win: +10</div>
+        </div>
+        <div class="difficulty-card" onclick="selectDifficulty('hard')">
+          <div class="difficulty-title">🔴 Hard</div>
+          <div class="difficulty-stats">AI Response: 10s<br>AI Accuracy: 75–95%<br>ELO Win: +15</div>
+        </div>
+        <div class="difficulty-card" onclick="selectDifficulty('master')">
+          <div class="difficulty-title">💀 Master</div>
+          <div class="difficulty-stats">AI Response: 7s<br>AI Accuracy: 95–100%<br>ELO Win: +25</div>
+        </div>
+      </div>
+      <div class="battle-controls">
+        <button class="control-btn" id="startBtn" onclick="startBattle()" disabled>🚀 Start Battle</button>
+      </div>
+    </section>
+
+    <!-- Battle Arena -->
+    <section class="battle-arena" id="battleArena">
+      <div class="battle-header">
+        <div class="player-info">
+          <div class="player-name" id="playerName">You</div>
+          <div class="player-score" id="playerScore">0</div>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="player-info">
+          <div class="player-name">AI Opponent <span class="ai-thinking" id="aiThinking" style="display:none">🤔</span></div>
+          <div class="player-score" id="aiScore">0</div>
+        </div>
+      </div>
+
+      <!-- Always-visible strip -->
+      <div class="strip">
+        <div class="strip-item">Round: <span id="stripRound" class="strip-strong">1 / 5</span></div>
+        <div class="strip-item">Tie-breaker: <span class="strip-strong">Average time</span></div>
+        <div class="strip-item">Difficulty: <span id="stripDiff" class="strip-strong">—</span></div>
+      </div>
+
+      <div class="timer-container">
+        <div class="timer" id="timer">30</div>
+        <div style="color:#ccc">seconds remaining</div>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-item">
+          <div class="progress-label">Your Progress</div>
+          <div class="progress-bar"><div id="userProgress" class="progress-fill user-progress" style="width:0%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label">AI Progress</div>
+          <div class="progress-bar"><div id="aiProgress" class="progress-fill ai-progress" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="question-container">
+        <div class="question-number" id="questionNumber">Question 1 of 5</div>
+        <div class="question-text" id="questionText">Loading question...</div>
+        <div class="options-grid" id="optionsGrid"></div>
+      </div>
+
+      <div class="battle-controls">
+        <button class="control-btn secondary" onclick="endBattle()">🏃 Quit Battle</button>
+      </div>
+
+      <div class="battle-results" id="battleResults">
+        <div class="result-title" id="resultTitle">Battle Complete!</div>
+        <div id="resultDetails"></div>
+        <button class="control-btn" onclick="newBattle()" style="margin-top:1rem">🔄 New Battle</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let currentUser = null;
+    let currentELO = 1250;
+    let selectedDifficulty = null;
+
+    const ELO_CONFIG = {
+      easy:   { win: +5,  tie: 0, loss: -3, label:'Easy' },
+      medium: { win: +10, tie: 0, loss: -5, label:'Intermediate' },
+      hard:   { win: +15, tie: +2, loss: -8, label:'Hard' },
+      master: { win: +25, tie: +4, loss: -12, label:'Master' }
+    };
+
+    const battleState = {
+      currentQuestion: 0,
+      userScore: 0,
+      aiScore: 0,
+      totalQuestions: 5,
+      timer: null,
+      timeLeft: 30,
+      gameActive: false,
+      aiResponseTime: 20,
+      aiAccuracy: 0.6,
+      pool: [],
+      // Timing + tie-break
+      questionStartTs: 0,
+      userTimes: [],
+      aiTimes: [],
+      aiAnswered: false,
+      aiTimerId: null
+    };
+
+    /* ---------------- Question bank (grouped) ---------------- */
+    const questionBank = {
+      easy: [
+        { q:"Which HTML tag is used to define a hyperlink?", options:["<link>","<a>","<href>","<url>"], correct:1 },
+        { q:"In HTML5, which tag is used to define navigation links?", options:["<nav>","<menu>","<section>","<aside>"], correct:0 },
+        { q:"The correct attribute to make a checkbox selected by default is:", options:["selected","default","checked","active"], correct:2 },
+        { q:"Which tag is used for the largest heading?", options:["<h6>","<h5>","<h1>","<head>"], correct:2 },
+        { q:"Which CSS property controls the text size?", options:["text-style","font-size","text-size","size"], correct:1 },
+        { q:"What does the <canvas> tag in HTML5 provide?", options:["Vector graphics","Audio playback","Drawing and rendering graphics","Animations only"], correct:2 },
+        { q:"Which CSS property is used for shadows behind text?", options:["text-decoration","text-style","text-shadow","shadow"], correct:2 },
+        { q:"The <video> tag requires which attribute for playback controls?", options:["play","controls","autoplay","default"], correct:1 },
+        { q:"Which CSS layout is designed for responsive designs?", options:["Flexbox","Float","Inline-block","Table"], correct:0 },
+        { q:"Which HTML tag is used to embed JavaScript code?", options:["<script>","<style>","<js>","<link>"], correct:0 },
+        { q:"In CSS, position: fixed; positions an element relative to:", options:["Its parent","The nearest positioned ancestor","The viewport","The document"], correct:2 },
+        { q:"Which HTML tag is used to define a form?", options:["<input>","<form>","<submit>","<fieldset>"], correct:1 },
+        { q:"The CSS property to change background color is:", options:["background","bg-color","color","background-color"], correct:3 },
+        { q:"Which HTML5 tag is used for semantic grouping of content?", options:["<div>","<span>","<section>","<p>"], correct:2 },
+        { q:"Which input type is used for selecting a date in HTML5?", options:['type="calendar"','type="date"','type="datetime"','type="day"'], correct:1 },
+        { q:"What does CSS z-index control?", options:["Text color","Font size","Element stacking order","Line spacing"], correct:2 },
+        { q:"Which tag is not valid HTML5?", options:["<article>","<footer>","<blink>","<header>"], correct:2 },
+        { q:"Which CSS property makes text italic?", options:["text-style","font-style","font-weight","style"], correct:1 },
+        { q:"Which attribute specifies alternate text for images?", options:["alt","src","title","description"], correct:0 },
+        { q:"Which of these is not a valid CSS unit?", options:["px","em","%","ptm"], correct:3 },
+        { q:"In HTML, the identifiers used to set page meta information are", options:["<little>","<base>","<meta>","<head>"], correct:2 },
+        { q:"Tag used to display paragraphs", options:["<h1>","<br/>","<img/>","<p>"], correct:3 },
+        { q:"Which tag sets text to bold?", options:["<u>","<del>","<strong>","<em>"], correct:2 },
+        { q:"JavaScript runs on ( ).", options:["Server side","Client","Server then returns","Client then returns"], correct:1 },
+        { q:"input TYPE creating a reset button:", options:["reset","set","button","image"], correct:0 },
+        { q:"Insert gif animation using", options:["<form>","<body>","<table>","<img>"], correct:3 }
+      ],
+      medium: [
+        { q:"Which is not a JavaScript data type?", options:["Boolean","Undefined","Float","String"], correct:2 },
+        { q:"typeof NaN returns:", options:["NaN","Number","Undefined","Object"], correct:1 },
+        { q:"Declare a constant in ES6:", options:["const pi = 3.14;","constant pi = 3.14;","var pi = 3.14;","let pi; pi = 3.14;"], correct:0 },
+        { q:"Convert JSON string to object:", options:["JSON.parse()","JSON.stringify()","toObject()","parseJSON()"], correct:0 },
+        { q:"console.log(2 + '2') outputs:", options:["4","\"22\"","22","NaN"], correct:1 },
+        { q:"Strict equality operator:", options:["==","!=","===","="], correct:2 },
+        { q:"Default value of uninitialized variable:", options:["null","0","undefined","NaN"], correct:2 },
+        { q:"Remove last element from array:", options:["shift()","pop()","splice()","delete()"], correct:1 },
+        { q:"this refers to:", options:["Always global","Context-dependent current object","Undefined","Parent object"], correct:1 },
+        { q:"Delay code execution:", options:["setInterval()","setTimeout()","wait()","delay()"], correct:1 },
+        { q:"Loop guaranteed to run once:", options:["for","while","do…while","foreach"], correct:2 },
+        { q:"=== checks:", options:["Only value","Only type","Both value and type","None"], correct:2 },
+        { q:"Not a JS framework/library:", options:["Angular","React","Vue","Django"], correct:3 },
+        { q:"Define a function (ES6):", options:["function = () => {}","() => {}","function myFunc() {}","Both B and C"], correct:3 },
+        { q:"Array method that filters elements:", options:["filter()","forEach()","map()","reduce()"], correct:0 },
+        { q:"Stop further execution inside a loop:", options:["stop","break","return","continue"], correct:1 },
+        { q:"Correct about var/let/const:", options:["var is block-scoped","let is function-scoped","const cannot be reassigned","All of the above"], correct:2 },
+        { q:"Proper error handling:", options:["try…catch","throw…handle","if…else","return false"], correct:0 },
+        { q:"Back-end language:", options:["JavaScript","Python","PHP","All of the above"], correct:3 },
+        { q:"NoSQL database:", options:["MySQL","MongoDB","PostgreSQL","Oracle"], correct:1 },
+        { q:"Secure web protocol:", options:["HTTP","HTTPS","FTP","SMTP"], correct:1 },
+        { q:"REST stands for:", options:["Representational State Transfer","Reliable Secure Transfer","Remote Server Technology","None"], correct:0 },
+        { q:"CSS framework:", options:["React","Angular","Bootstrap","Node.js"], correct:2 },
+        { q:"Purpose of Git:", options:["File editing","Version control","Debugging","Hosting"], correct:1 },
+        { q:"JavaScript runtime:", options:["Node.js","Angular","React","Django"], correct:0 },
+        { q:"'Page Not Found' status:", options:["200","301","404","500"], correct:2 },
+        { q:"JS package manager:", options:["npm","pip","composer","maven"], correct:0 },
+        { q:"Flexible sizing unit:", options:["px","em","%","cm"], correct:2 },
+        { q:"Persists after browser close:", options:["SessionStorage","LocalStorage","Cookies (expiry)","Both B and C"], correct:3 },
+        { q:"AWS is by:", options:["Microsoft","Amazon","Google","IBM"], correct:1 },
+        { q:"Not front-end framework:", options:["Vue.js","Angular","React","Laravel"], correct:3 },
+        { q:"CDN stands for:", options:["Content Distribution Network","Content Delivery Network","Client Data Node","Both A and B"], correct:1 },
+        { q:"Idempotent update method:", options:["GET","POST","PUT","DELETE"], correct:2 },
+        { q:"Containerization tool:", options:["Docker","Git","Kubernetes","Jenkins"], correct:0 },
+        { q:"Purpose of HTTPS:", options:["Speed","Secure communication","Compression","Validate HTML"], correct:1 },
+        { q:"Not a common hosting type:", options:["Shared","VPS","Dedicated","Encrypted"], correct:3 },
+        { q:"CSS preprocessor:", options:["Sass","Less","Stylus","All of the above"], correct:3 },
+        { q:"Idempotent among these:", options:["GET","POST","PATCH","None"], correct:0 },
+        { q:"Runtime error candidate:", options:["var_变量=NaN:","var 0bj=[]","var obi=//","var obj ={}"], correct:2 },
+        { q:"Incorrect float value:", options:["float:left;","float:center;","float:right;","float:none;"], correct:1 },
+        { q:"Image tag extra attrs:", options:["hspace","vspace","align","All of the above"], correct:3 },
+        { q:"Incorrect CSS3 pseudo-class:", options:["p:first-of-type","p:only-of-child","p:nth-child(2)",":disabled"], correct:1 },
+        { q:"Make a textbox lose focus:", options:["onblur()","focus()","blur()","leave()"], correct:2 },
+        { q:"W3C box model default total width:", options:["content","content+2*padding","content+2*padding+2*border","content+2*padding+2*border+2*margin"], correct:2 }
+      ],
+      hard: [
+        { q:"Boolean(\"\") is:", options:["true","false","null","undefined"], correct:1 },
+        { q:"0.1+0.2===0.3 returns:", options:["true","false","undefined","NaN"], correct:1 },
+        { q:"Math.ceil(25.5) =", options:["24","25","25.5","26"], correct:3 },
+        { q:"var a=10; b=20; c=4; ++b + c + a++ =", options:["34","35","36","37"], correct:3 },
+        { q:"Main HTML layout techniques:", options:["Frame","Table","DIV layer","All of the above"], correct:3 },
+        { q:"Algorithm commonly used for classification:", options:["Linear Regression","Decision Tree","PCA","K-means"], correct:1 },
+        { q:"Goal of reinforcement learning:", options:["Classify data","Learn via rewards/penalties","Reduce dimensions","Cluster items"], correct:1 }
+      ]
+    };
+
+    /* ---------------- Utilities ---------------- */
+    function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+    function poolFor(d){
+      switch(d){
+        case 'easy': return questionBank.easy.slice();
+        case 'medium': return questionBank.medium.slice();
+        case 'hard': return questionBank.hard.slice();
+        case 'master': return shuffle([...questionBank.hard, ...questionBank.medium]).slice();
+        default: return questionBank.medium.slice();
+      }
+    }
+    function avg(arr){ if(!arr.length) return 0; return arr.reduce((s,x)=>s+x,0)/arr.length }
+
+    /* ---------------- Auth / nav UI ---------------- */
+    function checkLoginStatus(){
+      try{
+        const userData = localStorage.getItem('loggedInUser');
+        if(userData){ currentUser = JSON.parse(userData); currentELO = currentUser.elo ?? 1250; }
+      }catch{}
+
+      const loginLink = document.getElementById('loginLink');
+      const registerLink = document.getElementById('registerLink');
+      const userMenu = document.getElementById('userMenu');
+      const userAvatar = document.getElementById('userAvatar');
+
+      if(currentUser){
+        loginLink.style.display='none'; registerLink.style.display='none'; userMenu.classList.add('show');
+        if(currentUser.avatarImage){
+          userAvatar.innerHTML = `<img src="${currentUser.avatarImage}" alt="Avatar">`;
+        }else if(currentUser.avatar){
+          userAvatar.textContent = currentUser.avatar;
+        }else{
+          userAvatar.textContent = (currentUser.name||'U').charAt(0).toUpperCase();
+        }
+        document.getElementById('playerName').textContent = currentUser.name || 'You';
+      }else{
+        loginLink.style.display='block'; registerLink.style.display='block'; userMenu.classList.remove('show');
+      }
+      updateEloBadge(currentELO);
+    }
+
+    function updateEloBadge(elo){
+      const rankIcon = document.getElementById('eloRankIcon');
+      const rankText = document.getElementById('eloRankText');
+      const progressFill = document.getElementById('eloProgressFill');
+      const currentRating = document.getElementById('eloCurrentRating');
+
+      const ranks = [
+        {name:'Beginner', class:'rank-beginner', min:0, max:1399},
+        {name:'Intermediate', class:'rank-intermediate', min:1400, max:1799},
+        {name:'Advanced', class:'rank-advanced', min:1800, max:2199},
+        {name:'Expert', class:'rank-expert', min:2200, max:2599},
+        {name:'Master', class:'rank-master', min:2600, max:2999},
+        {name:'Grandmaster', class:'rank-grandmaster', min:3000, max:9999},
+      ];
+      const rank = ranks.find(r => elo>=r.min && elo<=r.max) || ranks[0];
+      const pct = Math.min(100, Math.max(0, ((elo - rank.min)/(rank.max-rank.min))*100));
+      rankIcon.className = `elo-rank-icon ${rank.class}`;
+      rankText.textContent = rank.name;
+      progressFill.className = `elo-progress-fill ${rank.class}`;
+      progressFill.style.width = `${pct}%`;
+      currentRating.textContent = `${elo} ELO`;
+    }
+
+    /* ---------------- Difficulty selection ---------------- */
+    function selectDifficulty(d){
+      document.querySelectorAll('.difficulty-card').forEach(c=>c.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+      selectedDifficulty = d;
+      document.getElementById('stripDiff').textContent = ELO_CONFIG[d].label;
+
+      const settings = {
+        easy:   { responseTime:20, accuracy:0.5 + Math.random()*0.2 },
+        medium: { responseTime:15, accuracy:0.7 + Math.random()*0.15 },
+        hard:   { responseTime:10, accuracy:0.75 + Math.random()*0.2 },
+        master: { responseTime:7,  accuracy:0.95 + Math.random()*0.05 }
+      };
+      battleState.aiResponseTime = settings[d].responseTime;
+      battleState.aiAccuracy = Math.min(settings[d].accuracy,1);
+      document.getElementById('startBtn').disabled = false;
+    }
+
+    /* ---------------- Battle flow ---------------- */
+    function startBattle(){
+      document.getElementById('battleSetup').style.display='none';
+      document.getElementById('battleArena').style.display='block';
+      hideBanner();
+
+      battleState.pool = poolFor(selectedDifficulty);
+      while(battleState.pool.length < battleState.totalQuestions){
+        battleState.pool = battleState.pool.concat(shuffle(battleState.pool.slice()));
+      }
+
+      battleState.currentQuestion = 0;
+      battleState.userScore = 0;
+      battleState.aiScore = 0;
+      battleState.userTimes = [];
+      battleState.aiTimes = [];
+      battleState.gameActive = true;
+
+      document.getElementById('playerScore').textContent = 0;
+      document.getElementById('aiScore').textContent = 0;
+      document.getElementById('userProgress').style.width = '0%';
+      document.getElementById('aiProgress').style.width = '0%';
+      document.getElementById('stripRound').textContent = `1 / ${battleState.totalQuestions}`;
+
+      loadNextQuestion();
+    }
+
+    function loadNextQuestion(){
+      if(battleState.currentQuestion >= battleState.totalQuestions){ endBattle(); return; }
+
+      const q = battleState.pool[battleState.currentQuestion];
+      document.getElementById('questionNumber').textContent = `Question ${battleState.currentQuestion + 1} of ${battleState.totalQuestions}`;
+      document.getElementById('stripRound').textContent = `${battleState.currentQuestion + 1} / ${battleState.totalQuestions}`;
+      document.getElementById('questionText').textContent = q.q;
+
+      const grid = document.getElementById('optionsGrid');
+      grid.innerHTML = '';
+      q.options.forEach((opt, idx)=>{
+        const btn = document.createElement('button');
+        btn.className='option-btn';
+        btn.textContent=`${String.fromCharCode(65+idx)}) ${opt}`;
+        btn.onclick = ()=> selectAnswer(idx, q.correct);
+        grid.appendChild(btn);
+      });
+
+      battleState.aiAnswered = false;
+      document.getElementById('aiThinking').style.display='inline';
+      startTimer();
+      // schedule AI response (but we will still count it even if user answers earlier)
+      battleState.aiTimerId = setTimeout(()=>{
+        if(!battleState.gameActive) return;
+        aiRespondVisual(q.correct);
+      }, battleState.aiResponseTime*1000);
+
+      // mark start timestamp
+      battleState.questionStartTs = performance.now ? performance.now() : Date.now();
+    }
+
+    function startTimer(){
+      battleState.timeLeft = 30;
+      updateTimer();
+      clearInterval(battleState.timer);
+      battleState.timer = setInterval(()=>{
+        battleState.timeLeft--;
+        updateTimer();
+        if(battleState.timeLeft <= 0){
+          clearInterval(battleState.timer);
+          // Record a slow user time
+          recordUserTime(30);
+          // If AI hasn't responded yet, simulate its answer silently
+          if(!battleState.aiAnswered){ finalizeAISilentForCurrent(); }
+          setTimeout(nextQuestion, 800);
+        }
+      },1000);
+    }
+
+    function updateTimer(){
+      const t = document.getElementById('timer');
+      t.textContent = battleState.timeLeft;
+      if(battleState.timeLeft<=10) t.classList.add('warning'); else t.classList.remove('warning');
+    }
+
+    // Visual AI response (used if AI answers before we advance)
+    function aiRespondVisual(correctIndex){
+      if(battleState.aiAnswered) return; // already resolved
+      battleState.aiAnswered = true;
+      document.getElementById('aiThinking').style.display='none';
+
+      const options = document.querySelectorAll('.option-btn');
+      // Choose answer with accuracy
+      let aiAnswer;
+      if(Math.random() < battleState.aiAccuracy){
+        aiAnswer = correctIndex;
+      }else{
+        do{ aiAnswer = Math.floor(Math.random()*4); } while(aiAnswer === correctIndex);
+      }
+
+      // Mark time taken
+      const elapsed = elapsedSeconds();
+      battleState.aiTimes.push(elapsed);
+
+      if(options.length){
+        options[aiAnswer].classList.add('ai-selected');
+        if(aiAnswer === correctIndex){
+          battleState.aiScore++;
+          options[aiAnswer].classList.add('correct');
+        }else{
+          options[aiAnswer].classList.add('incorrect');
+          options[correctIndex]?.classList.add('correct');
+        }
+      }else{
+        // No buttons (edge), still count score
+        if(aiAnswer === correctIndex) battleState.aiScore++;
+      }
+      updateScores();
+      setTimeout(nextQuestion, 1200);
+    }
+
+    // If user answers/timeout before AI scheduled, simulate AI instantly & record planned time
+    function finalizeAISilentForCurrent(correctIndex){
+      clearTimeout(battleState.aiTimerId);
+      if(battleState.aiAnswered) return;
+      battleState.aiAnswered = true;
+
+      // Decide correctness with same accuracy
+      let aiAnswerCorrect = Math.random() < battleState.aiAccuracy;
+      if(aiAnswerCorrect) battleState.aiScore++;
+      // Record the *planned* AI time (fixed per difficulty)
+      battleState.aiTimes.push(battleState.aiResponseTime);
+      updateScores();
+    }
+
+    function selectAnswer(selectedIdx, correctIdx){
+      if(!battleState.gameActive) return;
+      clearInterval(battleState.timer);
+
+      const options = document.querySelectorAll('.option-btn');
+      options.forEach(o=>o.style.pointerEvents='none');
+
+      // Record user time
+      recordUserTime(elapsedSeconds());
+
+      // Show correctness
+      options[correctIdx]?.classList.add('correct');
+      options[selectedIdx].classList.add('selected');
+      if(selectedIdx === correctIdx){
+        battleState.userScore++;
+      }else{
+        options[selectedIdx].classList.add('incorrect');
+      }
+      updateScores();
+
+      // If AI hasn't answered yet, resolve it silently (so both "answered" this round)
+      if(!battleState.aiAnswered){ finalizeAISilentForCurrent(correctIdx); }
+
+      document.getElementById('aiThinking').style.display='none';
+      setTimeout(nextQuestion, 900);
+    }
+
+    function recordUserTime(seconds){ battleState.userTimes.push(seconds); }
+    function elapsedSeconds(){
+      const now = performance.now ? performance.now() : Date.now();
+      return Math.max(0, (now - battleState.questionStartTs)/1000);
+    }
+
+    function nextQuestion(){
+      battleState.currentQuestion++;
+      // Reset option styles for safety
+      document.querySelectorAll('.option-btn').forEach(o=>{o.style.pointerEvents='auto';o.className='option-btn';});
+      updateProgress();
+
+      if(battleState.currentQuestion < battleState.totalQuestions){
+        loadNextQuestion();
+      }else{
+        showBattleResults();
+      }
+    }
+
+    function updateScores(){
+      document.getElementById('playerScore').textContent = battleState.userScore;
+      document.getElementById('aiScore').textContent = battleState.aiScore;
+    }
+
+    function updateProgress(){
+      const userPct = (battleState.userScore / battleState.totalQuestions) * 100;
+      const aiPct   = (battleState.aiScore   / battleState.totalQuestions) * 100;
+      document.getElementById('userProgress').style.width = `${userPct}%`;
+      document.getElementById('aiProgress').style.width   = `${aiPct}%`;
+    }
+
+    function endBattle(){
+      battleState.gameActive = false;
+      clearInterval(battleState.timer);
+      showBattleResults();
+    }
+
+    /* ---------------- Results + ELO ---------------- */
+    function showBattleResults(){
+      battleState.gameActive = false;
+      clearInterval(battleState.timer);
+      document.getElementById('aiThinking').style.display='none';
+
+      // If AI/user times missing (edge), pad
+      while(battleState.userTimes.length < battleState.totalQuestions) battleState.userTimes.push(30);
+      while(battleState.aiTimes.length   < battleState.totalQuestions) battleState.aiTimes.push(battleState.aiResponseTime);
+
+      // Decide outcome: score first; if tie => average time
+      const scoreUser = battleState.userScore;
+      const scoreAI   = battleState.aiScore;
+
+      const avgUser = avg(battleState.userTimes);
+      const avgAI   = avg(battleState.aiTimes);
+      const timeDiff = Math.abs(avgUser - avgAI);
+      const epsilon = 0.25; // within 250ms => true tie
+
+      let outcome = '';
+      let bannerChipClass = '';
+      let detailLine = '';
+      let eloDelta = 0;
+
+      const cfg = ELO_CONFIG[selectedDifficulty || 'medium'];
+
+      if(scoreUser > scoreAI){
+        outcome = 'win'; bannerChipClass='win';
+        eloDelta = cfg.win;
+        detailLine = `You won on score ${scoreUser}-${scoreAI}.`;
+      }else if(scoreUser < scoreAI){
+        outcome = 'lose'; bannerChipClass='lose';
+        eloDelta = cfg.loss;
+        detailLine = `AI won on score ${scoreAI}-${scoreUser}.`;
+      }else{
+        // Score tie => compare average times
+        if(timeDiff <= epsilon){
+          outcome = 'tie'; bannerChipClass='tie';
+          eloDelta = cfg.tie; // 0 except +2 hard, +4 master
+          detailLine = `True tie on time (both ~${avgUser.toFixed(2)}s).`;
+        }else if(avgUser < avgAI){
+          outcome = 'win'; bannerChipClass='win';
+          eloDelta = cfg.win;
+          detailLine = `Score tied ${scoreUser}-${scoreAI}, but you were faster (${avgUser.toFixed(2)}s vs ${avgAI.toFixed(2)}s).`;
+        }else{
+          outcome = 'lose'; bannerChipClass='lose';
+          eloDelta = cfg.loss;
+          detailLine = `Score tied ${scoreUser}-${scoreAI}, but AI was faster (${avgAI.toFixed(2)}s vs ${avgUser.toFixed(2)}s).`;
+        }
+      }
+
+      // Apply ELO
+      currentELO = Math.max(800, (currentELO||1200) + eloDelta);
+      persistElo(currentELO);
+
+      // Update details block (kept on page)
+      const resultsDiv = document.getElementById('battleResults');
+      const resultTitle = document.getElementById('resultTitle');
+      const resultDetails = document.getElementById('resultDetails');
+
+      let titleText = outcome==='win' ? '🎉 Victory!' : outcome==='lose' ? '💔 Defeat' : '🤝 Tie Game';
+      resultTitle.textContent = titleText;
+      resultTitle.className = `result-title ${outcome==='win'?'result-win':outcome==='lose'?'result-lose':'result-tie'}`;
+
+      resultDetails.innerHTML = `
+        <p style="margin:.25rem 0;color:#ccc">${detailLine}</p>
+        <p style="margin:.25rem 0;color:#ffb347">Your avg time: <b>${avgUser.toFixed(2)}s</b> • AI avg: <b>${avgAI.toFixed(2)}s</b></p>
+        <p style="margin:.25rem 0;color:${eloDelta>=0?'#4CAF50':'#ff6b6b'}">ELO change: ${eloDelta>=0?'+':''}${eloDelta}</p>
+      `;
+      resultsDiv.style.display='block';
+
+      // Show floating banner at top
+      showBanner(outcome, eloDelta, detailLine);
+
+      // Jump to top so banner is visible immediately
+      window.scrollTo({top:0, behavior:'smooth'});
+      updateEloBadge(currentELO);
+    }
+
+    function persistElo(newElo){
+      currentELO = newElo;
+      if(currentUser){
+        currentUser.elo = newElo;
+        try{
+          localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+          let users = JSON.parse(localStorage.getItem('users')||'[]');
+          const idx = users.findIndex(u=>u.email===currentUser.email);
+          if(idx!==-1){ users[idx].elo = newElo; localStorage.setItem('users', JSON.stringify(users)); }
+          // notify other tabs/pages (profile)
+          window.dispatchEvent(new CustomEvent('eloUpdated',{detail:{newElo}}));
+        }catch{}
+      }
+    }
+
+    /* ---------------- Result banner helpers ---------------- */
+    function showBanner(outcome, eloDelta, meta){
+      const rb = document.getElementById('resultBanner');
+      const chip = document.getElementById('rbChip');
+      const text = document.getElementById('rbMeta');
+
+      chip.className = `result-chip ${outcome==='win'?'win':outcome==='lose'?'lose':'tie'}`;
+      chip.textContent = outcome==='win' ? 'WIN' : outcome==='lose' ? 'LOSS' : 'TIE';
+      const eloTxt = eloDelta ? ` • ELO ${eloDelta>0?'+':''}${eloDelta}` : '';
+      text.textContent = meta.replace(/<[^>]+>/g,'') + eloTxt;
+
+      rb.style.display='flex';
+    }
+    function hideBanner(){ document.getElementById('resultBanner').style.display='none'; }
+    function scrollToDetails(){
+      const el = document.getElementById('battleResults');
+      if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); }
+    }
+
+    /* ---------------- New battle ---------------- */
+    function newBattle(){
+      hideBanner();
+      document.getElementById('battleSetup').style.display='block';
+      document.getElementById('battleArena').style.display='none';
+      document.getElementById('battleResults').style.display='none';
+      document.querySelectorAll('.difficulty-card').forEach(c=>c.classList.remove('selected'));
+      selectedDifficulty = null;
+      document.getElementById('startBtn').disabled = true;
+    }
+
+    /* ---------------- Init ---------------- */
+    window.addEventListener('load', ()=>{
+      checkLoginStatus();
+      document.body.style.opacity='0';
+      document.body.style.transition='opacity .6s ease';
+      setTimeout(()=>{ document.body.style.opacity='1'; },100);
+    });
+
+    // subtle flair
+    function createParticle(){
+      const p = document.createElement('div');
+      p.style.cssText = `
+        position:fixed;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;background:#ff8c00;border-radius:50%;
+        pointer-events:none;opacity:.4;z-index:1;left:${Math.random()*100}vw;top:100vh;box-shadow:0 0 8px rgba(255,140,0,.5)
+      `;
+      document.body.appendChild(p);
+      p.animate([
+        {transform:'translateY(0) scale(0)',opacity:0},
+        {transform:'translateY(-50vh) scale(1)',opacity:.6},
+        {transform:`translateY(-100vh) scale(0) translateX(${(Math.random()-.5)*100}px)`,opacity:0}
+      ],{duration:5000+Math.random()*2000,easing:'ease-out'}).addEventListener('finish',()=>p.remove());
+    }
+    setInterval(createParticle, 1200);
+  </script>
+</body>
+</html>

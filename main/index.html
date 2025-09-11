@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Frontend Development Learning Hub - Master Frontend Development</title>
+<link href="navigation.css" rel="stylesheet"/>
+<style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu.show {
+            display: flex;
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* ELO Progress Bar */
+        .elo-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .elo-rank-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elo-rank-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .elo-rank-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .elo-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .elo-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elo-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .elo-current-rating {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* ELO Rank Colors */
+        .rank-beginner {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        .rank-intermediate {
+            background: linear-gradient(135deg, #FF9800, #FFB74D);
+        }
+
+        .rank-advanced {
+            background: linear-gradient(135deg, #F44336, #EF5350);
+        }
+
+        .rank-expert {
+            background: linear-gradient(135deg, #9C27B0, #BA68C8);
+        }
+
+        .rank-master {
+            background: linear-gradient(135deg, #3F51B5, #7986CB);
+        }
+
+        .rank-grandmaster {
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: left;
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.95));
+            position: relative;
+            overflow: hidden;
+            margin: -2rem -2rem 4rem -2rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 30%, rgba(255, 140, 0, 0.02) 50%, transparent 70%),
+                linear-gradient(to right, rgba(255, 140, 0, 0.05), transparent);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, 
+                transparent,
+                rgba(255, 140, 0, 0.3),
+                transparent
+            );
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            position: relative;
+        }
+
+        .hero-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: #ff8c00;
+            margin-top: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            background: #ff8c00;
+            color: #000000;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 200px;
+            letter-spacing: 0.5px;
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #000000;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            border: 1px solid #ff8c00;
+            color: #ff8c00;
+        }
+
+        .cta-button.secondary::after {
+            background: #ff8c00;
+        }
+
+        .cta-button.secondary:hover {
+            background: rgba(255, 140, 0, 0.05);
+        }
+
+        .cta-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Features Section */
+        .features-section {
+            margin: 5rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            text-align: left;
+            margin-bottom: 4rem;
+            position: relative;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 60px;
+            height: 2px;
+            background: #ff8c00;
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 2.5rem;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 140, 0, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, #ff8c00, transparent);
+            transition: height 0.4s ease;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff8c00, transparent);
+            transition: width 0.4s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(20, 20, 20, 0.95);
+            transform: translateY(-5px);
+        }
+
+        .feature-card:hover::before {
+            height: 100%;
+        }
+
+        .feature-card:hover::after {
+            width: 100%;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .feature-svg {
+            width: 100%;
+            height: 100%;
+            fill: #ff8c00;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-svg {
+            fill: #ffb347;
+            filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.4));
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: #cccccc;
+            line-height: 1.7;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 6rem 2rem;
+            margin: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 4rem;
+            text-align: left;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 40px;
+            background: #ff8c00;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Interactive Demo */
+        .demo-section {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(15px);
+        }
+
+        .demo-card {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.1), rgba(20, 20, 20, 0.8));
+            border-radius: 20px;
+            padding: 3rem;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 140, 0, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .demo-card:hover::before {
+            opacity: 1;
+            animation: shine 0.8s ease-in-out;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .demo-card:hover {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.15), rgba(20, 20, 20, 0.9));
+            border-color: #ff8c00;
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 140, 0, 0.3);
+        }
+
+        .demo-card h3 {
+            color: #ff8c00;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .demo-card p {
+            color: #cccccc;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            padding: 1rem 2.5rem;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.4);
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            background: #ff8c00;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1200px) {
+            .nav-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 1.5rem;
+            }
+
+            .nav-menu {
+                gap: 1.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .user-profile {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .user-info {
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .hero {
+                padding: 4rem 1rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .user-profile {
+                padding: 0.3rem;
+            }
+
+            .user-name {
+                font-size: 0.8rem;
+            }
+
+            .progress-bar {
+                width: 40px;
+            }
+
+            .rank-label {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .user-profile {
+                flex-direction: row;
+                gap: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header Navigation -->
+<header class="header">
+<nav class="nav-container">
+<a class="logo" href="index.html">WebVantage</a>
+<ul class="nav-menu" id="navMenu">
+<li><a class="nav-link" href="index.html">Home</a></li>
+<li><a class="nav-link" href="team-intro.html">Team</a></li>
+<li><a class="nav-link" href="courses.html">Courses</a></li>
+<li><a class="nav-link" href="code-editor.html">Code Editor</a></li>
+<li><a class="nav-link" href="challenges.html">Challenges</a></li>
+<li><a class="nav-link" href="ai-battle.html">AI Battle</a></li>
+<li><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
+<li><a class="nav-link" href="login.html" id="loginLink">Login</a></li>
+<li><a class="nav-link" href="register.html" id="registerLink">Register</a></li>
+</ul>
+<!-- User menu for logged in state -->
+<div class="user-menu" id="userMenu">
+<div class="user-profile-container">
+<div class="user-avatar" id="userAvatar" onclick="toggleUserDropdown()">
+                        U
+                    </div>
+<div class="elo-progress-container">
+<div class="elo-rank-header">
+<div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+<span class="elo-rank-text" id="eloRankText">Beginner</span>
+</div>
+<div class="elo-progress-bar">
+<div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width: 60%"></div>
+</div>
+<div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<!-- Main Content -->
+<main class="main-container">
+<!-- Hero Section -->
+<section class="hero loading">
+<div class="hero-content">
+<div class="hero-content-wrapper">
+<h1 class="hero-title">Frontend Development Excellence</h1>
+<p class="hero-subtitle">
+                        Elevate your development skills through structured learning paths,
+                        professional-grade projects, and advanced technical challenges.
+                    </p>
+<div class="cta-buttons" style="justify-content:center;">
+<a class="cta-button cta-button" href="login.html" id="getStartedLink">
+<span class="cta-text">Get Started</span>
+<span class="cta-icon"></span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Section -->
+<section class="features-section loading">
+<h2 class="section-title">Why Choose Our Platform?</h2>
+<div class="features-grid">
+<div class="feature-card" onclick="animateCard(this)">
+<div class="feature-icon">
+<svg class="feature-svg" viewbox="0 0 24 24"><path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"></path></svg>
+</div>
+<h3 class="feature-title">Interactive Learning</h3>
+<p class="feature-description">
+                        Progress through structured modules with hands-on exercises and real-time feedback for optimal skill development.
+                    </p>
+</div>
+<div class="feature-card" onclick="animateCard(this)">
+<div class="feature-icon">
+<svg class="feature-svg" viewbox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"></path></svg>
+</div>
+<h3 class="feature-title">Adaptive Assessment</h3>
+<p class="feature-description">
+                        Experience personalized learning paths that evolve with your progress, ensuring optimal challenge and growth.
+                    </p>
+</div>
+<div class="feature-card" onclick="animateCard(this)">
+<div class="feature-icon">
+<svg class="feature-svg" viewbox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path></svg>
+</div>
+<h3 class="feature-title">Project Portfolio</h3>
+<p class="feature-description">
+                        Build comprehensive projects that demonstrate your expertise and create a compelling professional portfolio.
+                    </p>
+</div>
+<div class="feature-card" onclick="animateCard(this)">
+<div class="feature-icon">
+<svg class="feature-svg" viewbox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"></path></svg>
+</div>
+<h3 class="feature-title">Advanced IDE</h3>
+<p class="feature-description">
+                        Professional-grade development environment with intelligent code completion and real-time compilation.
+                    </p>
+</div>
+<div class="feature-card" onclick="animateCard(this)">
+<div class="feature-icon">
+<svg class="feature-svg" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1.11 16H6.11l4.89-4.89 2 2 4-4 2.89 2.89V19z"></path></svg>
+</div>
+<h3 class="feature-title">Performance Analytics</h3>
+<p class="feature-description">
+                        Track your progress with detailed metrics and insights to optimize your learning trajectory.
+                    </p>
+</div>
+<div class="feature-card" onclick="animateCard(this)">
+<div class="feature-icon">
+<svg class="feature-svg" viewbox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"></path></svg>
+</div>
+<h3 class="feature-title">Technical Challenges</h3>
+<p class="feature-description">
+                        Engage with industry-standard programming challenges designed to enhance problem-solving abilities.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="stats-section loading">
+<h2 class="section-title">Platform Statistics</h2>
+<div class="stats-grid">
+<div class="stat-item">
+<div class="stat-number" data-target="10">0</div>
+<div class="stat-label">Active Learners</div>
+</div>
+<div class="stat-item">
+<div class="stat-number" data-target="3">0</div>
+<div class="stat-label">Active Courses</div>
+</div>
+<div class="stat-item">
+<div class="stat-number" data-target="87">0</div>
+<div class="stat-label">Coding Challenges</div>
+</div>
+<div class="stat-item">
+<div class="stat-number" data-target="456">0</div>
+<div class="stat-label">Battles Completed</div>
+</div>
+</div>
+</section>
+<!-- Interactive Demo -->
+<section class="demo-section loading">
+<h2 class="section-title">Experience Our Platform</h2>
+<div class="demo-card" onclick="startDemo()">
+<h3>Experience the Platform</h3>
+<p>
+                    Click here to experience our full learning ecosystem! Try courses, battle AI opponents, 
+                    solve coding challenges, and see how our ELO system works.
+                </p>
+<button class="demo-button">Launch Demo →</button>
+</div>
+</section>
+</main>
+<script>
+        // ELO System Configuration
+const ELO_RANKS = {
+    beginner: { min: 0, max: 1399, name: 'Beginner', class: 'rank-beginner' },
+    intermediate: { min: 1400, max: 1799, name: 'Intermediate', class: 'rank-intermediate' },
+    advanced: { min: 1800, max: 2199, name: 'Advanced', class: 'rank-advanced' },
+    expert: { min: 2200, max: 2599, name: 'Expert', class: 'rank-expert' },
+    master: { min: 2600, max: 2999, name: 'Master', class: 'rank-master' },
+    grandmaster: { min: 3000, max: 9999, name: 'Grandmaster', class: 'rank-grandmaster' }
+};
+
+// Load user data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadUserData();
+    updateUserMenu();
+    loadUserPreferences();
+});
+
+function loadUserData() {
+    try {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        if (loggedInUser) {
+            currentUser = JSON.parse(loggedInUser);
+            // Update profile display
+            const profileName = document.getElementById('profileName');
+if (profileName) profileName.textContent = currentUser.name || 'Guest';
+
+const profileEmail = document.getElementById('profileEmail');
+if (profileEmail) profileEmail.textContent = currentUser.email || 'No email';
+
+const eloRating = document.getElementById('eloRating');
+if (eloRating) {
+    // Check if ELO exists in user data, otherwise use 1200 as default
+    eloRating.textContent = (currentUser && currentUser.elo !== undefined) ? currentUser.elo : 1200;
+}
+
+const displayName = document.getElementById('displayName');
+if (displayName) displayName.value = currentUser.name || '';
+
+const userEmail = document.getElementById('userEmail');
+if (userEmail) userEmail.value = currentUser.email || '';
+
+const profileDescription = document.getElementById('profileDescription');
+if (currentUser.description && profileDescription) {
+    profileDescription.textContent = currentUser.description;
+    profileDescription.style.fontStyle = 'normal';
+}
+            // Load background
+            if (currentUser.background && currentUser.background !== 'default') {
+                applyBackground(currentUser.background);
+            }
+            // Update ELO progress
+            updateELOProgress();
+        } else {
+            const profileName = document.getElementById('profileName');
+if (profileName) profileName.textContent = 'Please Log In';
+
+const profileEmail = document.getElementById('profileEmail');
+if (profileEmail) profileEmail.textContent = 'Not logged in';
+        }
+    } catch (e) {
+        const profileName = document.getElementById('profileName');
+if (profileName) profileName.textContent = 'Error Loading Profile';
+
+const profileEmail = document.getElementById('profileEmail');
+if (profileEmail) profileEmail.textContent = 'An error occurred';
+    }
+}
+
+function loadUserAvatar() {
+    const profileAvatar = document.getElementById('profileAvatar');
+    const navAvatar = document.getElementById('userAvatar');
+    if (currentUser && currentUser.avatarImage) {
+        // Custom uploaded image
+        profileAvatar.innerHTML = `<img src="${currentUser.avatarImage}" alt="Profile Avatar">`;
+        navAvatar.innerHTML = `<img src="${currentUser.avatarImage}" alt="Profile Avatar">`;
+    } else if (currentUser && currentUser.avatar && currentUser.avatar !== 'default') {
+        // Emoji avatar
+        profileAvatar.textContent = currentUser.avatar;
+        navAvatar.textContent = currentUser.avatar;
+    } else {
+        // Default avatars
+        profileAvatar.textContent = '🧑‍💻';
+        navAvatar.textContent = currentUser && currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
+    }
+}
+
+function updateELOProgress() {
+    if (!currentUser) return;
+    
+    // Use the actual ELO value from user data, not a default
+    const currentELO = (currentUser && currentUser.elo !== undefined) ? currentUser.elo : 1200;
+    const rank = getCurrentRank(currentELO);
+    const progress = getRankProgress(currentELO, rank);
+    // Update rank display
+    const rankIcon = document.getElementById('eloRankIcon');
+    const rankText = document.getElementById('eloRankText');
+    const progressFill = document.getElementById('eloProgressFill');
+    const currentRating = document.getElementById('eloCurrentRating');
+    if (rankIcon && rankText && progressFill && currentRating) {
+        rankIcon.className = `elo-rank-icon ${rank.class}`;
+        rankText.textContent = rank.name;
+        progressFill.className = `elo-progress-fill ${rank.class}`;
+        progressFill.style.width = `${progress}%`;
+        currentRating.textContent = `${currentELO} ELO`;
+    }
+}
+
+function getCurrentRank(elo) {
+    for (const [key, rank] of Object.entries(ELO_RANKS)) {
+        if (elo >= rank.min && elo <= rank.max) {
+            return rank;
+        }
+    }
+    return ELO_RANKS.beginner; // Default to beginner
+}
+
+function getRankProgress(elo, rank) {
+    const rankRange = rank.max - rank.min;
+    const currentProgress = elo - rank.min;
+    return Math.min(100, Math.max(0, (currentProgress / rankRange) * 100));
+}
+
+function updateUserMenu() {
+    const loginLink = document.getElementById('loginLink');
+    const registerLink = document.getElementById('registerLink');
+    const userMenu = document.getElementById('userMenu');
+    if (currentUser) {
+        // Hide login/register links
+        loginLink.style.display = 'none';
+        registerLink.style.display = 'none';
+        // Show user menu
+        userMenu.classList.add('show');
+        loadUserAvatar();
+        updateELOProgress();
+    } else {
+        // Show login/register links
+        loginLink.style.display = 'block';
+        registerLink.style.display = 'block';
+        // Hide user menu
+        userMenu.classList.remove('show');
+    }
+}
+
+function toggleUserDropdown() {
+  window.location.href = 'my-profile.html';
+}
+
+        function goToProfile() {
+            window.location.href = 'my-profile.html';
+        }
+
+        // Animation functions
+        function animateClick(element) {
+            element.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        function animateCard(card) {
+            card.style.transform = 'scale(1.05) rotate(1deg)';
+            setTimeout(() => {
+                card.style.transform = 'scale(1) rotate(0deg)';
+            }, 200);
+        }
+
+        function startDemo() {
+            // Add ripple effect
+            const demo = document.querySelector('.demo-card');
+            demo.style.background = 'linear-gradient(135deg, rgba(255, 140, 0, 0.3), rgba(20, 20, 20, 0.9))';
+            
+            setTimeout(() => {
+                window.location.href = 'courses.html';
+            }, 300);
+        }
+
+        // Animated counter for stats
+        function animateCounter(element) {
+            const target = parseInt(element.dataset.target);
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current).toLocaleString();
+            }, 16);
+        }
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = entry.target.querySelectorAll('.stat-number');
+                    statNumbers.forEach(stat => {
+                        if (!stat.classList.contains('animated')) {
+                            stat.classList.add('animated');
+                            animateCounter(stat);
+                        }
+                    });
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
+
+        // Page load animations
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            
+            const elements = document.querySelectorAll('.loading');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.animationDelay = `${index * 0.2}s`;
+                    el.classList.add('loaded');
+                }, index * 200);
+            });
+        });
+
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.cssText = `
+                position: fixed;
+                width: ${2 + Math.random() * 4}px;
+                height: ${2 + Math.random() * 4}px;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                z-index: 1;
+                animation-duration: ${3000 + Math.random() * 2000}ms;
+            `;
+            
+            document.body.appendChild(particle);
+            
+            particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.8 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 200}px)`, opacity: 0 }
+            ], {
+                duration: 4000 + Math.random() * 2000,
+                easing: 'ease-out'
+            }).addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 800);
+
+        // Parallax effect for enhanced user experience
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                const intensity = 0.1 + (index % 3) * 0.05;
+                card.style.transform = `translate(${x * intensity * 20}px, ${y * intensity * 20}px)`;
+            });
+        });
+
+        // ELO progress bar animation
+        function animateELOProgress() {
+            const progressFill = document.getElementById('progressFill');
+            if (progressFill) {
+                const targetWidth = progressFill.style.width;
+                progressFill.style.width = '0%';
+                setTimeout(() => {
+                    progressFill.style.width = targetWidth;
+                }, 500);
+            }
+        }
+
+        // Listen for ELO updates (can be called from other pages)
+        window.addEventListener('eloUpdated', function(event) {
+            updateELODisplay(event.detail.newElo);
+            animateELOProgress();
+        });
+
+        // Test function for ELO updates (for demonstration)
+        function testELOUpdate() {
+            const currentUser = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
+            if (currentUser.name) {
+                const newElo = Math.min(currentUser.elo + 50, 3000);
+                currentUser.elo = newElo;
+                localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                updateELODisplay(newElo);
+                animateELOProgress();
+                
+                // Show notification
+                showELONotification(newElo - 50, newElo);
+            }
+        }
+
+        function showELONotification(oldElo, newElo) {
+            const oldInfo = getELOInfo(oldElo);
+            const newInfo = getELOInfo(newElo);
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 120px;
+                right: 20px;
+                background: linear-gradient(135deg, rgba(79, 209, 199, 0.9), rgba(0, 212, 255, 0.9));
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                z-index: 3000;
+                font-weight: 600;
+                animation: slideInRight 0.5s ease;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            `;
+            
+            let message = `ELO: ${oldElo} → ${newElo} (+${newElo - oldElo})`;
+            if (oldInfo.tier !== newInfo.tier) {
+                message += `\n🎉 PROMOTED TO ${newInfo.label}!`;
+            }
+            
+            notification.textContent = message;
+            notification.style.whiteSpace = 'pre-line';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }, 4000);
+        }
+
+        // Add keyboard shortcut for ELO testing (Ctrl+Shift+E)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+                testELOUpdate();
+            }
+        });
+    </script>
+<script>
+  // Consistent avatar → profile navigation on all pages
+  function toggleUserDropdown() {
+    window.location.href = 'my-profile.html';
+  }
+
+  // Extra safety: bind click if the HTML didn't include the inline onclick
+  document.addEventListener('DOMContentLoaded', () => {
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+      avatar.addEventListener('click', () => window.location.href = 'my-profile.html');
+    }
+  });
+    </script>
+<script defer="" src="auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('getStartedBtn');
+  if (!btn) return;
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var isLoggedIn = false;
+    try {
+      var raw = localStorage.getItem('loggedInUser');
+      var user = raw ? JSON.parse(raw) : null;
+      isLoggedIn = !!(user && (user.email || user.name));
+    } catch (err) {}
+    window.location.href = isLoggedIn ? 'courses.html' : 'login.html';
+  });
+});
+</script>
+<script id="get-started-routing">document.addEventListener('DOMContentLoaded', function(){
+  var link = document.getElementById('getStartedLink');
+  if(!link) return;
+  var isLoggedIn = false;
+  try {
+    var raw = localStorage.getItem('loggedInUser');
+    var user = raw ? JSON.parse(raw) : null;
+    isLoggedIn = !!(user && (user.email || user.name));
+  } catch(e) {}
+  // Default href is login.html; if logged in, go to courses.html
+  if(isLoggedIn){ link.setAttribute('href', 'courses.html'); }
+  // Also guard click for any race conditions
+  link.addEventListener('click', function(ev){
+    if(isLoggedIn){ link.setAttribute('href','courses.html'); }
+    else { link.setAttribute('href','login.html'); }
+  });
+});</script></body>
+</html>

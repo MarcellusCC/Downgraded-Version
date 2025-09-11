@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TryIt Editor</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    .editor-container {
+        display: flex;
+        height: 100vh;
+    }
+    .editor {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    textarea {
+        width: 100%;
+        height: 90%;
+        resize: none;
+        font-family: monospace;
+        font-size: 16px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        outline: none;
+    }
+    button {
+        padding: 10px;
+        font-size: 16px;
+        background: #04AA6D;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    button:hover {
+        background: #038a58;
+    }
+    .preview {
+        width: 50%;
+        border-left: 1px solid #ccc;
+    }
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+</style>
+</head>
+<body>
+<div class="editor-container">
+    <div class="editor">
+        <textarea id="code"><!DOCTYPE html>
+<html>
+<body>
+<h1>Hello, world!</h1>
+<p>This is a TryIt editor clone.</p>
+</body>
+</html></textarea>
+        <button onclick="runCode()">Run</button>
+    </div>
+    <div class="preview">
+        <iframe id="output"></iframe>
+    </div>
+</div>
+
+<script>
+function runCode() {
+    let code = document.getElementById('code').value;
+    let iframe = document.getElementById('output').contentWindow.document;
+    iframe.open();
+    iframe.write(code);
+    iframe.close();
+}
+</script>
+</body>
+</html>

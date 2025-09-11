@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JavaScript Essentials - WebVantage</title>
+  <link rel="stylesheet" href="navigation.css">
+  <style>
+    /* Theme + header same as other pages */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height:1.6;color:#fff;background:#000;min-height:100vh;overflow-x:hidden;position:relative}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;
+      background:linear-gradient(to bottom right, rgba(255,140,0,.03), transparent 70%)}
+
+    .header{background:rgba(0,0,0,.97);padding:1.25rem 0;position:fixed;top:0;left:0;right:0;z-index:1000}
+    .header::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;
+      background:linear-gradient(to right,transparent,rgba(255,140,0,.2),rgba(255,140,0,.4),rgba(255,140,0,.2),transparent)}
+    .nav-container{max-width:1600px;margin:0 auto;padding:0 3rem;display:grid;grid-template-columns:auto 1fr auto;gap:3rem;align-items:center}
+    .logo{font-size:1.25rem;font-weight:500;color:#fff;text-decoration:none;display:flex;align-items:center;gap:.8rem;letter-spacing:.5px;transition:.3s}
+    .logo:hover{transform:scale(1.05);text-shadow:0 0 20px rgba(255,140,0,.5)}
+    .logo::before{content:"";width:24px;height:24px;background:linear-gradient(135deg,#ff8c00,#ffb347);
+      mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E") no-repeat center/contain}
+
+    .nav-menu{display:flex;list-style:none;gap:2.5rem;justify-content:center}
+    .nav-link{color:rgba(255,255,255,.7);text-decoration:none;font-weight:400;padding:.5rem 1rem;position:relative;font-size:.95rem;letter-spacing:.3px;transition:.3s}
+    .nav-link::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:#ff8c00;transform:scaleX(0);transform-origin:right;transition:transform .3s}
+    .nav-link:hover{color:#fff}.nav-link:hover::after{transform:scaleX(1);transform-origin:left}
+    .nav-link.active{color:#ff8c00;font-weight:500}.nav-link.active::after{transform:scaleX(1)}
+
+    .user-menu{display:none}.user-menu.show{display:block}
+    .user-profile-container{display:flex;align-items:center;gap:.75rem}
+    .user-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff8c00,#ffb347);display:flex;align-items:center;justify-content:center;color:#000;font-weight:700;overflow:hidden;cursor:pointer;transition:.3s}
+    .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 15px rgba(255,140,0,.5)}
+    .user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .elo-progress-container{display:flex;flex-direction:column;align-items:flex-start;gap:.3rem}
+    .elo-rank-header{display:flex;align-items:center;gap:.5rem}
+    .elo-rank-icon{width:16px;height:16px;border-radius:3px}
+    .elo-rank-text{font-size:.75rem;font-weight:600}
+    .elo-progress-bar{width:80px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+    .elo-progress-fill{height:100%;border-radius:3px;transition:.5s}
+    .elo-current-rating{font-size:.7rem;color:rgba(255,255,255,.6);font-weight:500}
+    .rank-beginner{background:linear-gradient(135deg,#4CAF50,#66BB6A)}
+    .rank-intermediate{background:linear-gradient(135deg,#FF9800,#FFB74D)}
+    .rank-advanced{background:linear-gradient(135deg,#F44336,#EF5350)}
+    .rank-expert{background:linear-gradient(135deg,#9C27B0,#BA68C8)}
+
+    .main-container{max-width:1200px;margin:0 auto;padding:2rem;padding-top:120px}
+    .back-button{background:rgba(40,40,40,.8);color:#fff;text-decoration:none;padding:1rem 2rem;border-radius:25px;font-weight:600;border:1px solid rgba(255,140,0,.3);display:inline-block;margin-bottom:2rem}
+    .back-button:hover{background:rgba(255,140,0,.1);border-color:#ff8c00}
+
+    .lesson-header{text-align:center;margin-bottom:2rem;padding:2rem 1.5rem;background:linear-gradient(135deg,rgba(15,15,15,.9),rgba(30,30,30,.9));border-radius:20px;border:1px solid rgba(255,140,0,.2)}
+    .lesson-title{font-size:2.4rem;color:#ff8c00;margin-bottom:.5rem;font-weight:700}
+    .lesson-subtitle{font-size:1.05rem;color:#ccc;margin-bottom:1rem}
+
+    .view-switch{display:flex;gap:.75rem;justify-content:center;margin:1rem auto 2rem;flex-wrap:wrap}
+    .view-tab{background:rgba(40,40,40,.85);border:1px solid rgba(255,140,0,.25);color:#fff;padding:.7rem 1.2rem;border-radius:999px;cursor:pointer;font-weight:600;transition:.25s}
+    .view-tab:hover{border-color:#ff8c00;background:rgba(255,140,0,.08)}
+    .view-tab.active{background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border-color:transparent}
+
+    .progress-bar{width:300px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;margin:.5rem auto 0;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(135deg,#ff8c00,#ffb347);border-radius:4px;width:0%;transition:width .5s}
+
+    .lesson-content{display:grid;gap:2rem;margin-top:1.5rem}
+    .topic-card{background:rgba(15,15,15,.95);padding:2rem;border-radius:18px;border:1px solid rgba(255,140,0,.1);transition:.3s;opacity:0;transform:translateY(12px)}
+    .topic-card.visible{opacity:1;transform:translateY(0)}
+    .topic-card:hover{border-color:rgba(255,140,0,.3);background:rgba(20,20,20,.95)}
+    .topic-title{font-size:1.5rem;color:#ff8c00;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+    .topic-number{width:36px;height:36px;background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
+    .topic-description{color:#ccc;margin-bottom:1.1rem}
+    .code-example{background:#111;border:1px solid #333;border-radius:10px;padding:1rem 1.25rem;margin:1rem 0;font-family:'Monaco','Menlo','Ubuntu Mono',monospace;overflow-x:auto}
+    .code-example::before{content:'JS';float:right;color:#ff8c00;font-weight:700;font-size:.8rem}
+    .code-example code{white-space:pre;color:#fff}
+
+    .interactive-demo{background:#2a2a2a;border-radius:10px;padding:1rem 1.25rem;margin:.75rem 0;border:2px solid #ff8c00;position:relative}
+    .interactive-demo::before{content:'⚡ Live Demo';position:absolute;top:-12px;left:1rem;background:#ff8c00;color:#000;padding:.2rem .8rem;border-radius:14px;font-size:.8rem;font-weight:700}
+    .try-it-button{background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border:none;padding:.8rem 1.2rem;border-radius:22px;font-weight:700;cursor:pointer;transition:.25s;margin-top:.4rem}
+    .try-it-button:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(255,140,0,.3)}
+
+    #bookModeJS{display:none}
+    .book-wrap{background:rgba(15,15,15,.95);border:1px solid rgba(255,140,0,.2);border-radius:18px;padding:1rem 1rem 1.25rem}
+    .book-actions{display:flex;gap:.6rem;justify-content:flex-end;margin-bottom:.6rem}
+    .book-link{background:rgba(40,40,40,.85);border:1px solid rgba(255,140,0,.25);color:#fff;padding:.5rem .9rem;border-radius:9px;text-decoration:none;font-weight:600}
+    .book-link:hover{border-color:#ff8c00;background:rgba(255,140,0,.08)}
+    .book-iframe{width:100%;height:78vh;border:none;border-radius:12px;background:#111}
+
+    .quiz-section{background:linear-gradient(135deg,rgba(20,20,20,.9),rgba(30,30,30,.9));padding:2rem;border-radius:18px;border:2px solid #ff8c00;text-align:center;margin-top:2rem}
+    .quiz-options{display:grid;gap:.75rem;max-width:600px;margin:0 auto 1.25rem}
+    .quiz-option{background:rgba(40,40,40,.8);border:2px solid rgba(255,140,0,.2);padding:.85rem 1rem;border-radius:10px;color:#fff;cursor:pointer;transition:.2s;text-align:left}
+    .quiz-option:hover{border-color:#ff8c00;background:rgba(255,140,0,.1)}
+    .quiz-option.selected{border-color:#ff8c00;background:linear-gradient(135deg,rgba(255,140,0,.2),rgba(255,179,71,.1));color:#ff8c00}
+    .quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,.2);color:#4CAF50}
+    .quiz-option.incorrect{border-color:#f44336;background:rgba(244,67,54,.2);color:#f44336}
+    .submit-quiz{background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border:none;padding:.9rem 1.6rem;border-radius:24px;font-weight:700;cursor:pointer}
+    .submit-quiz:disabled{opacity:.6;cursor:not-allowed}
+    .quiz-feedback{margin-top:1rem;padding:.7rem;border-radius:10px;font-weight:700;min-height:48px;display:flex;align-items:center;justify-content:center}
+    .next-lesson{text-align:center;margin-top:2rem}
+    .next-button{background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff;text-decoration:none;padding:1.2rem 2rem;border-radius:28px;font-weight:700;display:inline-block}
+
+    @media(max-width:768px){.nav-container{flex-direction:column;gap:1rem;padding:0 1rem}.nav-menu{flex-wrap:wrap;gap:1rem}
+      .main-container{padding:1rem;padding-top:140px}.lesson-title{font-size:2rem}.topic-card{padding:1.25rem}.book-iframe{height:70vh}}
+  </style>
+</head>
+<body>
+<header class="header">
+  <nav class="nav-container">
+    <a class="logo" href="index.html">WebVantage</a>
+    <ul class="nav-menu">
+      <li><a class="nav-link" href="index.html">Home</a></li>
+      <li><a class="nav-link" href="team-intro.html">Team</a></li>
+      <li><a class="nav-link active" href="courses.html">Courses</a></li>
+      <li><a class="nav-link" href="code-editor.html">Code Editor</a></li>
+      <li><a class="nav-link" href="challenges.html">Challenges</a></li>
+      <li><a class="nav-link" href="ai-battle.html">AI Battle</a></li>
+      <li><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
+      <li><a class="nav-link" id="loginLink" href="login.html">Login</a></li>
+      <li><a class="nav-link" id="registerLink" href="register.html">Register</a></li>
+    </ul>
+    <div class="user-menu" id="userMenu">
+      <div class="user-profile-container">
+        <div class="user-avatar" id="userAvatar" title="Open Profile">U</div>
+        <div class="elo-progress-container">
+          <div class="elo-rank-header">
+            <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+            <span class="elo-rank-text" id="eloRankText">Beginner</span>
+          </div>
+          <div class="elo-progress-bar">
+            <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+          </div>
+          <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="main-container">
+  <a class="back-button" href="courses.html">← Back to Courses</a>
+
+  <section class="lesson-header">
+    <h1 class="lesson-title">⚡ JavaScript Essentials</h1>
+    <p class="lesson-subtitle">Variables, functions, arrays/objects, DOM, events, async.</p>
+
+    <div class="view-switch" role="tablist" aria-label="Learning mode">
+      <button id="tabInteractiveJS" class="view-tab active" role="tab" aria-selected="true" onclick="switchView_JS('interactive')">Interactive Lessons</button>
+      <button id="tabBookJS" class="view-tab" role="tab" aria-selected="false" onclick="switchView_JS('book')">📘 Learn from Book</button>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progressFillJS"></div></div>
+  </section>
+
+  <!-- INTERACTIVE -->
+  <section id="lessonInteractiveJS" class="lesson-content" aria-live="polite">
+    <!-- 1 -->
+    <div class="topic-card" data-topic="1">
+      <h2 class="topic-title"><span class="topic-number">1</span> What is JavaScript?</h2>
+      <p class="topic-description">The language of the web—adds logic and interactivity.</p>
+      <div class="code-example"><code>console.log("Hello from JavaScript!");</code></div>
+      <div class="interactive-demo">
+        <button class="try-it-button" onclick="alert('Hello from JavaScript!')">Run quick alert</button>
+      </div>
+      <button class="try-it-button" onclick="completeTopicJS(1)">Got it! ✨</button>
+    </div>
+
+    <!-- 2 -->
+    <div class="topic-card" data-topic="2">
+      <h2 class="topic-title"><span class="topic-number">2</span> Variables & Types</h2>
+      <p class="topic-description">Use <code>let</code>/<code>const</code>. Types include string, number, boolean, null, undefined, object.</p>
+      <div class="code-example"><code>const site = "WebVantage"; let visitors = 100; const user = {name:"Ava"};</code></div>
+      <button class="try-it-button" onclick="completeTopicJS(2)">Understood! 📦</button>
+    </div>
+
+    <!-- 3 -->
+    <div class="topic-card" data-topic="3">
+      <h2 class="topic-title"><span class="topic-number">3</span> Strict Equality</h2>
+      <p class="topic-description"><code>===</code> compares value & type (preferred over <code>==</code>).</p>
+      <div class="code-example"><code>2 === "2" // false</code></div>
+      <button class="try-it-button" onclick="completeTopicJS(3)">Makes sense! ✅</button>
+    </div>
+
+    <!-- 4 -->
+    <div class="topic-card" data-topic="4">
+      <h2 class="topic-title"><span class="topic-number">4</span> Functions</h2>
+      <p class="topic-description">Package reusable logic; arrow functions are concise.</p>
+      <div class="code-example"><code>const add = (a,b) => a+b;</code></div>
+      <button class="try-it-button" onclick="completeTopicJS(4)">Functions clear! 🧩</button>
+    </div>
+
+    <!-- 5 -->
+    <div class="topic-card" data-topic="5">
+      <h2 class="topic-title"><span class="topic-number">5</span> DOM Basics</h2>
+      <p class="topic-description">Select & update elements.</p>
+      <div class="code-example"><code>document.querySelector('#demo').textContent='Updated!';</code></div>
+      <div class="interactive-demo"><p id="demo" style="margin:0">Change me</p></div>
+      <button class="try-it-button" onclick="(function(){const el=document.querySelector('#demo');el.textContent='Updated via JS!';el.style.color='#ff8c00';})()">Run</button>
+      <button class="try-it-button" onclick="completeTopicJS(5)">DOM, done! 🧱</button>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-section" id="finalQuizJS" style="display:none">
+      <h2>🧠 JavaScript Knowledge Check</h2>
+      <div class="quiz-question">Which operator checks both value and type?</div>
+      <div class="quiz-options" id="quizOptionsJS">
+        <div class="quiz-option" onclick="selectQuizOptionJS(this,false)">A) ==</div>
+        <div class="quiz-option" onclick="selectQuizOptionJS(this,true)">B) ===</div>
+        <div class="quiz-option" onclick="selectQuizOptionJS(this,false)">C) =</div>
+        <div class="quiz-option" onclick="selectQuizOptionJS(this,false)">D) ~=</div>
+      </div>
+      <button id="submitQuizJS" class="submit-quiz" onclick="submitQuizJS()" disabled>Submit Answer</button>
+      <div id="quizFeedbackJS" class="quiz-feedback"></div>
+      <div class="next-lesson" id="nextLessonJS" style="display:none">
+        <a class="next-button" href="code-editor.html">Practice in the Code Editor 🧪</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section id="bookModeJS" aria-live="polite">
+    <div class="book-wrap">
+      <div class="book-actions">
+        <a class="book-link" href="Books/JavaScript.pdf" target="_blank" rel="noopener">Open in new tab</a>
+        <a class="book-link" href="Books/JavaScript.pdf" download>Download PDF</a>
+      </div>
+      <iframe class="book-iframe" src="Books/JavaScript.pdf"></iframe>
+      <p style="margin-top:.6rem;color:#ccc;">If the PDF doesn’t display, use the buttons above.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+  /* ================= Header sync (matches my-profile.html) ================= */
+  const ELO_RANKS = [
+    { name:'Beginner',     class:'rank-beginner',     min:0,    max:1399 },
+    { name:'Intermediate', class:'rank-intermediate', min:1400, max:1799 },
+    { name:'Advanced',     class:'rank-advanced',     min:1800, max:2199 },
+    { name:'Expert',       class:'rank-expert',       min:2200, max:9999 }
+  ];
+  let currentUser = null, currentELO = 1250;
+
+  function getRankFor(elo){
+    for(const r of ELO_RANKS){ if(elo>=r.min && elo<=r.max) return r; }
+    return ELO_RANKS[0];
+  }
+  function rankPct(elo, r){
+    const span = Math.max(1, r.max - r.min);
+    return Math.max(0, Math.min(100, ((elo - r.min) / span) * 100));
+  }
+  function loadUser(){
+    try{
+      const raw = localStorage.getItem('loggedInUser');
+      currentUser = raw ? JSON.parse(raw) : null;
+      currentELO = currentUser ? (currentUser.elo || 1250) : 1250;
+    }catch(e){ currentUser=null; currentELO=1250; }
+  }
+  function updateHeaderUI(){
+    const login = document.getElementById('loginLink');
+    const reg   = document.getElementById('registerLink');
+    const menu  = document.getElementById('userMenu');
+    const av    = document.getElementById('userAvatar');
+    const icon  = document.getElementById('eloRankIcon');
+    const text  = document.getElementById('eloRankText');
+    const fill  = document.getElementById('eloProgressFill');
+    const rating= document.getElementById('eloCurrentRating');
+
+    if(!login||!reg||!menu||!av||!icon||!text||!fill||!rating) return;
+
+    if(currentUser){
+      login.style.display='none'; reg.style.display='none'; menu.classList.add('show');
+
+      // Avatar priority: uploaded image (avatarImage) -> emoji/text (avatar) -> initial
+      av.innerHTML='';
+      if(currentUser.avatarImage){
+        const img=document.createElement('img');
+        img.src=currentUser.avatarImage;
+        img.alt=(currentUser.name||currentUser.email||'Avatar');
+        av.appendChild(img);
+      }else if(currentUser.avatar){
+        av.textContent=currentUser.avatar;
+      }else{
+        av.textContent=((currentUser.name||currentUser.email||'U')[0]||'U').toUpperCase();
+      }
+      av.onclick=()=>location.href='my-profile.html';
+
+      const elo = (typeof currentUser.elo === 'number') ? currentUser.elo : 1200;
+      const r   = getRankFor(elo);
+      const pct = rankPct(elo, r);
+
+      icon.className='elo-rank-icon '+r.class;
+      text.textContent=r.name;              // 1200 => Beginner (corrected)
+      fill.className='elo-progress-fill '+r.class;
+      fill.style.width=pct+'%';
+      rating.textContent=elo+' ELO';
+    }else{
+      login.style.display='block'; reg.style.display='block'; menu.classList.remove('show');
+    }
+  }
+
+  /* ================= View switch (remember per page) ================= */
+  const VIEW_KEY_JS='lessonView_js';
+  function switchView_JS(mode){
+    const inter=document.getElementById('lessonInteractiveJS'); const book=document.getElementById('bookModeJS');
+    const tI=document.getElementById('tabInteractiveJS'); const tB=document.getElementById('tabBookJS');
+    if(mode==='book'){
+      inter.style.display='none'; book.style.display='block';
+      tI.classList.remove('active'); tI.setAttribute('aria-selected','false');
+      tB.classList.add('active'); tB.setAttribute('aria-selected','true');
+    }else{
+      inter.style.display='grid'; book.style.display='none';
+      tB.classList.remove('active'); tB.setAttribute('aria-selected','false');
+      tI.classList.add('active'); tI.setAttribute('aria-selected','true');
+    }
+    localStorage.setItem(VIEW_KEY_JS,mode);
+  }
+
+  /* ================= Progress + quiz ================= */
+  let jsCompleted=0, selectedJS=null, correctJS=false;
+  function updateProgressJS(){ document.getElementById('progressFillJS').style.width=(jsCompleted/5*100)+'%'; }
+  function completeTopicJS(step){
+    if(step>jsCompleted){
+      jsCompleted=step; updateProgressJS();
+      const next=document.querySelector(`.topic-card[data-topic="${step+1}"]`);
+      if(next){ setTimeout(()=>{ next.classList.add('visible'); next.scrollIntoView({behavior:'smooth',block:'center'}); },350); }
+      if(step===5){ setTimeout(()=>{ document.getElementById('finalQuizJS').style.display='block'; document.getElementById('finalQuizJS').scrollIntoView({behavior:'smooth'}); },400); }
+    }
+  }
+  function selectQuizOptionJS(el, ok){
+    document.querySelectorAll('#quizOptionsJS .quiz-option').forEach(o=>o.classList.remove('selected'));
+    el.classList.add('selected'); selectedJS=el; correctJS=ok; document.getElementById('submitQuizJS').disabled=false;
+  }
+  function submitQuizJS(){
+    if(!selectedJS) return;
+    const opts=[...document.querySelectorAll('#quizOptionsJS .quiz-option')];
+    opts[1].classList.add('correct'); if(!correctJS){ selectedJS.classList.add('incorrect'); }
+    const fb=document.getElementById('quizFeedbackJS');
+    if(correctJS){ fb.textContent='✅ Correct!'; fb.style.color='#4CAF50'; fb.style.background='rgba(76,175,80,.12)'; fb.style.border='1px solid #4CAF50'; }
+    else{ fb.textContent='❌ Not quite. The strict equality operator is ===.'; fb.style.color='#f44336'; fb.style.background='rgba(244,67,54,.12)'; fb.style.border='1px solid #f44336'; }
+    document.getElementById('submitQuizJS').disabled=true;
+    setTimeout(()=>{ document.getElementById('nextLessonJS').style.display='block'; },800);
+  }
+
+  /* ================= Init + live updates ================= */
+  document.addEventListener('DOMContentLoaded', ()=>{
+    loadUser();
+    updateHeaderUI();
+    document.querySelector('.topic-card[data-topic="1"]').classList.add('visible');
+    switchView_JS(localStorage.getItem(VIEW_KEY_JS)||'interactive');
+    document.body.style.opacity='0'; document.body.style.transition='opacity .5s ease';
+    setTimeout(()=>{ document.body.style.opacity='1'; },60);
+  });
+  window.addEventListener('storage',e=>{ if(e.key==='loggedInUser'){ loadUser(); updateHeaderUI(); }});
+  window.addEventListener('avatarUpdated', ()=>{ loadUser(); updateHeaderUI(); });
+  window.addEventListener('eloUpdated',    ()=>{ loadUser(); updateHeaderUI(); });
+  window.addEventListener('userUpdated',   ()=>{ loadUser(); updateHeaderUI(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Challenges - Frontend Development Learning Hub</title>
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #ffffff;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.97);
+            padding: 1.25rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+                transparent,
+                rgba(255, 140, 0, 0.2),
+                transparent
+            );
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav-link.active {
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: none;
+            position: relative;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu.show {
+            display: flex;
+        }
+
+        .user-profile-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* ELO Progress Bar */
+        .elo-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .elo-rank-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elo-rank-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .elo-rank-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .elo-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .elo-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .elo-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .elo-current-rating {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        /* ELO Rank Colors */
+        .rank-beginner {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        .rank-intermediate {
+            background: linear-gradient(135deg, #FF9800, #FFB74D);
+        }
+
+        .rank-advanced {
+            background: linear-gradient(135deg, #F44336, #EF5350);
+        }
+
+        .rank-expert {
+            background: linear-gradient(135deg, #9C27B0, #BA68C8);
+        }
+
+        .rank-master {
+            background: linear-gradient(135deg, #3F51B5, #7986CB);
+        }
+
+        .rank-grandmaster {
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: left;
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.95));
+            position: relative;
+            overflow: hidden;
+            margin: -2rem -2rem 4rem -2rem;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 140, 0, 0.05), transparent);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: #ff8c00;
+            margin-top: 1.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* ELO Display */
+        .elo-display {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .elo-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            color: #ff8c00;
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        }
+
+        .elo-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #cccccc;
+            margin-top: 0.5rem;
+        }
+
+        /* Challenge Selection */
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            background: rgba(40, 40, 40, 0.8);
+            color: #ffffff;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .difficulty-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.1), transparent);
+            transition: left 0.3s ease;
+        }
+
+        .difficulty-btn:hover::before {
+            left: 100%;
+        }
+
+        .difficulty-btn:hover {
+            border-color: #ff8c00;
+            background: rgba(255, 140, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .difficulty-btn.active {
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            border-color: #ff8c00;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        /* Challenge Container */
+        .challenge-container {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 2.5rem;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 140, 0, 0.1);
+            border-radius: 20px;
+        }
+
+        .challenge-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, #ff8c00, transparent);
+            transition: height 0.4s ease;
+        }
+
+        .challenge-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff8c00, transparent);
+            transition: width 0.4s ease;
+        }
+
+        .challenge-container:hover::before {
+            height: 100%;
+        }
+
+        .challenge-container:hover::after {
+            width: 100%;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .challenge-title {
+            font-size: 1.8rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .challenge-difficulty {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            color: #000000;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+        }
+
+        .challenge-description {
+            background: rgba(40, 40, 40, 0.6);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #ff8c00;
+            color: #cccccc;
+            line-height: 1.7;
+        }
+
+        .challenge-example {
+            background: rgba(40, 40, 40, 0.8);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .code-input-container {
+            margin: 2rem 0;
+        }
+
+        .code-input {
+            width: 100%;
+            height: 200px;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            outline: none;
+            tab-size: 2;
+        }
+
+        .code-input:focus {
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.1);
+        }
+
+        .challenge-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .action-btn {
+            background: #ff8c00;
+            color: #000000;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
+            border-radius: 25px;
+        }
+
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #000000;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .action-btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .action-btn.secondary {
+            background: rgba(40, 40, 40, 0.8);
+            color: #ff8c00;
+            border: 2px solid #ff8c00;
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 140, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Feedback Section */
+        .feedback-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-correct {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+        }
+
+        .feedback-incorrect {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+        }
+
+        .feedback-neutral {
+            background: rgba(40, 40, 40, 0.6);
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            color: #cccccc;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: linear-gradient(135deg, #ff8c00, #ffb347);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: #ff8c00;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .nav-menu {
+                gap: 1.5rem;
+            }
+            
+            .nav-link {
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .elo-display {
+                position: static;
+                transform: none;
+                margin-bottom: 2rem;
+                width: fit-content;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .challenge-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .nav-menu {
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 0.5rem;
+                margin: 0 -1rem;
+                padding: 0 1rem;
+            }
+
+            .nav-menu::-webkit-scrollbar {
+                height: 3px;
+            }
+
+            .nav-menu::-webkit-scrollbar-thumb {
+                background: rgba(255, 140, 0, 0.3);
+                border-radius: 10px;
+            }
+
+            .challenge-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .logo {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">WebVantage</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+  <div class="user-profile-container">
+    <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar">U</div>
+    <div class="elo-progress-container">
+      <div class="elo-rank-header">
+        <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+        <span class="elo-rank-text" id="eloRankText">Beginner</span>
+      </div>
+      <div class="elo-progress-bar">
+        <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+      </div>
+      <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+    </div>
+  </div>
+</div>
+
+        </nav>
+    </header>
+    <main class="main-container">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="page-title">Coding Challenges</h1>
+            <p class="page-subtitle">
+                Solve progressively difficult coding challenges tailored to your ELO rating. 
+                Test your skills and climb the leaderboard!
+            </p>
+        </section>
+
+        <!-- Difficulty Selector -->
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" onclick="selectDifficulty('beginner', this)">
+                🟢 Beginner (800-1200 ELO)
+            </button>
+            <button class="difficulty-btn" onclick="selectDifficulty('intermediate', this)">
+                🟡 Intermediate (1200-1600 ELO)
+            </button>
+            <button class="difficulty-btn" onclick="selectDifficulty('advanced', this)">
+                🔴 Advanced (1600+ ELO)
+            </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-text" id="progressText">0/5 Challenges Completed</div>
+        </div>
+
+        <!-- Challenge Container -->
+        <div class="challenge-container">
+            <div class="challenge-header">
+                <h2 class="challenge-title" id="challengeTitle">Hello World Challenge</h2>
+                <span class="challenge-difficulty" id="challengeDifficulty">Beginner</span>
+            </div>
+
+            <div class="challenge-description" id="challengeDescription">
+                <h3 style="color: #ff8c00; margin-bottom: 1rem;">📝 Challenge Description:</h3>
+                <p>Create a function called <code style="background: rgba(255, 140, 0, 0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">greet</code> that takes a name as a parameter and returns "Hello, [name]!"</p>
+                
+                <div class="challenge-example">
+                    <strong style="color: #ff8c00;">Example:</strong><br>
+                    <span style="color: #4ecdc4;">greet("Alice")</span> should return <span style="color: #ffb347;">"Hello, Alice!"</span>
+                </div>
+            </div>
+
+            <div class="code-input-container">
+                <label for="codeInput" style="display: block; margin-bottom: 1rem; color: #ff8c00; font-weight: 600;">
+                    💻 Your Solution:
+                </label>
+                <textarea 
+                    id="codeInput" 
+                    class="code-input" 
+                    placeholder="function greet(name) {
+    // Write your code here
+    
+}"
+                ></textarea>
+            </div>
+
+            <div class="challenge-actions">
+                <button class="action-btn" onclick="runTests()">
+                    🧪 Run Tests
+                </button>
+                <button class="action-btn secondary" onclick="getHint()">
+                    💡 Get Hint
+                </button>
+                <button class="action-btn secondary" onclick="nextChallenge()">
+                    ⏭️ Next Challenge
+                </button>
+                <button class="action-btn secondary" onclick="resetCode()">
+                    🔄 Reset
+                </button>
+            </div>
+
+            <div class="feedback-container feedback-neutral" id="feedbackContainer">
+                <p>Write your solution and click "Run Tests" to check if it's correct!</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentUser = null;
+        let currentELO = 1250;
+        let currentDifficulty = 'beginner';
+        let currentChallengeIndex = 0;
+        let completedChallenges = 0;
+
+        // Challenge Database
+        const challenges = {
+            beginner: [
+                {
+                    title: "Hello World Challenge",
+                    description: "Create a function called <code>greet</code> that takes a name as a parameter and returns \"Hello, [name]!\"",
+                    example: "greet(\"Alice\") should return \"Hello, Alice!\"",
+                    starter: "function greet(name) {\n    // Write your code here\n    \n}",
+                    solution: "function greet(name) {\n    return \"Hello, \" + name + \"!\";\n}",
+                    tests: [
+                        { input: "Alice", expected: "Hello, Alice!" },
+                        { input: "Bob", expected: "Hello, Bob!" },
+                        { input: "Charlie", expected: "Hello, Charlie!" }
+                    ],
+                    points: 25
+                },
+                {
+                    title: "Sum Two Numbers",
+                    description: "Create a function called <code>add</code> that takes two numbers and returns their sum",
+                    example: "add(3, 5) should return 8",
+                    starter: "function add(a, b) {\n    // Write your code here\n    \n}",
+                    solution: "function add(a, b) {\n    return a + b;\n}",
+                    tests: [
+                        { input: [3, 5], expected: 8 },
+                        { input: [10, -2], expected: 8 },
+                        { input: [0, 0], expected: 0 }
+                    ],
+                    points: 30
+                },
+                {
+                    title: "Find Maximum",
+                    description: "Create a function called <code>findMax</code> that takes an array of numbers and returns the largest number",
+                    example: "findMax([1, 5, 3, 9, 2]) should return 9",
+                    starter: "function findMax(numbers) {\n    // Write your code here\n    \n}",
+                    solution: "function findMax(numbers) {\n    return Math.max(...numbers);\n}",
+                    tests: [
+                        { input: [[1, 5, 3, 9, 2]], expected: 9 },
+                        { input: [[10, 20, 5]], expected: 20 },
+                        { input: [[-1, -5, -2]], expected: -1 }
+                    ],
+                    points: 35
+                }
+            ],
+            intermediate: [
+                {
+                    title: "Reverse String",
+                    description: "Create a function called <code>reverseString</code> that takes a string and returns it reversed",
+                    example: "reverseString(\"hello\") should return \"olleh\"",
+                    starter: "function reverseString(str) {\n    // Write your code here\n    \n}",
+                    solution: "function reverseString(str) {\n    return str.split('').reverse().join('');\n}",
+                    tests: [
+                        { input: "hello", expected: "olleh" },
+                        { input: "world", expected: "dlrow" },
+                        { input: "AI", expected: "IA" }
+                    ],
+                    points: 50
+                },
+                {
+                    title: "Count Vowels",
+                    description: "Create a function called <code>countVowels</code> that counts the number of vowels (a, e, i, o, u) in a string",
+                    example: "countVowels(\"hello\") should return 2",
+                    starter: "function countVowels(str) {\n    // Write your code here\n    \n}",
+                    solution: "function countVowels(str) {\n    const vowels = 'aeiouAEIOU';\n    return str.split('').filter(char => vowels.includes(char)).length;\n}",
+                    tests: [
+                        { input: "hello", expected: 2 },
+                        { input: "Frontend Development Learning", expected: 5 },
+                        { input: "xyz", expected: 0 }
+                    ],
+                    points: 60
+                }
+            ],
+            advanced: [
+                {
+                    title: "Fibonacci Sequence",
+                    description: "Create a function called <code>fibonacci</code> that returns the nth number in the Fibonacci sequence",
+                    example: "fibonacci(6) should return 8 (sequence: 0, 1, 1, 2, 3, 5, 8)",
+                    starter: "function fibonacci(n) {\n    // Write your code here\n    \n}",
+                    solution: "function fibonacci(n) {\n    if (n <= 1) return n;\n    let a = 0, b = 1;\n    for (let i = 2; i <= n; i++) {\n        [a, b] = [b, a + b];\n    }\n    return b;\n}",
+                    tests: [
+                        { input: 0, expected: 0 },
+                        { input: 6, expected: 8 },
+                        { input: 10, expected: 55 }
+                    ],
+                    points: 100
+                }
+            ]
+        };
+
+        // Check login status and update navigation
+        function checkLoginStatus() {
+            try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                    currentELO = currentUser.elo || 1250;
+                }
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (currentUser) {
+                loginLink.style.display = 'none';
+                registerLink.style.display = 'none';
+                userMenu.classList.add('show');
+                updateHeaderAvatarFromUser(currentUser);
+                userAvatar.title = `Go to ${currentUser.name}'s Profile`;
+                document.getElementById('userElo').textContent = currentELO;
+            } else {
+                loginLink.style.display = 'block';
+                registerLink.style.display = 'block';
+                userMenu.classList.remove('show');
+            }
+        }
+
+        function goToProfile() {
+            window.location.href = 'my-profile.html';
+        }
+
+        // Difficulty Selection
+        function selectDifficulty(difficulty, button) {
+            // Update active button
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+
+            currentDifficulty = difficulty;
+            currentChallengeIndex = 0;
+            completedChallenges = 0;
+            loadChallenge();
+            updateProgress();
+        }
+
+        // Load Challenge
+        function loadChallenge() {
+            const challengeSet = challenges[currentDifficulty];
+            const challenge = challengeSet[currentChallengeIndex];
+
+            if (!challenge) {
+                // All challenges completed
+                showFeedback('🎉 Congratulations! You\'ve completed all challenges in this difficulty level!', 'correct');
+                return;
+            }
+
+            document.getElementById('challengeTitle').textContent = challenge.title;
+            document.getElementById('challengeDifficulty').textContent = currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
+            
+            const descriptionHTML = `
+                <h3 style="color: #ff8c00; margin-bottom: 1rem;">📝 Challenge Description:</h3>
+                <p>${challenge.description}</p>
+                <div class="challenge-example">
+                    <strong style="color: #ff8c00;">Example:</strong><br>
+                    <span style="color: #4ecdc4;">${challenge.example}</span>
+                </div>
+            `;
+            document.getElementById('challengeDescription').innerHTML = descriptionHTML;
+            
+            document.getElementById('codeInput').value = challenge.starter;
+            
+            showFeedback('Write your solution and click "Run Tests" to check if it\'s correct!', 'neutral');
+        }
+
+        // Test Runner
+        function runTests() {
+            const challengeSet = challenges[currentDifficulty];
+            const challenge = challengeSet[currentChallengeIndex];
+            const userCode = document.getElementById('codeInput').value;
+
+            try {
+                // Create a safe environment to run user code
+                const testFunction = new Function(userCode + '\n\n' + 
+                    'return typeof ' + challenge.title.split(' ')[0].toLowerCase() + ' === "function" ? ' + 
+                    challenge.title.split(' ')[0].toLowerCase() + ' : null;'
+                );
+
+                const userFunction = testFunction();
+
+                if (!userFunction) {
+                    showFeedback('❌ Function not found. Make sure you define the correct function name.', 'incorrect');
+                    return;
+                }
+
+                // Run all tests
+                let passedTests = 0;
+                const totalTests = challenge.tests.length;
+
+                for (let test of challenge.tests) {
+                    try {
+                        let result;
+                        if (Array.isArray(test.input)) {
+                            result = userFunction(...test.input);
+                        } else {
+                            result = userFunction(test.input);
+                        }
+
+                        if (result === test.expected) {
+                            passedTests++;
+                        }
+                    } catch (error) {
+                        showFeedback(`❌ Runtime Error: ${error.message}`, 'incorrect');
+                        return;
+                    }
+                }
+
+                // Check results
+                if (passedTests === totalTests) {
+                    // All tests passed
+                    const points = challenge.points;
+                    currentELO += points;
+                    completedChallenges++;
+                    
+                    updateELODisplay(currentELO);
+                    updateProgress();
+                    
+                    showFeedback(`✅ Correct! All tests passed! +${points} ELO points earned!`, 'correct');
+                    
+                    // Save progress
+                    if (currentUser) {
+                        currentUser.elo = currentELO;
+                        currentUser.challengesSolved = (currentUser.challengesSolved || 0) + 1;
+                        try {
+                            localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                            const users = JSON.parse(localStorage.getItem('users') || '[]');
+                            const userIndex = users.findIndex(u => u.email === currentUser.email);
+                            if (userIndex !== -1) {
+                                users[userIndex] = currentUser;
+                                localStorage.setItem('users', JSON.stringify(users));
+                            }
+                        } catch (e) {
+                            console.log('Could not save progress');
+                        }
+                    }
+                } else {
+                    const lostPoints = Math.floor(challenge.points / 3);
+                    currentELO = Math.max(currentELO - lostPoints, 800);
+                    updateELODisplay(currentELO);
+                    
+                    showFeedback(`❌ ${passedTests}/${totalTests} tests passed. Try again! -${lostPoints} ELO`, 'incorrect');
+                }
+
+            } catch (error) {
+                showFeedback(`❌ Syntax Error: ${error.message}`, 'incorrect');
+            }
+        }
+
+        // Helper Functions
+        function showFeedback(message, type) {
+            const container = document.getElementById('feedbackContainer');
+            container.innerHTML = `<p>${message}</p>`;
+            container.className = `feedback-container feedback-${type}`;
+        }
+
+        function updateELODisplay(newELO) {
+            currentELO = newELO;
+            const eloElement = document.getElementById('userElo');
+            eloElement.textContent = newELO;
+            
+            // Animation effect
+            eloElement.style.transform = 'scale(1.3)';
+            eloElement.style.textShadow = '0 0 25px rgba(255, 140, 0, 0.8)';
+            
+            setTimeout(() => {
+                eloElement.style.transform = 'scale(1)';
+                eloElement.style.textShadow = '0 0 15px rgba(255, 140, 0, 0.5)';
+            }, 500);
+        }
+
+        function updateProgress() {
+            const totalChallenges = challenges[currentDifficulty].length;
+            const percentage = (completedChallenges / totalChallenges) * 100;
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${completedChallenges}/${totalChallenges} Challenges Completed`;
+        }
+
+        function getHint() {
+            const challengeSet = challenges[currentDifficulty];
+            const challenge = challengeSet[currentChallengeIndex];
+            
+            const hints = {
+                'Hello World Challenge': '💡 Hint: Use string concatenation with the + operator or template literals with backticks (`)',
+                'Sum Two Numbers': '💡 Hint: Use the + operator to add the two parameters together',
+                'Find Maximum': '💡 Hint: You can use Math.max() with the spread operator (...) or a loop',
+                'Reverse String': '💡 Hint: Convert the string to an array, reverse it, then join back to a string',
+                'Count Vowels': '💡 Hint: Create a string of vowels and check each character of the input string',
+                'Fibonacci Sequence': '💡 Hint: Use iteration with two variables to track the previous two numbers'
+            };
+
+            const hint = hints[challenge.title] || '💡 Think about the problem step by step!';
+            showFeedback(hint, 'neutral');
+        }
+
+        function nextChallenge() {
+            const challengeSet = challenges[currentDifficulty];
+            if (currentChallengeIndex < challengeSet.length - 1) {
+                currentChallengeIndex++;
+                loadChallenge();
+            } else {
+                showFeedback('🎉 You\'ve reached the last challenge in this difficulty!', 'correct');
+            }
+        }
+
+        function resetCode() {
+            const challengeSet = challenges[currentDifficulty];
+            const challenge = challengeSet[currentChallengeIndex];
+            document.getElementById('codeInput').value = challenge.starter;
+            showFeedback('Code reset to starter template', 'neutral');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                runTests();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('codeInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.max(200, this.scrollHeight) + 'px';
+        });
+
+        // Tab handling for code input
+        document.getElementById('codeInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            checkLoginStatus();
+            loadChallenge();
+            updateProgress();
+            
+            // Auto-select difficulty based on ELO
+            if (currentELO >= 1600) {
+                selectDifficulty('advanced', document.querySelectorAll('.difficulty-btn')[2]);
+            } else if (currentELO >= 1200) {
+                selectDifficulty('intermediate', document.querySelectorAll('.difficulty-btn')[1]);
+            }
+        });
+
+        // Create floating particles for visual appeal
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: ${1 + Math.random() * 2}px;
+                height: ${1 + Math.random() * 2}px;
+                background: #ff8c00;
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0.5;
+                z-index: 1;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                box-shadow: 0 0 8px rgba(255, 140, 0, 0.5);
+            `;
+            
+            document.body.appendChild(particle);
+            
+            particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.7 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 150}px)`, opacity: 0 }
+            ], {
+                duration: 4000 + Math.random() * 2000,
+                easing: 'ease-out'
+            }).addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        setInterval(createParticle, 1500);
+    </script>
+
+    <script>
+  // Consistent avatar → profile navigation on all pages
+  function toggleUserDropdown() {
+    window.location.href = 'my-profile.html';
+  }
+
+  // Extra safety: bind click if the HTML didn't include the inline onclick
+  document.addEventListener('DOMContentLoaded', () => {
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+      avatar.addEventListener('click', () => window.location.href = 'my-profile.html');
+    }
+  });
+    </script>
+
+<!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Elo.initHeader();          // paint header ELO once + wire up listeners
+  });
+</script>
+<script src="auth.js" defer></script>
+
+</body>
+</html>
