@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Dev note: Examples are rendered as TEXT ONLY. Nothing runs. -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learn — WebVantage</title>
+  <link rel="stylesheet" href="navigation.css"/>
+  <style>
+    /* Master look & feel */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+      line-height:1.5;color:#fff;background:#000;min-height:100vh;overflow-x:hidden;position:relative;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    }
+    body::before{content:'';position:fixed;inset:0;background:linear-gradient(to bottom right, rgba(255,140,0,.03), transparent 70%);pointer-events:none;z-index:-1}
+
+    /* Header */
+    .header {
+      background: rgba(0, 0, 0, 0.97);
+      padding: 1.25rem 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent,
+        rgba(255, 140, 0, 0.2),
+        transparent
+      );
+    }
+
+    .nav-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #ffffff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+      justify-content: center;
+      flex-wrap: nowrap;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 400;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      position: relative;
+      font-size: 0.95rem;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: #ff8c00;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
+    }
+
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .nav-link.active {
+      color: #ff8c00;
+      font-weight: 500;
+    }
+
+    .nav-link.active::after {
+      transform: scaleX(1);
+    }
+
+    /* User Menu */
+    .user-menu {
+      display: none;
+      position: relative;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-menu.show {
+      display: flex;
+    }
+
+    .user-profile-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+    }
+
+    .user-avatar {
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#ff8c00,#ffb347);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#000;
+      font-weight:bold;
+      cursor:pointer;
+      border:2px solid rgba(255,140,0,.3);
+      transition:.3s;
+      overflow:hidden; 
+    }
+    
+    .user-avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;          /* ✨ important: fill the circle nicely */
+      display:block;
+      border-radius:50%;
+    }
+
+    /* ELO Progress */
+    .elo-progress-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+
+    .elo-rank-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .elo-rank-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+    }
+
+    .elo-rank-text {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .elo-progress-bar {
+      width: 80px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .elo-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: all 0.5s ease;
+    }
+
+    .elo-current-rating {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    /* Rank Colors */
+    .rank-beginner { background: linear-gradient(135deg, #4CAF50, #66BB6A); }
+    .rank-intermediate { background: linear-gradient(135deg, #FF9800, #FFB74D); }
+    .rank-advanced { background: linear-gradient(135deg, #F44336, #EF5350); }
+    .rank-expert { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+
+    /* Page */
+    .main-container{max-width:1400px;margin:0 auto;padding:2rem}
+    .page-header{padding:8rem 2rem;background:linear-gradient(135deg, rgba(0,0,0,.95), rgba(20,20,20,.95));margin:-2rem -2rem 2rem;position:relative;overflow:hidden}
+    .page-header::before{content:'';position:absolute;inset:0;background:linear-gradient(to right, rgba(255,140,0,.05), transparent);opacity:.5;pointer-events:none}
+    .page-title{font-size:3rem;font-weight:600}
+    .page-title::after{content:'';display:block;width:80px;height:4px;background:#ff8c00;margin-top:1.25rem}
+    .page-subtitle{font-size:1.1rem;color:rgba(255,255,255,.75);max-width:720px;margin-top:1rem}
+
+    /* Switcher */
+    .mode-switch{display:flex;gap:10px;align-items:center;justify-content:flex-start;margin: -1rem 0 1.5rem}
+    .mode-link{display:inline-flex;align-items:center;justify-content:center;padding:.6rem 1.1rem;border:1px solid rgba(255,140,0,.25);border-radius:999px;text-decoration:none;color:#fff;background:rgba(20,20,20,.7);transition:.2s;font-size:.95rem;letter-spacing:.3px}
+    .mode-link:hover{transform:translateY(-1px);border-color:#ff8c00;box-shadow:0 6px 16px rgba(255,140,0,.25)}
+    .mode-link[aria-current="page"]{background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border-color:transparent;font-weight:600}
+
+    /* Lesson cards (copied from Courses) */
+    .lessons-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:2.5rem;margin-top:2rem}
+    .lesson-card{background:rgba(15,15,15,.95);padding:2.5rem;text-align:left;border:1px solid rgba(255,140,0,.1);border-radius:20px;cursor:pointer;transition:all .4s}
+    .lesson-card:hover{background:rgba(20,20,20,.95);transform:translateY(-5px)}
+    .lesson-level{display:inline-block;background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;padding:.6rem 1.2rem;border-radius:20px;font-size:.9rem;font-weight:bold;margin-bottom:1.5rem}
+    .lesson-title{font-size:1.6rem;color:#fff;margin-bottom:1rem;font-weight:600}
+    .lesson-description{color:#ccc;margin-bottom:2rem;line-height:1.7;font-size:1rem}
+    .lesson-stats{display:flex;justify-content:space-between;margin-bottom:2rem;font-size:.9rem;color:#ff8c00;font-weight:500}
+    .lesson-button{background:#ff8c00;color:#000;padding:1rem 2rem;font-weight:500;font-size:1rem;cursor:pointer;width:100%;border:none}
+
+    /* Learn Q&A content */
+    .wrap{max-width:980px;margin:0 auto;padding:0 18px 56px}
+    .hint{font-size:13px;color:#b8bdc9;margin:10px 0}
+    .card{background:#121319;border:1px solid #1f2230;border-radius:16px;padding:20px;margin:14px 0}
+    .label{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#b8bdc9;border:1px solid #1f2230;border-radius:999px;padding:4px 10px;margin-bottom:10px}
+    .q{font-weight:700}
+    pre{background:#0f1117;border:1px solid #1c2030;border-radius:12px;padding:14px;overflow:auto}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;color:#e8e8f0}
+
+    @media (max-width:768px){
+      .page-title{font-size:2.4rem}
+      .nav-container{grid-template-columns:auto 1fr;gap:1rem}
+      .nav-menu{gap:1rem;justify-content:center}
+      .main-container{padding:1rem}
+      .elo-display{ position:static; transform:none; margin:1rem auto 0; width:fit-content; }
+    }
+
+    /* Learning Hub specific styles */
+    .learn-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .learn-card {
+      background: linear-gradient(135deg, rgba(20,20,20,.95), rgba(30,30,30,.95));
+      border: 1px solid rgba(255,140,0,.2);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: .3s;
+    }
+
+    .learn-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,140,0,.4);
+    }
+
+    .learn-card h3 {
+      color: #ff8c00;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .learn-card h4 {
+      color: #fff;
+      margin: 1.5rem 0 1rem;
+      font-size: 1.1rem;
+    }
+
+    .content ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .content li {
+      padding: .5rem 0;
+      color: #ccc;
+    }
+
+    .locked-content {
+      background: rgba(255,140,0,.1);
+      border: 1px solid rgba(255,140,0,.2);
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      color: #ff8c00;
+    }
+
+    .example-section {
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Navigation -->
+<header class="header">
+    <nav class="nav-container">
+        <a href="index.html" class="logo">WebVantage</a>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="team-intro.html" class="nav-link">Team</a></li>
+            <li><a href="courses.html" class="nav-link">Courses</a></li>
+            <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+            <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+            <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+            <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+            <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+            <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+        </ul>
+        <div class="user-menu" id="userMenu">
+            <div class="user-profile-container">
+                <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar"></div>
+                <div class="elo-progress-container">
+                    <div class="elo-rank-header">
+                        <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+                        <span class="elo-rank-text" id="eloRankText">Beginner</span>
+                    </div>
+                    <div class="elo-progress-bar">
+                        <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:50%"></div>
+                    </div>
+                    <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+  </header>
+
+  <main class="main-container">
+    <section class="page-header">
+      <h1 class="page-title">Learning Hub</h1>
+      <p class="page-subtitle">Access curated learning materials based on your skill level</p>
+    </section>
+
+    <!-- Learning Options -->
+    <div class="learn-options">
+      <!-- Book List Section -->
+      <div class="learn-card" data-required-elo="800">
+        <h3>📚 Book List</h3>
+        <div class="content">
+          <!-- Beginner Books -->
+          <h4>Beginner Resources (ELO 800-1199)</h4>
+          <ul>
+            <li>
+              <strong>HTML: A Beginner's Guide (4th Edition)</strong>
+              <br>by Wendy Willard
+              <br><a href="https://www.snggdcg.ac.in/pdf/study-material/computer-science/0071611436%20HTML.pdf" target="_blank" class="book-link">View PDF</a>
+            </li>
+          </ul>
+
+          <!-- Intermediate Books -->
+          <h4 class="medium-content" data-required-elo="1200">Intermediate Resources (ELO 1200-1599)</h4>
+          <ul class="medium-content" data-required-elo="1200">
+            <li>
+              <strong>The Complete Reference HTML & CSS (5th Edition)</strong>
+              <br>by Thomas A. Powell
+              <br><a href="https://www.dcpehvpm.org/E-Content/BCA/BCA-II/Web%20Technology/the-complete-reference-html-css-fifth-edition.pdf" target="_blank" class="book-link">View PDF</a>
+            </li>
+          </ul>
+
+          <!-- Advanced Books -->
+          <h4 class="advanced-content" data-required-elo="1600">Advanced Resources (ELO 1600-1999)</h4>
+          <ul class="advanced-content" data-required-elo="1600">
+            <li>
+              <strong>JavaScript for Absolute Beginners</strong>
+              <br>by Terry McNavage
+              <br><a href="https://pepa.holla.cz/wp-content/uploads/2015/11/JavaScript-for-Absolute-Beginners.pdf" target="_blank" class="book-link">View PDF</a>
+            </li>
+          </ul>
+
+          <!-- Expert Books -->
+          <h4 class="expert-content" data-required-elo="2000">Expert Resources (ELO 2000+)</h4>
+          <ul class="expert-content" data-required-elo="2000">
+            <li>
+              <strong>Fundamentals of Web Development</strong>
+              <br>by Randy Connolly & Ricardo Hoar
+              <br><a href="https://api.pageplace.de/preview/DT0400.9781292075556_A24590354/preview-9781292075556_A24590354.pdfdz" target="_blank" class="book-link">View PDF</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Code Examples Section -->
+      <div class="learn-card" data-required-elo="800">
+        <h3>💻 Code Examples</h3>
+        <div class="content">
+          <!-- HTML Examples (Beginner) -->
+          <div class="example-section">
+            <h4>HTML Examples</h4>
+            <a href="learn-html.html" class="example-link">View HTML Examples</a>
+          </div>
+
+          <!-- CSS Examples (Intermediate) -->
+          <div class="example-section medium-content" data-required-elo="1200">
+            <h4>CSS Examples</h4>
+            <a href="learn-css.html" class="example-link">View CSS Examples</a>
+          </div>
+
+          <!-- JavaScript Examples (Advanced) -->
+          <div class="example-section advanced-content" data-required-elo="1600">
+            <h4>JavaScript Examples</h4>
+            <a href="learn-javascript.html" class="example-link">View JavaScript Examples</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add this script to handle content visibility -->
+    <script>
+      function updateContentVisibility() {
+        const userElo = getELO(); // Using existing getELO function
+        const rank = getUserRank(userElo);
+        
+        document.querySelectorAll('[data-required-elo]').forEach(element => {
+          const requiredElo = parseInt(element.dataset.requiredElo);
+          element.style.display = canAccessContent(userElo, requiredElo) ? 'block' : 'none';
+          
+          if (!canAccessContent(userElo, requiredElo)) {
+            element.innerHTML += `
+              <div class="locked-content">
+                <p>🔒 This content requires ${requiredElo}+ ELO to access</p>
+                <p>Your current ELO: ${userElo}</p>
+              </div>
+            `;
+          }
+        });
+      }
+
+      // Run on page load
+      document.addEventListener('DOMContentLoaded', updateContentVisibility);
+    </script>
+  </main>
+
+  <!-- Optional: simple handler for the lesson buttons -->
+  <script>
+    function startLesson(id){
+      const map = {
+        'intro-ai':'Introduction to AI',
+        'machine-learning':'Machine Learning Basics',
+        'neural-networks':'Neural Networks & Deep Learning',
+        'nlp':'Natural Language Processing',
+        'computer-vision':'Computer Vision',
+        'ai-ethics':'AI Ethics & Responsible AI'
+      };
+      alert('🚀 Starting: ' + (map[id] || id) + '\n\n(This is a placeholder. Link to your actual lesson page here.)');
+    }
+  </script>
+
+  <!-- Shared ELO system (inline module) -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Auth.syncHeaderState();   // paints avatar + ELO consistently
+  });
+</script>
+
+
+  <!-- Challenge progress tracking -->
+  <script>
+    const CHALLENGE_PROGRESS_KEY = 'challengeProgress';
+
+    function saveChallengeProgress(challengeId) {
+      try {
+        const progress = JSON.parse(localStorage.getItem(CHALLENGE_PROGRESS_KEY) || '{}');
+        progress[challengeId] = true;
+        localStorage.setItem(CHALLENGE_PROGRESS_KEY, JSON.stringify(progress));
+      } catch (e) {
+        console.error('Failed to save challenge progress');
+      }
+    }
+
+    function getChallengeProgress() {
+      try {
+        return JSON.parse(localStorage.getItem(CHALLENGE_PROGRESS_KEY) || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    // Add to challenge completion handler:
+    // if (passedTests === totalTests) {
+    //   saveChallengeProgress(challenge.id);
+    // }
+  </script>
+
+  <!-- Quiz progress tracking -->
+  <script>
+    const QUIZ_PROGRESS_KEY = 'quizProgress';
+
+    function saveQuizProgress(questionId) {
+      try {
+        const progress = JSON.parse(localStorage.getItem(QUIZ_PROGRESS_KEY) || '{}');
+        progress[questionId] = true;
+        localStorage.setItem(QUIZ_PROGRESS_KEY, JSON.stringify(progress));
+      } catch (e) {
+        console.error('Failed to save quiz progress');
+      }
+    }
+
+    function getQuizProgress() {
+      try {
+        return JSON.parse(localStorage.getItem(QUIZ_PROGRESS_KEY) || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    // Add to submitQuizAnswer function:
+    // if (isCorrect) {
+    //   saveQuizProgress(currentQuestion.id);
+    // }
+  </script>
+
+  <script>
+  // Consistent avatar → profile navigation on all pages
+  function toggleUserDropdown() {
+    window.location.href = 'my-profile.html';
+  }
+
+  // Extra safety: bind click if the HTML didn't include the inline onclick
+  document.addEventListener('DOMContentLoaded', () => {
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+      avatar.addEventListener('click', () => window.location.href = 'my-profile.html');
+    }
+  });
+  </script>
+
+<!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Elo.initHeader();          // paint header ELO once + wire up listeners
+  });
+</script>
+<script src="auth.js" defer></script>
+</body>
+</html>

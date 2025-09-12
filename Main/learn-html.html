@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HTML Fundamentals - WebVantage</title>
+  <link rel="stylesheet" href="navigation.css">
+  <style>
+    /* ===== Base Theme (black + orange) ===== */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height:1.6;color:#fff;background:#000;min-height:100vh;overflow-x:hidden;position:relative;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    }
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;
+      background:linear-gradient(to bottom right, rgba(255,140,0,.03) 0%, transparent 70%)}
+
+    /* ===== Header / Nav (matches other pages) ===== */
+    .header{background:rgba(0,0,0,.97);padding:1.25rem 0;position:fixed;top:0;left:0;right:0;z-index:1000;transition:.3s}
+    .header::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;
+      background:linear-gradient(to right,transparent,rgba(255,140,0,.2),rgba(255,140,0,.4),rgba(255,140,0,.2),transparent)}
+    .nav-container{max-width:1600px;margin:0 auto;padding:0 3rem;display:grid;grid-template-columns:auto 1fr auto;gap:3rem;align-items:center}
+    .logo{font-size:1.25rem;font-weight:500;color:#fff;text-decoration:none;display:flex;align-items:center;gap:.8rem;letter-spacing:.5px;transition:.3s}
+    .logo:hover{transform:scale(1.05);text-shadow:0 0 20px rgba(255,140,0,.5)}
+    .logo::before{content:"";width:24px;height:24px;background:linear-gradient(135deg,#ff8c00,#ffb347);
+      mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E") no-repeat center/contain}
+    .nav-menu{display:flex;list-style:none;gap:2.5rem;justify-content:center}
+    .nav-link{color:rgba(255,255,255,.7);text-decoration:none;font-weight:400;padding:.5rem 1rem;position:relative;font-size:.95rem;letter-spacing:.3px;transition:.3s}
+    .nav-link::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:#ff8c00;transform:scaleX(0);transform-origin:right;transition:transform .3s}
+    .nav-link:hover{color:#fff}.nav-link:hover::after{transform:scaleX(1);transform-origin:left}
+    .nav-link.active{color:#ff8c00;font-weight:500}.nav-link.active::after{transform:scaleX(1)}
+
+    /* ===== User menu (avatar + ELO) ===== */
+    .user-menu{display:none;position:relative}
+    .user-menu.show{display:block}
+    .user-profile-container{display:flex;align-items:center;gap:.75rem}
+    .user-avatar{
+      width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff8c00,#ffb347);
+      display:flex;align-items:center;justify-content:center;color:#000;font-weight:bold;font-size:1rem;cursor:pointer;transition:.3s;overflow:hidden
+    }
+    .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 15px rgba(255,140,0,.5)}
+    .user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+    .elo-progress-container{display:flex;flex-direction:column;align-items:flex-start;gap:.3rem}
+    .elo-rank-header{display:flex;align-items:center;gap:.5rem}
+    .elo-rank-icon{width:16px;height:16px;border-radius:3px}
+    .elo-rank-text{font-size:.75rem;font-weight:600;color:#fff}
+    .elo-progress-bar{width:80px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+    .elo-progress-fill{height:100%;border-radius:3px;transition:.5s}
+    .elo-current-rating{font-size:.7rem;color:rgba(255,255,255,.6);font-weight:500}
+    .rank-beginner{background:linear-gradient(135deg,#4CAF50,#66BB6A)}
+    .rank-intermediate{background:linear-gradient(135deg,#FF9800,#FFB74D)}
+    .rank-advanced{background:linear-gradient(135deg,#F44336,#EF5350)}
+    .rank-expert{background:linear-gradient(135deg,#9C27B0,#BA68C8)}
+
+    /* ===== Page ===== */
+    .main-container{max-width:1200px;margin:0 auto;padding:2rem;padding-top:120px}
+    .back-button{
+      background:rgba(40,40,40,.8);color:#fff;text-decoration:none;padding:1rem 2rem;border-radius:25px;font-weight:600;
+      transition:.3s;display:inline-block;margin-bottom:2rem;border:1px solid rgba(255,140,0,.3)
+    }
+    .back-button:hover{background:rgba(255,140,0,.1);border-color:#ff8c00}
+
+    .lesson-header{
+      text-align:center;margin-bottom:2rem;padding:2rem 1.5rem;
+      background:linear-gradient(135deg,rgba(15,15,15,.9),rgba(30,30,30,.9));
+      border-radius:20px;border:1px solid rgba(255,140,0,.2)
+    }
+    .lesson-title{font-size:2.4rem;color:#ff8c00;margin-bottom:.5rem;font-weight:700}
+    .lesson-subtitle{font-size:1.05rem;color:#ccc;margin-bottom:1rem}
+
+    /* Tabs: Interactive / Book */
+    .view-switch{
+      display:flex;gap:.75rem;justify-content:center;margin:1rem auto 2rem;flex-wrap:wrap
+    }
+    .view-tab{
+      background:rgba(40,40,40,.85);border:1px solid rgba(255,140,0,.25);color:#fff;
+      padding:.7rem 1.2rem;border-radius:999px;cursor:pointer;font-weight:600;transition:.25s
+    }
+    .view-tab:hover{border-color:#ff8c00;background:rgba(255,140,0,.08)}
+    .view-tab.active{background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border-color:transparent}
+
+    /* Progress bar (interactive) */
+    .progress-bar{width:300px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;margin:0.5rem auto 0;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(135deg,#ff8c00,#ffb347);border-radius:4px;width:0%;transition:width .5s}
+
+    /* Interactive content cards */
+    .lesson-content{display:grid;gap:2rem;margin-top:1.5rem}
+    .topic-card{
+      background:rgba(15,15,15,.95);padding:2rem;border-radius:18px;border:1px solid rgba(255,140,0,.1);
+      transition:.3s;position:relative;opacity:0;transform:translateY(12px)
+    }
+    .topic-card.visible{opacity:1;transform:translateY(0)}
+    .topic-card:hover{border-color:rgba(255,140,0,.3);background:rgba(20,20,20,.95)}
+    .topic-title{font-size:1.5rem;color:#ff8c00;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+    .topic-number{width:36px;height:36px;background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem}
+    .topic-description{color:#ccc;margin-bottom:1.1rem;font-size:1rem;line-height:1.7}
+
+    .code-example{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:1rem 1.25rem;margin:1rem 0;font-family:'Monaco','Menlo','Ubuntu Mono',monospace;overflow-x:auto}
+    .code-example::before{content:'HTML';float:right;color:#ff8c00;font-size:.8rem;font-weight:700}
+    .code-example code{color:#fff;white-space:pre}
+
+    .interactive-demo{background:#2a2a2a;border-radius:10px;padding:1rem 1.25rem;margin:.75rem 0;border:2px solid #ff8c00;position:relative}
+    .interactive-demo::before{content:'🌐 Live Preview';position:absolute;top:-12px;left:1rem;background:#ff8c00;color:#000;padding:.2rem .8rem;border-radius:14px;font-size:.8rem;font-weight:700}
+    .try-it-button{
+      background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border:none;padding:.8rem 1.2rem;border-radius:22px;
+      font-weight:700;cursor:pointer;transition:.25s;margin-top:.4rem;display:inline-block
+    }
+    .try-it-button:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(255,140,0,.3)}
+
+    /* Book viewer */
+    #bookMode{display:none}
+    .book-wrap{
+      background:rgba(15,15,15,.95);border:1px solid rgba(255,140,0,.2);border-radius:18px;padding:1rem 1rem 1.25rem
+    }
+    .book-actions{display:flex;gap:.6rem;justify-content:flex-end;margin-bottom:.6rem}
+    .book-link{
+      background:rgba(40,40,40,.85);border:1px solid rgba(255,140,0,.25);color:#fff;padding:.5rem .9rem;border-radius:9px;text-decoration:none;font-weight:600
+    }
+    .book-link:hover{border-color:#ff8c00;background:rgba(255,140,0,.08)}
+    .book-iframe{width:100%;height:78vh;border:none;border-radius:12px;background:#111}
+
+    /* Quiz + next (kept compact) */
+    .quiz-section{background:linear-gradient(135deg,rgba(20,20,20,.9),rgba(30,30,30,.9));padding:2rem;border-radius:18px;border:2px solid #ff8c00;text-align:center;margin-top:2rem}
+    .quiz-options{display:grid;gap:.75rem;max-width:600px;margin:0 auto 1.25rem}
+    .quiz-option{background:rgba(40,40,40,.8);border:2px solid rgba(255,140,0,.2);padding:.85rem 1rem;border-radius:10px;color:#fff;cursor:pointer;transition:.2s;text-align:left}
+    .quiz-option:hover{border-color:#ff8c00;background:rgba(255,140,0,.1)}
+    .quiz-option.selected{border-color:#ff8c00;background:linear-gradient(135deg,rgba(255,140,0,.2),rgba(255,179,71,.1));color:#ff8c00}
+    .quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,.2);color:#4CAF50}
+    .quiz-option.incorrect{border-color:#f44336;background:rgba(244,67,54,.2);color:#f44336}
+    .submit-quiz{background:linear-gradient(135deg,#ff8c00,#ffb347);color:#000;border:none;padding:.9rem 1.6rem;border-radius:24px;font-weight:700;cursor:pointer}
+    .submit-quiz:disabled{opacity:.6;cursor:not-allowed}
+    .quiz-feedback{margin-top:1rem;padding:.7rem;border-radius:10px;font-weight:700;min-height:48px;display:flex;align-items:center;justify-content:center}
+    .next-lesson{text-align:center;margin-top:2rem}
+    .next-button{background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff;text-decoration:none;padding:1.2rem 2rem;border-radius:28px;font-weight:700;display:inline-block}
+
+    @media (max-width:768px){.nav-container{flex-direction:column;gap:1rem;padding:0 1rem}.nav-menu{flex-wrap:wrap;gap:1rem}
+      .main-container{padding:1rem;padding-top:140px}.lesson-title{font-size:2rem}.topic-card{padding:1.25rem}.book-iframe{height:70vh}}
+  </style>
+</head>
+<body>
+<header class="header">
+  <nav class="nav-container">
+    <a class="logo" href="index.html">WebVantage</a>
+    <ul class="nav-menu">
+      <li><a class="nav-link" href="index.html">Home</a></li>
+      <li><a class="nav-link" href="team-intro.html">Team</a></li>
+      <li><a class="nav-link active" href="courses.html">Courses</a></li>
+      <li><a class="nav-link" href="code-editor.html">Code Editor</a></li>
+      <li><a class="nav-link" href="challenges.html">Challenges</a></li>
+      <li><a class="nav-link" href="ai-battle.html">AI Battle</a></li>
+      <li><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
+      <li><a class="nav-link" id="loginLink" href="login.html">Login</a></li>
+      <li><a class="nav-link" id="registerLink" href="register.html">Register</a></li>
+    </ul>
+    <div class="user-menu" id="userMenu">
+      <div class="user-profile-container">
+        <div class="user-avatar" id="userAvatar" title="Open Profile">U</div>
+        <div class="elo-progress-container">
+          <div class="elo-rank-header">
+            <div class="elo-rank-icon rank-beginner" id="eloRankIcon"></div>
+            <span class="elo-rank-text" id="eloRankText">Beginner</span>
+          </div>
+          <div class="elo-progress-bar">
+            <div class="elo-progress-fill rank-beginner" id="eloProgressFill" style="width:60%"></div>
+          </div>
+          <div class="elo-current-rating" id="eloCurrentRating">1200 ELO</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="main-container">
+  <a class="back-button" href="courses.html">← Back to Courses</a>
+
+  <section class="lesson-header">
+    <h1 class="lesson-title">📖 HTML Fundamentals</h1>
+    <p class="lesson-subtitle">Learn the building blocks of the web (elements, attributes, structure, forms, tables).</p>
+
+    <!-- Tabs -->
+    <div class="view-switch" role="tablist" aria-label="Learning mode">
+      <button id="tabInteractive" class="view-tab active" role="tab" aria-selected="true" onclick="switchView_HTML('interactive')">Interactive Lessons</button>
+      <button id="tabBook" class="view-tab" role="tab" aria-selected="false" onclick="switchView_HTML('book')">📘 Learn from Book</button>
+    </div>
+
+    <!-- Progress (interactive only) -->
+    <div class="progress-bar"><div class="progress-fill" id="progressFillHTML"></div></div>
+  </section>
+
+  <!-- ===== INTERACTIVE LESSONS ===== -->
+  <section id="lessonInteractiveHTML" class="lesson-content" aria-live="polite">
+    <!-- Topic 1 -->
+    <div class="topic-card" data-topic="1">
+      <h2 class="topic-title"><span class="topic-number">1</span> What is HTML?</h2>
+      <p class="topic-description">HTML defines the structure of web pages using elements and tags.</p>
+      <div class="code-example"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;My First Page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello, World!&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></div>
+      <div class="interactive-demo">
+        <h1>Hello, World!</h1>
+        <p>This is how the HTML above renders in a browser.</p>
+      </div>
+      <button class="try-it-button" onclick="completeTopicHTML(1)">Got it! ✨</button>
+    </div>
+
+    <!-- Topic 2 -->
+    <div class="topic-card" data-topic="2">
+      <h2 class="topic-title"><span class="topic-number">2</span> HTML Document Structure</h2>
+      <p class="topic-description">A valid document includes <code>&lt;!DOCTYPE&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, and <code>&lt;body&gt;</code>.</p>
+      <div class="code-example"><code>&lt;html lang="en"&gt;
+  &lt;head&gt; ... metadata ... &lt;/head&gt;
+  &lt;body&gt; ... visible content ... &lt;/body&gt;
+&lt;/html&gt;</code></div>
+      <button class="try-it-button" onclick="completeTopicHTML(2)">Understood! 🏗️</button>
+    </div>
+
+    <!-- Topic 3 -->
+    <div class="topic-card" data-topic="3">
+      <h2 class="topic-title"><span class="topic-number">3</span> Common Tags</h2>
+      <p class="topic-description">Headings, paragraphs, links, and images are used constantly.</p>
+      <div class="code-example"><code>&lt;h1&gt;Main Heading&lt;/h1&gt;
+&lt;p&gt;Paragraph text.&lt;/p&gt;
+&lt;a href="https://example.com"&gt;A link&lt;/a&gt;
+&lt;img src="photo.jpg" alt="Description" width="300"&gt;</code></div>
+      <div class="interactive-demo">
+        <h2>Preview</h2>
+        <p>🔗 <a href="#" style="color:#ff8c00">This is a link</a></p>
+        <p><strong>Tip:</strong> Always include <code>alt</code> text for images.</p>
+      </div>
+      <button class="try-it-button" onclick="completeTopicHTML(3)">Makes sense! 🏷️</button>
+    </div>
+
+    <!-- Topic 4 -->
+    <div class="topic-card" data-topic="4">
+      <h2 class="topic-title"><span class="topic-number">4</span> Lists</h2>
+      <p class="topic-description">Use <code>&lt;ul&gt;</code>/<code>&lt;ol&gt;</code> with <code>&lt;li&gt;</code> for items.</p>
+      <div class="code-example"><code>&lt;ul&gt;
+  &lt;li&gt;First&lt;/li&gt;
+  &lt;li&gt;Second&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Step one&lt;/li&gt;
+  &lt;li&gt;Step two&lt;/li&gt;
+&lt;/ol&gt;</code></div>
+      <button class="try-it-button" onclick="completeTopicHTML(4)">Got lists! 📝</button>
+    </div>
+
+    <!-- Topic 5 -->
+    <div class="topic-card" data-topic="5">
+      <h2 class="topic-title"><span class="topic-number">5</span> Forms</h2>
+      <p class="topic-description">Forms collect user input via inputs, selects, textareas, etc.</p>
+      <div class="code-example"><code>&lt;form action="/submit" method="post"&gt;
+  &lt;label for="email"&gt;Email&lt;/label&gt;
+  &lt;input id="email" name="email" type="email" required&gt;
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></div>
+      <div class="interactive-demo">
+        <form style="display:grid;gap:.6rem;max-width:360px">
+          <label for="demo-email" style="color:#ff8c00">Email:</label>
+          <input id="demo-email" type="email" style="padding:.5rem;border-radius:6px;border:1px solid #333">
+          <button type="button" class="try-it-button">Send</button>
+        </form>
+      </div>
+      <button class="try-it-button" onclick="completeTopicHTML(5)">Forms understood! 📋</button>
+    </div>
+
+    <!-- Quick Quiz -->
+    <div class="quiz-section" id="finalQuizHTML" style="display:none">
+      <h2>🧠 HTML Knowledge Check</h2>
+      <div class="quiz-question">Which tag creates the largest heading?</div>
+      <div class="quiz-options" id="quizOptionsHTML">
+        <div class="quiz-option" onclick="selectQuizOptionHTML(this,false)">A) &lt;title&gt;</div>
+        <div class="quiz-option" onclick="selectQuizOptionHTML(this,true)">B) &lt;h1&gt;</div>
+        <div class="quiz-option" onclick="selectQuizOptionHTML(this,false)">C) &lt;header&gt;</div>
+        <div class="quiz-option" onclick="selectQuizOptionHTML(this,false)">D) &lt;h6&gt;</div>
+      </div>
+      <button id="submitQuizHTML" class="submit-quiz" onclick="submitQuizHTML()" disabled>Submit Answer</button>
+      <div id="quizFeedbackHTML" class="quiz-feedback"></div>
+      <div class="next-lesson" id="nextLessonHTML" style="display:none">
+        <a class="next-button" href="learn-css.html">Next: CSS Styling 🎨</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BOOK MODE ===== -->
+  <section id="bookMode" aria-live="polite">
+    <div class="book-wrap">
+      <div class="book-actions">
+        <a class="book-link" href="Books/HTML.pdf" target="_blank" rel="noopener">Open in new tab</a>
+        <a class="book-link" href="Books/HTML.pdf" download>Download PDF</a>
+      </div>
+      <iframe class="book-iframe" src="Books/HTML.pdf"></iframe>
+      <p style="margin-top:.6rem;color:#ccc;">If the PDF doesn’t display, use the buttons above.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+  /* ================= Header sync (matches my-profile.html) ================= */
+  const ELO_RANKS = [
+    { name:'Beginner',     class:'rank-beginner',     min:0,    max:1399 },
+    { name:'Intermediate', class:'rank-intermediate', min:1400, max:1799 },
+    { name:'Advanced',     class:'rank-advanced',     min:1800, max:2199 },
+    { name:'Expert',       class:'rank-expert',       min:2200, max:9999 }
+  ];
+  let currentUser = null, currentELO = 1250;
+
+  function getRankFor(elo){
+    for(const r of ELO_RANKS){ if(elo>=r.min && elo<=r.max) return r; }
+    return ELO_RANKS[0];
+  }
+  function rankPct(elo, r){
+    const span = Math.max(1, r.max - r.min);
+    return Math.max(0, Math.min(100, ((elo - r.min) / span) * 100));
+  }
+  function loadUser(){
+    try{
+      const raw = localStorage.getItem('loggedInUser');
+      currentUser = raw ? JSON.parse(raw) : null;
+      currentELO = currentUser ? (currentUser.elo || 1250) : 1250;
+    }catch(e){ currentUser=null; currentELO=1250; }
+  }
+  function updateHeaderUI(){
+    const login = document.getElementById('loginLink');
+    const reg   = document.getElementById('registerLink');
+    const menu  = document.getElementById('userMenu');
+    const av    = document.getElementById('userAvatar');
+    const icon  = document.getElementById('eloRankIcon');
+    const text  = document.getElementById('eloRankText');
+    const fill  = document.getElementById('eloProgressFill');
+    const rating= document.getElementById('eloCurrentRating');
+
+    if(!login||!reg||!menu||!av||!icon||!text||!fill||!rating) return;
+
+    if(currentUser){
+      login.style.display='none'; reg.style.display='none'; menu.classList.add('show');
+
+      // Avatar priority: uploaded image (avatarImage) -> emoji/text (avatar) -> initial
+      av.innerHTML='';
+      if(currentUser.avatarImage){
+        const img=document.createElement('img');
+        img.src=currentUser.avatarImage;
+        img.alt=(currentUser.name||currentUser.email||'Avatar');
+        av.appendChild(img);
+      }else if(currentUser.avatar){
+        av.textContent=currentUser.avatar;
+      }else{
+        av.textContent=((currentUser.name||currentUser.email||'U')[0]||'U').toUpperCase();
+      }
+      av.onclick=()=>location.href='my-profile.html';
+
+      const elo = (typeof currentUser.elo === 'number') ? currentUser.elo : 1200;
+      const r   = getRankFor(elo);
+      const pct = rankPct(elo, r);
+
+      icon.className='elo-rank-icon '+r.class;
+      text.textContent=r.name;                // 1200 => Beginner (fixed banding)
+      fill.className='elo-progress-fill '+r.class;
+      fill.style.width=pct+'%';
+      rating.textContent=elo+' ELO';
+    }else{
+      login.style.display='block'; reg.style.display='block'; menu.classList.remove('show');
+    }
+  }
+
+  /* ================= View switch (remember per page) ================= */
+  const VIEW_KEY_HTML='lessonView_html';
+  function switchView_HTML(mode){
+    const inter=document.getElementById('lessonInteractiveHTML');
+    const book =document.getElementById('bookMode');
+    const tI=document.getElementById('tabInteractive');
+    const tB=document.getElementById('tabBook');
+    if(mode==='book'){
+      inter.style.display='none'; book.style.display='block';
+      tI.classList.remove('active'); tI.setAttribute('aria-selected','false');
+      tB.classList.add('active'); tB.setAttribute('aria-selected','true');
+    }else{
+      inter.style.display='grid'; book.style.display='none';
+      tB.classList.remove('active'); tB.setAttribute('aria-selected','false');
+      tI.classList.add('active'); tI.setAttribute('aria-selected','true');
+    }
+    localStorage.setItem(VIEW_KEY_HTML, mode);
+  }
+
+  /* ================= Interactive progress + quiz ================= */
+  let htmlCompleted=0, selectedHTML=null, correctHTML=false;
+  function updateProgressHTML(){ document.getElementById('progressFillHTML').style.width=(htmlCompleted/5*100)+'%'; }
+  function completeTopicHTML(step){
+    if(step>htmlCompleted){
+      htmlCompleted=step; updateProgressHTML();
+      const next=document.querySelector(`.topic-card[data-topic="${step+1}"]`);
+      if(next){ setTimeout(()=>{ next.classList.add('visible'); next.scrollIntoView({behavior:'smooth',block:'center'}); },350); }
+      if(step===5){ setTimeout(()=>{ document.getElementById('finalQuizHTML').style.display='block'; document.getElementById('finalQuizHTML').scrollIntoView({behavior:'smooth'}); },400); }
+    }
+  }
+  function selectQuizOptionHTML(el, ok){
+    document.querySelectorAll('#quizOptionsHTML .quiz-option').forEach(o=>o.classList.remove('selected'));
+    el.classList.add('selected'); selectedHTML=el; correctHTML=ok;
+    document.getElementById('submitQuizHTML').disabled=false;
+  }
+  function submitQuizHTML(){
+    if(!selectedHTML) return;
+    const opts=[...document.querySelectorAll('#quizOptionsHTML .quiz-option')];
+    opts[1].classList.add('correct'); if(!correctHTML){ selectedHTML.classList.add('incorrect'); }
+    const fb=document.getElementById('quizFeedbackHTML');
+    if(correctHTML){ fb.textContent='✅ Correct!'; fb.style.color='#4CAF50'; fb.style.background='rgba(76,175,80,.12)'; fb.style.border='1px solid #4CAF50'; }
+    else{ fb.innerHTML='❌ Not quite. The correct answer is <strong>&lt;h1&gt;</strong>.'; fb.style.color='#f44336'; fb.style.background='rgba(244,67,54,.12)'; fb.style.border='1px solid #f44336'; }
+    document.getElementById('submitQuizHTML').disabled=true;
+    setTimeout(()=>{ document.getElementById('nextLessonHTML').style.display='block'; },800);
+  }
+
+  /* ================= Init + live updates ================= */
+  document.addEventListener('DOMContentLoaded', ()=>{
+    loadUser();
+    updateHeaderUI();
+    document.querySelector('.topic-card[data-topic="1"]').classList.add('visible');
+    switchView_HTML(localStorage.getItem(VIEW_KEY_HTML)||'interactive');
+    document.body.style.opacity='0'; document.body.style.transition='opacity .5s ease';
+    setTimeout(()=>{ document.body.style.opacity='1'; },60);
+  });
+  window.addEventListener('storage',e=>{ if(e.key==='loggedInUser'){ loadUser(); updateHeaderUI(); }});
+  window.addEventListener('avatarUpdated', ()=>{ loadUser(); updateHeaderUI(); });
+  window.addEventListener('eloUpdated',    ()=>{ loadUser(); updateHeaderUI(); });
+  window.addEventListener('userUpdated',   ()=>{ loadUser(); updateHeaderUI(); });
+</script>
+</body>
+</html>

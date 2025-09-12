@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Challenges - Frontend Development Learning Hub</title>
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5; color: #ffffff; background: #000000; min-height: 100vh; overflow-x: hidden; position: relative;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+        }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom right, rgba(255, 140, 0, 0.03) 0%, transparent 70%); pointer-events: none; z-index: -1; }
+        .header { background: rgba(0, 0, 0, 0.97); padding: 1.25rem 0; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; transition: all 0.3s ease; }
+        .header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255, 140, 0, 0.2), transparent); }
+        .nav-container { max-width: 1600px; margin: 0 auto; padding: 0 3rem; display: grid; grid-template-columns: auto 1fr auto; gap: 3rem; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: 500; color: #ffffff; text-decoration: none; display: flex; align-items: center; gap: 0.8rem; transition: all 0.3s ease; letter-spacing: 0.5px; }
+        .logo:hover { transform: scale(1.05); text-shadow: 0 0 20px rgba(255, 140, 0, 0.5); }
+        .logo::before { content: ""; display: inline-block; width: 24px; height: 24px; background: linear-gradient(135deg, #ff8c00, #ffb347);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.5 8 12 11.2 4.5 8 12 4.8zM4 16.5v-7l7 3.5v7l-7-3.5zm9 3.5v-7l7-3.5v7l-7 3.5z'/%3E%3C/svg%3E"); mask-size: contain; mask-repeat: no-repeat; margin-right: 0.5rem; }
+        .nav-menu { display: flex; list-style: none; gap: 2.5rem; justify-content: center; flex-wrap: nowrap; margin: 0; padding: 0; }
+        .nav-link { text-decoration: none; color: rgba(255, 255, 255, 0.7); font-weight: 400; transition: all 0.3s ease; padding: 0.5rem 1rem; position: relative; font-size: 0.95rem; letter-spacing: 0.3px; }
+        .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: #ff8c00; transform: scaleX(0); transform-origin: right; transition: transform 0.3s ease; }
+        .nav-link:hover { color: #ffffff; }
+        .nav-link:hover::after { transform: scaleX(1); transform-origin: left; }
+        .nav-link.active { color: #ff8c00; font-weight: 500; }
+        .nav-link.active::after { transform: scaleX(1); }
+        .user-menu { display: none; position: relative; align-items: center; gap: 1rem; }
+        .user-menu.show { display: flex; }
+        .user-profile-container { display: flex; align-items: center; gap: 0.75rem; position: relative; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #ff8c00, #ffb347); display: flex; align-items: center; justify-content: center; color: #000000; font-weight: bold; cursor: pointer; border: 2px solid rgba(255, 140, 0, 0.3); font-size: 1rem; transition: all 0.3s ease; overflow: hidden; object-fit: cover; }
+        .user-avatar:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 140, 0, 0.4); }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .elo-progress-container { display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+        .elo-rank-header { display: flex; align-items: center; gap: 0.5rem; }
+        .elo-rank-icon { width: 16px; height: 16px; border-radius: 3px; transition: all 0.3s ease; }
+        .elo-rank-text { font-size: 0.75rem; font-weight: 600; color: #ffffff; letter-spacing: 0.5px; }
+        .elo-progress-bar { width: 80px; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; position: relative; }
+        .elo-progress-fill { height: 100%; border-radius: 3px; transition: all 0.5s ease; position: relative; overflow: hidden; }
+        .elo-progress-fill::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent); animation: shimmer 2s infinite; }
+        @keyframes shimmer { 0% { left: -100%; } 100% { left: 100%; } }
+        .elo-current-rating { font-size: 0.7rem; color: rgba(255, 255, 255, 0.6); font-weight: 500; }
+        .rank-beginner { background: linear-gradient(135deg, #4CAF50, #66BB6A); }
+        .rank-intermediate { background: linear-gradient(135deg, #FF9800, #FFB74D); }
+        .rank-advanced { background: linear-gradient(135deg, #F44336, #EF5350); }
+        .rank-expert { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+        .rank-master { background: linear-gradient(135deg, #3F51B5, #7986CB); }
+        .rank-grandmaster { background: linear-gradient(135deg, #FFD700, #FFC107); }
+        .main-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .page-header { text-align: left; padding: 8rem 2rem; background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.95)); position: relative; overflow: hidden; margin: -2rem -2rem 4rem -2rem; }
+        .page-header::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(255, 140, 0, 0.05), transparent); pointer-events: none; opacity: 0.5; }
+        .page-title { font-size: 3.5rem; color: #ffffff; margin-bottom: 1.5rem; font-weight: 600; letter-spacing: -0.5px; line-height: 1.2; position: relative; }
+        .page-title::after { content: ''; display: block; width: 80px; height: 4px; background: #ff8c00; margin-top: 1.5rem; }
+        .page-subtitle { font-size: 1.25rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 2.5rem; max-width: 600px; line-height: 1.6; font-weight: 400; }
+        .elo-display { position: fixed; top: 50%; right: 20px; transform: translateY(-50%); background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95)); color: white; padding: 1.5rem; border-radius: 15px; text-align: center; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 140, 0, 0.3); backdrop-filter: blur(10px); z-index: 100; }
+        .elo-number { font-size: 2.5rem; font-weight: bold; display: block; color: #ff8c00; text-shadow: 0 0 15px rgba(255, 140, 0, 0.5); }
+        .elo-label { font-size: 0.9rem; opacity: 0.9; color: #cccccc; margin-top: 0.5rem; }
+        .difficulty-selector { display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; }
+        .difficulty-btn { background: rgba(40, 40, 40, 0.8); color: #ffffff; border: 2px solid rgba(255, 140, 0, 0.3); padding: 1rem 2rem; border-radius: 25px; cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; position: relative; overflow: hidden; }
+        .difficulty-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.1), transparent); transition: left 0.3s ease; }
+        .difficulty-btn:hover::before { left: 100%; }
+        .difficulty-btn:hover { border-color: #ff8c00; background: rgba(255, 140, 0, 0.1); transform: translateY(-2px); }
+        .difficulty-btn.active { background: linear-gradient(135deg, #ff8c00, #ffb347); color: #000000; border-color: #ff8c00; box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3); }
+        .challenge-container { background: rgba(15, 15, 15, 0.95); padding: 2.5rem; text-align: left; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; border: 1px solid rgba(255, 140, 0, 0.1); border-radius: 20px; }
+        .challenge-container::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: linear-gradient(to bottom, transparent, #ff8c00, transparent); transition: height 0.4s ease; }
+        .challenge-container::after { content: ''; position: absolute; bottom: 0; right: 0; width: 0; height: 2px; background: linear-gradient(to right, transparent, #ff8c00, transparent); transition: width 0.4s ease; }
+        .challenge-container:hover::before { height: 100%; }
+        .challenge-container:hover::after { width: 100%; }
+        .challenge-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .challenge-title { font-size: 1.8rem; color: #ffffff; font-weight: 600; }
+        .challenge-difficulty { display: inline-block; background: linear-gradient(135deg, #ff8c00, #ffb347); color: #000000; padding: 0.6rem 1.2rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3); }
+        .challenge-description { background: rgba(40, 40, 40, 0.6); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border-left: 4px solid #ff8c00; color: #cccccc; line-height: 1.7; }
+        .challenge-example { background: rgba(40, 40, 40, 0.8); padding: 1rem; border-radius: 10px; margin: 1rem 0; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; border: 1px solid rgba(255, 140, 0, 0.2); }
+        .code-input-container { margin: 2rem 0; }
+        .code-input { width: 100%; height: 200px; background: #1a1a1a; color: #ffffff; border: 2px solid rgba(255, 140, 0, 0.3); border-radius: 15px; padding: 1.5rem; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 14px; line-height: 1.5; resize: vertical; outline: none; tab-size: 2; }
+        .code-input:focus { border-color: #ff8c00; box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.1); }
+        .challenge-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 2rem 0; }
+        .action-btn { background: #ff8c00; color: #000000; text-decoration: none; padding: 1rem 2rem; font-weight: 500; font-size: 1rem; transition: all 0.3s ease; position: relative; overflow: hidden; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; letter-spacing: 0.5px; border-radius: 25px; }
+        .action-btn::after { content: ''; position: absolute; width: 100%; height: 2px; background: #000000; bottom: 0; left: 0; transform: scaleX(0); transform-origin: right; transition: transform 0.3s ease; }
+        .action-btn:hover::after { transform: scaleX(1); transform-origin: left; }
+        .action-btn.secondary { background: rgba(40, 40, 40, 0.8); color: #ff8c00; border: 2px solid #ff8c00; }
+        .action-btn.secondary:hover { background: rgba(255, 140, 0, 0.1); transform: translateY(-2px); }
+        .feedback-container { margin-top: 2rem; padding: 1.5rem; border-radius: 15px; text-align: center; font-weight: 600; font-size: 1.1rem; min-height: 60px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+        .feedback-correct { background: rgba(76, 175, 80, 0.2); border: 2px solid #4CAF50; color: #4CAF50; }
+        .feedback-incorrect { background: rgba(244, 67, 54, 0.2); border: 2px solid #f44336; color: #f44336; }
+        .feedback-neutral { background: rgba(40, 40, 40, 0.6); border: 2px solid rgba(255, 140, 0, 0.3); color: #cccccc; }
+        .progress-container { background: rgba(40, 40, 40, 0.6); border-radius: 10px; padding: 0.5rem; margin: 2rem 0; }
+        .progress-bar { height: 10px; background: linear-gradient(135deg, #ff8c00, #ffb347); border-radius: 5px; width: 0%; transition: width 0.5s ease; }
+        .progress-text { text-align: center; margin-top: 0.5rem; color: #ff8c00; font-weight: 500; }
+        @media (max-width: 1200px) { .nav-menu { gap: 1.5rem; } .nav-link { padding: 0.5rem; } }
+        @media (max-width: 768px) {
+            .elo-display { position: static; transform: none; margin-bottom: 2rem; width: fit-content; margin-left: auto; margin-right: auto; }
+            .main-container { padding: 1rem; }
+            .challenge-header { flex-direction: column; text-align: center; }
+            .nav-container { grid-template-columns: 1fr; gap: 1rem; text-align: center; }
+            .nav-menu { overflow-x: auto; justify-content: flex-start; padding-bottom: 0.5rem; margin: 0 -1rem; padding: 0 1rem; }
+            .nav-menu::-webkit-scrollbar { height: 3px; }
+            .nav-menu::-webkit-scrollbar-thumb { background: rgba(255, 140, 0, 0.3); border-radius: 10px; }
+            .challenge-actions { flex-direction: column; align-items: center; }
+            .action-btn { width: 100%; max-width: 300px; }
+            .logo { margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">WebVantage</a>
+            <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="team-intro.html" class="nav-link">Team</a></li>
+            <li><a href="courses.html" class="nav-link">Courses</a></li>
+            <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+            <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+            <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+            <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+            <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+            <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+
+            <!-- User menu for logged in state -->
+            <div class="user-menu" id="userMenu">
+            <div class="user-profile-container">
+                <!-- make avatar a link -->
+                <a href="my-profile.html" class="user-avatar" id="userAvatar" title="My Profile">U</a>
+
+                <!-- ELO header (no hardcoded rank/width; Elo paints it) -->
+                <div class="elo-progress-container">
+                <div class="elo-rank-header">
+                    <div class="elo-rank-icon" id="eloRankIcon"></div>
+                    <span class="elo-rank-text" id="eloRankText">—</span>
+                </div>
+                <div class="elo-progress-bar">
+                    <div class="elo-progress-fill" id="eloProgressFill" style="width:0%"></div>
+                </div>
+                <div class="elo-current-rating" id="eloCurrentRating">—</div>
+                </div>
+            </div>
+            </div>
+        </nav>
+        </header>
+
+
+    <main class="main-container">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="page-title">Coding Challenges</h1>
+            <p class="page-subtitle">
+                Solve progressively difficult coding challenges tailored to your ELO rating. 
+                Test your skills and climb the leaderboard!
+            </p>
+        </section>
+
+        <!-- Difficulty Selector -->
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" onclick="selectDifficulty('beginner', this)">🟢 Beginner (0-1200 ELO)</button>
+            <button class="difficulty-btn" onclick="selectDifficulty('intermediate', this)">🟡 Intermediate (1201-2000 ELO)</button>
+            <button class="difficulty-btn" onclick="selectDifficulty('advanced', this)">🔴 Advanced (2000+ ELO)</button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-text" id="progressText">0/5 Challenges Completed</div>
+        </div>
+
+        <!-- Challenge Container -->
+        <div class="challenge-container">
+            <div class="challenge-header">
+                <h2 class="challenge-title" id="challengeTitle">Hello World Challenge</h2>
+                <span class="challenge-difficulty" id="challengeDifficulty">Beginner</span>
+            </div>
+
+            <div class="challenge-description" id="challengeDescription">
+                <h3 style="color: #ff8c00; margin-bottom: 1rem;">📝 Challenge Description:</h3>
+                <p>Create a function called <code style="background: rgba(255, 140, 0, 0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">greet</code> that takes a name as a parameter and returns "Hello, [name]!"</p>
+                <div class="challenge-example">
+                    <strong style="color: #ff8c00;">Example:</strong><br>
+                    <span style="color: #4ecdc4;">greet("Alice")</span> should return <span style="color: #ffb347;">"Hello, Alice!"</span>
+                </div>
+            </div>
+
+            <div class="code-input-container">
+                <label for="codeInput" style="display: block; margin-bottom: 1rem; color: #ff8c00; font-weight: 600;">💻 Your Solution:</label>
+                <textarea id="codeInput" class="code-input" placeholder="function greet(name) {
+    // Write your code here
+    
+}"></textarea>
+            </div>
+
+            <div class="challenge-actions">
+                <button class="action-btn" onclick="runTests()">🧪 Run Tests</button>
+                <button class="action-btn secondary" onclick="getHint()">💡 Get Hint</button>
+                <button class="action-btn secondary" onclick="nextChallenge()">⏭️ Next Challenge</button>
+                <button class="action-btn secondary" onclick="resetCode()">🔄 Reset</button>
+            </div>
+
+            <div class="feedback-container feedback-neutral" id="feedbackContainer">
+                <p>Write your solution and click "Run Tests" to check if it's correct!</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentUser = null;
+        let currentELO = 1250;
+        let currentDifficulty = 'beginner';
+        let currentChallengeIndex = 0;
+        let completedChallenges = 0;
+
+        // Challenge Database (now with explicit functionName for each challenge)
+        const challenges = {
+            beginner: [
+                {
+                    title: "Hello World Challenge",
+                    functionName: "greet",
+                    description: "Create a function called <code>greet</code> that takes a name as a parameter and returns \"Hello, [name]!\"",
+                    example: "greet(\"Alice\") should return \"Hello, Alice!\"",
+                    starter: "function greet(name) {\n    // Write your code here\n    \n}",
+                    solution: "function greet(name) {\n    return \"Hello, \" + name + \"!\";\n}",
+                    tests: [
+                        { input: "Alice", expected: "Hello, Alice!" },
+                        { input: "Bob", expected: "Hello, Bob!" },
+                        { input: "Charlie", expected: "Hello, Charlie!" }
+                    ],
+                    points: 20
+                },
+                {
+                    title: "Sum Two Numbers",
+                    functionName: "add",
+                    description: "Create a function called <code>add</code> that takes two numbers and returns their sum",
+                    example: "add(3, 5) should return 8",
+                    starter: "function add(a, b) {\n    // Write your code here\n    \n}",
+                    solution: "function add(a, b) {\n    return a + b;\n}",
+                    tests: [
+                        { input: [3, 5], expected: 8 },
+                        { input: [10, -2], expected: 8 },
+                        { input: [0, 0], expected: 0 }
+                    ],
+                    points: 20
+                },
+                {
+                    title: "Find Maximum",
+                    functionName: "findMax",
+                    description: "Create a function called <code>findMax</code> that takes an array of numbers and returns the largest number",
+                    example: "findMax([1, 5, 3, 9, 2]) should return 9",
+                    starter: "function findMax(numbers) {\n    // Write your code here\n    \n}",
+                    solution: "function findMax(numbers) {\n    return Math.max(...numbers);\n}",
+                    tests: [
+                        { input: [[1, 5, 3, 9, 2]], expected: 9 },
+                        { input: [[10, 20, 5]], expected: 20 },
+                        { input: [[-1, -5, -2]], expected: -1 }
+                    ],
+                    points: 20
+                },
+                {
+                        title: "Square a Number",
+                        functionName: "square",
+                        description: "Create <code>square</code> that returns n squared.",
+                        example: "square(5) → 25",
+                        starter: "function square(n) {\n  // Write your code here\n}\n",
+                        solution: "function square(n){ return n*n; }\n",
+                        tests: [
+                            { input: 0, expected: 0 },
+                            { input: 5, expected: 25 },
+                            { input: -3, expected: 9 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Is Even",
+                        functionName: "isEven",
+                        description: "Create <code>isEven</code> that returns <code>true</code> if n is even, else <code>false</code>.",
+                        example: "isEven(4) → true",
+                        starter: "function isEven(n) {\n  // Write your code here\n}\n",
+                        solution: "function isEven(n){ return n % 2 === 0; }\n",
+                        tests: [
+                            { input: 4, expected: true },
+                            { input: 7, expected: false },
+                            { input: 0, expected: true }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Absolute Value",
+                        functionName: "absolute",
+                        description: "Create <code>absolute</code> that returns the absolute value of n.",
+                        example: "absolute(-8) → 8",
+                        starter: "function absolute(n) {\n  // Write your code here\n}\n",
+                        solution: "function absolute(n){ return n < 0 ? -n : n; }\n",
+                        tests: [
+                            { input: -8, expected: 8 },
+                            { input: 5, expected: 5 },
+                            { input: 0, expected: 0 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "First Character",
+                        functionName: "firstChar",
+                        description: "Create <code>firstChar</code> that returns the first character of a string. If empty, return an empty string.",
+                        example: "firstChar(\"Hello\") → \"H\"",
+                        starter: "function firstChar(str) {\n  // Write your code here\n}\n",
+                        solution: "function firstChar(str){ return str.length ? str[0] : \"\"; }\n",
+                        tests: [
+                            { input: "Hello", expected: "H" },
+                            { input: "abc", expected: "a" },
+                            { input: "", expected: "" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Last Character",
+                        functionName: "lastChar",
+                        description: "Create <code>lastChar</code> that returns the last character of a string. If empty, return an empty string.",
+                        example: "lastChar(\"Hello\") → \"o\"",
+                        starter: "function lastChar(str) {\n  // Write your code here\n}\n",
+                        solution: "function lastChar(str){ return str.length ? str[str.length-1] : \"\"; }\n",
+                        tests: [
+                            { input: "Hello", expected: "o" },
+                            { input: "abc", expected: "c" },
+                            { input: "", expected: "" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "To Uppercase",
+                        functionName: "toUpper",
+                        description: "Create <code>toUpper</code> that returns the uppercase version of a string.",
+                        example: "toUpper(\"hi\") → \"HI\"",
+                        starter: "function toUpper(str) {\n  // Write your code here\n}\n",
+                        solution: "function toUpper(str){ return str.toUpperCase(); }\n",
+                        tests: [
+                            { input: "hi", expected: "HI" },
+                            { input: "JavaScript", expected: "JAVASCRIPT" },
+                            { input: "aBc", expected: "ABC" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "To Lowercase",
+                        functionName: "toLower",
+                        description: "Create <code>toLower</code> that returns the lowercase version of a string.",
+                        example: "toLower(\"HeLLo\") → \"hello\"",
+                        starter: "function toLower(str) {\n  // Write your code here\n}\n",
+                        solution: "function toLower(str){ return str.toLowerCase(); }\n",
+                        tests: [
+                            { input: "HeLLo", expected: "hello" },
+                            { input: "ABC", expected: "abc" },
+                            { input: "x", expected: "x" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Add Three Numbers",
+                        functionName: "addThree",
+                        description: "Create <code>addThree</code> that returns the sum of three numbers.",
+                        example: "addThree(1,2,3) → 6",
+                        starter: "function addThree(a, b, c) {\n  // Write your code here\n}\n",
+                        solution: "function addThree(a,b,c){ return a+b+c; }\n",
+                        tests: [
+                            { input: [1,2,3], expected: 6 },
+                            { input: [5,0,5], expected: 10 },
+                            { input: [10,-2,1], expected: 9 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Area of Rectangle",
+                        functionName: "areaRectangle",
+                        description: "Create <code>areaRectangle</code> that returns the area (w × h).",
+                        example: "areaRectangle(4,5) → 20",
+                        starter: "function areaRectangle(w, h) {\n  // Write your code here\n}\n",
+                        solution: "function areaRectangle(w,h){ return w*h; }\n",
+                        tests: [
+                            { input: [4,5], expected: 20 },
+                            { input: [3,7], expected: 21 },
+                            { input: [10,0], expected: 0 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Perimeter of Rectangle",
+                        functionName: "perimeterRectangle",
+                        description: "Create <code>perimeterRectangle</code> that returns the perimeter (2 × (w + h)).",
+                        example: "perimeterRectangle(4,5) → 18",
+                        starter: "function perimeterRectangle(w, h) {\n  // Write your code here\n}\n",
+                        solution: "function perimeterRectangle(w,h){ return 2*(w+h); }\n",
+                        tests: [
+                            { input: [4,5], expected: 18 },
+                            { input: [3,7], expected: 20 },
+                            { input: [10,0], expected: 20 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Is Positive",
+                        functionName: "isPositive",
+                        description: "Create <code>isPositive</code> that returns <code>true</code> if n > 0.",
+                        example: "isPositive(3) → true",
+                        starter: "function isPositive(n) {\n  // Write your code here\n}\n",
+                        solution: "function isPositive(n){ return n>0; }\n",
+                        tests: [
+                            { input: 3, expected: true },
+                            { input: 0, expected: false },
+                            { input: -1, expected: false }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Is Negative",
+                        functionName: "isNegative",
+                        description: "Create <code>isNegative</code> that returns <code>true</code> if n < 0.",
+                        example: "isNegative(-2) → true",
+                        starter: "function isNegative(n) {\n  // Write your code here\n}\n",
+                        solution: "function isNegative(n){ return n<0; }\n",
+                        tests: [
+                            { input: -2, expected: true },
+                            { input: 0, expected: false },
+                            { input: 5, expected: false }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Minimum of Two",
+                        functionName: "min2",
+                        description: "Create <code>min2</code> that returns the smaller of two numbers.",
+                        example: "min2(3,7) → 3",
+                        starter: "function min2(a, b) {\n  // Write your code here\n}\n",
+                        solution: "function min2(a,b){ return a < b ? a : b; }\n",
+                        tests: [
+                            { input: [3,7], expected: 3 },
+                            { input: [10,5], expected: 5 },
+                            { input: [-1,-4], expected: -4 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Maximum of Two",
+                        functionName: "max2",
+                        description: "Create <code>max2</code> that returns the larger of two numbers.",
+                        example: "max2(3,7) → 7",
+                        starter: "function max2(a, b) {\n  // Write your code here\n}\n",
+                        solution: "function max2(a,b){ return a > b ? a : b; }\n",
+                        tests: [
+                            { input: [3,7], expected: 7 },
+                            { input: [10,5], expected: 10 },
+                            { input: [-1,-4], expected: -1 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Average of Two (Integers)",
+                        functionName: "average2",
+                        description: "Create <code>average2</code> that returns the average of two numbers.",
+                        example: "average2(2,4) → 3",
+                        starter: "function average2(a, b) {\n  // Write your code here\n}\n",
+                        solution: "function average2(a,b){ return (a+b)/2; }\n",
+                        tests: [
+                            { input: [2,4], expected: 3 },
+                            { input: [10,14], expected: 12 },
+                            { input: [0,0], expected: 0 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Repeat 3 Times",
+                        functionName: "repeat3",
+                        description: "Create <code>repeat3</code> that returns the string repeated 3 times.",
+                        example: "repeat3(\"Hi\") → \"HiHiHi\"",
+                        starter: "function repeat3(str) {\n  // Write your code here\n}\n",
+                        solution: "function repeat3(str){ return str.repeat(3); }\n",
+                        tests: [
+                            { input: "Hi", expected: "HiHiHi" },
+                            { input: "a", expected: "aaa" },
+                            { input: "", expected: "" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Starts With A",
+                        functionName: "startsWithA",
+                        description: "Create <code>startsWithA</code> that returns <code>true</code> if the string starts with 'A'.",
+                        example: "startsWithA(\"Apple\") → true",
+                        starter: "function startsWithA(str) {\n  // Write your code here\n}\n",
+                        solution: "function startsWithA(str){ return str.startsWith('A'); }\n",
+                        tests: [
+                            { input: "Apple", expected: true },
+                            { input: "Banana", expected: false },
+                            { input: "A", expected: true }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Ends With Exclamation",
+                        functionName: "endsWithExclamation",
+                        description: "Create <code>endsWithExclamation</code> that returns <code>true</code> if the string ends with '!'.",
+                        example: "endsWithExclamation(\"Hi!\") → true",
+                        starter: "function endsWithExclamation(str) {\n  // Write your code here\n}\n",
+                        solution: "function endsWithExclamation(str){ return str.endsWith('!'); }\n",
+                        tests: [
+                            { input: "Hi!", expected: true },
+                            { input: "No", expected: false },
+                            { input: "!", expected: true }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "String Length",
+                        functionName: "stringLength",
+                        description: "Create <code>stringLength</code> that returns the number of characters in a string.",
+                        example: "stringLength(\"abc\") → 3",
+                        starter: "function stringLength(str) {\n  // Write your code here\n}\n",
+                        solution: "function stringLength(str){ return str.length; }\n",
+                        tests: [
+                            { input: "abc", expected: 3 },
+                            { input: "", expected: 0 },
+                            { input: "hello", expected: 5 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Sum Array (Beginner)",
+                        functionName: "sumArrayBeg",
+                        description: "Create <code>sumArrayBeg</code> that returns the sum of numbers in an array.",
+                        example: "sumArrayBeg([1,2,3]) → 6",
+                        starter: "function sumArrayBeg(arr) {\n  // Write your code here\n}\n",
+                        solution: "function sumArrayBeg(arr){ let s=0; for (const x of arr) s+=x; return s; }\n",
+                        tests: [
+                            { input: [[1,2,3]], expected: 6 },
+                            { input: [[10,-5,4]], expected: 9 },
+                            { input: [[0,0,0]], expected: 0 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Count Odds",
+                        functionName: "countOdd",
+                        description: "Create <code>countOdd</code> that returns how many numbers in the array are odd.",
+                        example: "countOdd([1,2,3,4]) → 2",
+                        starter: "function countOdd(arr) {\n  // Write your code here\n}\n",
+                        solution: "function countOdd(arr){ let c=0; for(const x of arr){ if(x%2!==0) c++; } return c; }\n",
+                        tests: [
+                            { input: [[1,2,3,4]], expected: 2 },
+                            { input: [[2,4,6]], expected: 0 },
+                            { input: [[1,1,1]], expected: 3 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Celsius to Fahrenheit",
+                        functionName: "cToF",
+                        description: "Create <code>cToF</code> that converts Celsius to Fahrenheit using F = C × 9/5 + 32.",
+                        example: "cToF(0) → 32",
+                        starter: "function cToF(c) {\n  // Write your code here\n}\n",
+                        solution: "function cToF(c){ return c*9/5+32; }\n",
+                        tests: [
+                            { input: 0, expected: 32 },
+                            { input: 100, expected: 212 },
+                            { input: -40, expected: -40 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Next Integer",
+                        functionName: "nextInteger",
+                        description: "Create <code>nextInteger</code> that returns n + 1.",
+                        example: "nextInteger(5) → 6",
+                        starter: "function nextInteger(n) {\n  // Write your code here\n}\n",
+                        solution: "function nextInteger(n){ return n+1; }\n",
+                        tests: [
+                            { input: 5, expected: 6 },
+                            { input: -1, expected: 0 },
+                            { input: 0, expected: 1 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Previous Integer",
+                        functionName: "previousInteger",
+                        description: "Create <code>previousInteger</code> that returns n - 1.",
+                        example: "previousInteger(5) → 4",
+                        starter: "function previousInteger(n) {\n  // Write your code here\n}\n",
+                        solution: "function previousInteger(n){ return n-1; }\n",
+                        tests: [
+                            { input: 5, expected: 4 },
+                            { input: 0, expected: -1 },
+                            { input: -2, expected: -3 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Multiply Two Numbers",
+                        functionName: "multiply",
+                        description: "Create <code>multiply</code> that returns a × b.",
+                        example: "multiply(3,4) → 12",
+                        starter: "function multiply(a, b) {\n  // Write your code here\n}\n",
+                        solution: "function multiply(a,b){ return a*b; }\n",
+                        tests: [
+                            { input: [3,4], expected: 12 },
+                            { input: [10,0], expected: 0 },
+                            { input: [-2,5], expected: -10 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Integer Division (Floor)",
+                        functionName: "divideWhole",
+                        description: "Create <code>divideWhole</code> that returns Math.floor(a / b). Assume b > 0 in tests.",
+                        example: "divideWhole(7,3) → 2",
+                        starter: "function divideWhole(a, b) {\n  // Write your code here\n}\n",
+                        solution: "function divideWhole(a,b){ return Math.floor(a/b); }\n",
+                        tests: [
+                            { input: [7,3], expected: 2 },
+                            { input: [10,2], expected: 5 },
+                            { input: [9,4], expected: 2 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Remainder",
+                        functionName: "remainder",
+                        description: "Create <code>remainder</code> that returns a % b.",
+                        example: "remainder(7,3) → 1",
+                        starter: "function remainder(a, b) {\n  // Write your code here\n}\n",
+                        solution: "function remainder(a,b){ return a % b; }\n",
+                        tests: [
+                            { input: [7,3], expected: 1 },
+                            { input: [10,5], expected: 0 },
+                            { input: [9,4], expected: 1 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Between 10 and 20 (Inclusive)",
+                        functionName: "between10and20",
+                        description: "Create <code>between10and20</code> that returns <code>true</code> if n is between 10 and 20 inclusive.",
+                        example: "between10and20(15) → true",
+                        starter: "function between10and20(n) {\n  // Write your code here\n}\n",
+                        solution: "function between10and20(n){ return n>=10 && n<=20; }\n",
+                        tests: [
+                            { input: 10, expected: true },
+                            { input: 20, expected: true },
+                            { input: 9, expected: false }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Greeting by Name",
+                        functionName: "greetName",
+                        description: "Create <code>greetName</code> that returns \"Hello, NAME\".",
+                        example: "greetName(\"Sam\") → \"Hello, Sam\"",
+                        starter: "function greetName(name) {\n  // Write your code here\n}\n",
+                        solution: "function greetName(name){ return \"Hello, \" + name; }\n",
+                        tests: [
+                            { input: "Sam", expected: "Hello, Sam" },
+                            { input: "Ada", expected: "Hello, Ada" },
+                            { input: "Bob", expected: "Hello, Bob" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Half the Number",
+                        functionName: "half",
+                        description: "Create <code>half</code> that returns n / 2.",
+                        example: "half(8) → 4",
+                        starter: "function half(n) {\n  // Write your code here\n}\n",
+                        solution: "function half(n){ return n/2; }\n",
+                        tests: [
+                            { input: 8, expected: 4 },
+                            { input: 5, expected: 2.5 },
+                            { input: 0, expected: 0 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Double the Number",
+                        functionName: "double",
+                        description: "Create <code>double</code> that returns n × 2.",
+                        example: "double(6) → 12",
+                        starter: "function double(n) {\n  // Write your code here\n}\n",
+                        solution: "function double(n){ return n*2; }\n",
+                        tests: [
+                            { input: 6, expected: 12 },
+                            { input: -3, expected: -6 },
+                            { input: 0, expected: 0 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Triple the Number",
+                        functionName: "triple",
+                        description: "Create <code>triple</code> that returns n × 3.",
+                        example: "triple(4) → 12",
+                        starter: "function triple(n) {\n  // Write your code here\n}\n",
+                        solution: "function triple(n){ return n*3; }\n",
+                        tests: [
+                            { input: 4, expected: 12 },
+                            { input: -2, expected: -6 },
+                            { input: 0, expected: 0 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Is Zero",
+                        functionName: "isZero",
+                        description: "Create <code>isZero</code> that returns <code>true</code> if n is exactly 0.",
+                        example: "isZero(0) → true",
+                        starter: "function isZero(n) {\n  // Write your code here\n}\n",
+                        solution: "function isZero(n){ return n===0; }\n",
+                        tests: [
+                            { input: 0, expected: true },
+                            { input: 1, expected: false },
+                            { input: -1, expected: false }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Add Exclamation",
+                        functionName: "addExclamation",
+                        description: "Create <code>addExclamation</code> that appends '!' to the end of the string.",
+                        example: "addExclamation(\"Hi\") → \"Hi!\"",
+                        starter: "function addExclamation(str) {\n  // Write your code here\n}\n",
+                        solution: "function addExclamation(str){ return str + '!'; }\n",
+                        tests: [
+                            { input: "Hi", expected: "Hi!" },
+                            { input: "", expected: "!" },
+                            { input: "Wow", expected: "Wow!" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "First Two Characters",
+                        functionName: "firstTwo",
+                        description: "Create <code>firstTwo</code> that returns the first two characters of a string (or the whole string if shorter).",
+                        example: "firstTwo(\"Hello\") → \"He\"",
+                        starter: "function firstTwo(str) {\n  // Write your code here\n}\n",
+                        solution: "function firstTwo(str){ return str.slice(0,2); }\n",
+                        tests: [
+                            { input: "Hello", expected: "He" },
+                            { input: "A", expected: "A" },
+                            { input: "", expected: "" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Last Two Characters",
+                        functionName: "lastTwo",
+                        description: "Create <code>lastTwo</code> that returns the last two characters of a string (or the whole string if shorter).",
+                        example: "lastTwo(\"Hello\") → \"lo\"",
+                        starter: "function lastTwo(str) {\n  // Write your code here\n}\n",
+                        solution: "function lastTwo(str){ return str.slice(-2); }\n",
+                        tests: [
+                            { input: "Hello", expected: "lo" },
+                            { input: "A", expected: "A" },
+                            { input: "", expected: "" }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Add Five",
+                        functionName: "addFive",
+                        description: "Create <code>addFive</code> that returns n + 5.",
+                        example: "addFive(7) → 12",
+                        starter: "function addFive(n) {\n  // Write your code here\n}\n",
+                        solution: "function addFive(n){ return n+5; }\n",
+                        tests: [
+                            { input: 7, expected: 12 },
+                            { input: -5, expected: 0 },
+                            { input: 0, expected: 5 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Subtract Five",
+                        functionName: "subFive",
+                        description: "Create <code>subFive</code> that returns n - 5.",
+                        example: "subFive(7) → 2",
+                        starter: "function subFive(n) {\n  // Write your code here\n}\n",
+                        solution: "function subFive(n){ return n-5; }\n",
+                        tests: [
+                            { input: 7, expected: 2 },
+                            { input: 0, expected: -5 },
+                            { input: -5, expected: -10 }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Is Uppercase",
+                        functionName: "isUppercase",
+                        description: "Create <code>isUppercase</code> that returns <code>true</code> if the string is exactly uppercase.",
+                        example: "isUppercase(\"HI\") → true",
+                        starter: "function isUppercase(str) {\n  // Write your code here\n}\n",
+                        solution: "function isUppercase(str){ return str === str.toUpperCase(); }\n",
+                        tests: [
+                            { input: "HI", expected: true },
+                            { input: "Hi", expected: false },
+                            { input: "hi", expected: false }
+                        ],
+                        points: 20
+                        },
+                        {
+                        title: "Is Lowercase",
+                        functionName: "isLowercase",
+                        description: "Create <code>isLowercase</code> that returns <code>true</code> if the string is exactly lowercase.",
+                        example: "isLowercase(\"hi\") → true",
+                        starter: "function isLowercase(str) {\n  // Write your code here\n}\n",
+                        solution: "function isLowercase(str){ return str === str.toLowerCase(); }\n",
+                        tests: [
+                            { input: "hi", expected: true },
+                            { input: "Hi", expected: false },
+                            { input: "HI", expected: false }
+                        ],
+                        points: 20
+                        }
+
+            ],
+            intermediate: [
+                {
+                    title: "Reverse String",
+                    functionName: "reverseString",
+                    description: "Create a function called <code>reverseString</code> that takes a string and returns it reversed",
+                    example: "reverseString(\"hello\") should return \"olleh\"",
+                    starter: "function reverseString(str) {\n    // Write your code here\n    \n}",
+                    solution: "function reverseString(str) {\n    return str.split('').reverse().join('');\n}",
+                    tests: [
+                        { input: "hello", expected: "olleh" },
+                        { input: "world", expected: "dlrow" },
+                        { input: "AI", expected: "IA" }
+                    ],
+                    points: 45
+                },
+                {
+                    title: "Count Vowels",
+                    functionName: "countVowels",
+                    description: "Create a function called <code>countVowels</code> that counts the number of vowels (a, e, i, o, u) in a string",
+                    example: "countVowels(\"hello\") should return 2",
+                    starter: "function countVowels(str) {\n    // Write your code here\n    \n}",
+                    solution: "function countVowels(str) {\n    const vowels = 'aeiouAEIOU';\n    return str.split('').filter(char => vowels.includes(char)).length;\n}",
+                    tests: [
+                        { input: "hello", expected: 2 },
+                        { input: "Frontend Development Learning", expected: 5 },
+                        { input: "xyz", expected: 0 }
+                    ],
+                    points: 45
+                },
+                            {
+            title: "Palindrome Check",
+            functionName: "isPalindrome",
+            description: "Create a function called <code>isPalindrome</code> that checks whether a given string reads the same forward and backward. Ignore case sensitivity.",
+            example: "isPalindrome(\"Racecar\") should return true",
+            starter: "function isPalindrome(str) {\n    // Write your code here\n    \n}",
+            solution: "function isPalindrome(str) {\n    const cleaned = str.toLowerCase();\n    return cleaned === cleaned.split('').reverse().join('');\n}",
+            tests: [
+                { input: "Racecar", expected: true },
+                { input: "level", expected: true },
+                { input: "hello", expected: false }
+            ],
+            points: 45
+            },
+            {
+            title: "Factorial",
+            functionName: "factorial",
+            description: "Create a function called <code>factorial</code> that returns the factorial of a number n (n!).",
+            example: "factorial(5) should return 120",
+            starter: "function factorial(n) {\n    // Write your code here\n    \n}",
+            solution: "function factorial(n) {\n    if (n === 0) return 1;\n    let result = 1;\n    for (let i = 1; i <= n; i++) result *= i;\n    return result;\n}",
+            tests: [
+                { input: 0, expected: 1 },
+                { input: 5, expected: 120 },
+                { input: 7, expected: 5040 }
+            ],
+            points: 45
+            },
+            {
+            title: "Remove Duplicates",
+            functionName: "removeDuplicates",
+            description: "Create a function called <code>removeDuplicates</code> that removes duplicate elements from an array and returns the new array.",
+            example: "removeDuplicates([1,2,2,3,4,4]) should return [1,2,3,4]",
+            starter: "function removeDuplicates(arr) {\n    // Write your code here\n    \n}",
+            solution: "function removeDuplicates(arr) {\n    return [...new Set(arr)];\n}",
+            tests: [
+                { input: [[1, 2, 2, 3, 4, 4]], expected: [1, 2, 3, 4] },
+                { input: [[5, 5, 5, 5]], expected: [5] },
+                { input: [[1, 2, 3]], expected: [1, 2, 3] }
+            ],
+            points: 45
+            },
+            {
+            title: "Capitalize Words",
+            functionName: "capitalizeWords",
+            description: "Create a function called <code>capitalizeWords</code> that capitalizes the first letter of every word in a string.",
+            example: "capitalizeWords(\"hello world\") should return \"Hello World\"",
+            starter: "function capitalizeWords(str) {\n    // Write your code here\n    \n}",
+            solution: "function capitalizeWords(str) {\n    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');\n}",
+            tests: [
+                { input: "hello world", expected: "Hello World" },
+                { input: "javascript is fun", expected: "Javascript Is Fun" },
+                { input: "capitalize this sentence", expected: "Capitalize This Sentence" }
+            ],
+            points: 45
+            },
+            {
+            title: "Find Index",
+            functionName: "findIndex",
+            description: "Create a function called <code>findIndex</code> that takes an array and a value, and returns the index of the value if found, or -1 if not.",
+            example: "findIndex([10,20,30], 20) should return 1",
+            starter: "function findIndex(arr, value) {\n    // Write your code here\n    \n}",
+            solution: "function findIndex(arr, value) {\n    for (let i = 0; i < arr.length; i++) {\n        if (arr[i] === value) return i;\n    }\n    return -1;\n}",
+            tests: [
+                { input: [[10, 20, 30], 20], expected: 1 },
+                { input: [[5, 15, 25], 30], expected: -1 },
+                { input: [[1, 2, 3, 4], 4], expected: 3 }
+            ],
+            points: 45
+            },
+            {
+            title: "Check Anagram",
+            functionName: "isAnagram",
+            description: "Create <code>isAnagram</code> that returns <code>true</code> if two strings are anagrams (same letters, different order), ignoring case and spaces.",
+            example: "isAnagram(\"listen\", \"silent\") → true",
+            starter: "function isAnagram(a, b) {\n  // Write your code here\n}\n",
+            solution: "function isAnagram(a, b) {\n  const norm = s => s.toLowerCase().replace(/\\s+/g,'').split('').sort().join('');\n  return norm(a) === norm(b);\n}\n",
+            tests: [
+                { input: ["listen","silent"], expected: true },
+                { input: ["Dormitory","Dirty room"], expected: true },
+                { input: ["hello","world"], expected: false }
+            ],
+            points: 45
+            },
+            {
+            title: "Sum of Digits",
+            functionName: "sumDigits",
+            description: "Create <code>sumDigits</code> that sums all digits of a non-negative integer.",
+            example: "sumDigits(9021) → 12",
+            starter: "function sumDigits(n) {\n  // Write your code here\n}\n",
+            solution: "function sumDigits(n) {\n  return String(n).split('').reduce((s,ch)=>s+Number(ch),0);\n}\n",
+            tests: [
+                { input: 0, expected: 0 },
+                { input: 9021, expected: 12 },
+                { input: 99999, expected: 45 }
+            ],
+            points: 45
+            },
+            {
+            title: "Second Largest",
+            functionName: "secondLargest",
+            description: "Create <code>secondLargest</code> that returns the 2nd largest number in an array of distinct numbers.",
+            example: "secondLargest([5,2,9,1]) → 5",
+            starter: "function secondLargest(arr) {\n  // Write your code here\n}\n",
+            solution: "function secondLargest(arr) {\n  let max=-Infinity, second=-Infinity;\n  for (const x of arr){\n    if (x>max){ second=max; max=x; }\n    else if (x>second){ second=x; }\n  }\n  return second;\n}\n",
+            tests: [
+                { input: [[5,2,9,1]], expected: 5 },
+                { input: [[10,7,8,3]], expected: 8 },
+                { input: [[-5,-2,-9,-1]], expected: -2 }
+            ],
+            points: 45
+            },
+            {
+            title: "Balanced Parentheses",
+            functionName: "isBalanced",
+            description: "Create <code>isBalanced</code> that returns <code>true</code> if a string has balanced parentheses <code>()</code>.",
+            example: "isBalanced(\"(a(b)c)\") → true",
+            starter: "function isBalanced(s) {\n  // Write your code here\n}\n",
+            solution: "function isBalanced(s) {\n  let c=0; for (const ch of s){ if(ch==='(') c++; else if(ch===')'){ c--; if(c<0) return false; } }\n  return c===0;\n}\n",
+            tests: [
+                { input: "(a(b)c)", expected: true },
+                { input: "(()", expected: false },
+                { input: "())(", expected: false }
+            ],
+            points: 45
+            },
+            {
+            title: "Kebab to Camel",
+            functionName: "kebabToCamel",
+            description: "Create <code>kebabToCamel</code> that converts <code>\"kebab-case\"</code> to <code>\"camelCase\"</code>.",
+            example: "kebabToCamel(\"hello-world-again\") → \"helloWorldAgain\"",
+            starter: "function kebabToCamel(str) {\n  // Write your code here\n}\n",
+            solution: "function kebabToCamel(str) {\n  return str.split('-').map((w,i)=> i? w[0].toUpperCase()+w.slice(1): w).join('');\n}\n",
+            tests: [
+                { input: "hello-world", expected: "helloWorld" },
+                { input: "make-it-happen", expected: "makeItHappen" },
+                { input: "a", expected: "a" }
+            ],
+            points: 45
+            },
+            {
+            title: "Array Sum",
+            functionName: "sumArray",
+            description: "Create <code>sumArray</code> that returns the sum of numbers in an array.",
+            example: "sumArray([1,2,3]) → 6",
+            starter: "function sumArray(arr) {\n  // Write your code here\n}\n",
+            solution: "function sumArray(arr) {\n  return arr.reduce((s,x)=>s+x,0);\n}\n",
+            tests: [
+                { input: [[1,2,3]], expected: 6 },
+                { input: [[10,-5,4]], expected: 9 },
+                { input: [[0,0,0]], expected: 0 }
+            ],
+            points: 45
+            },
+            {
+            title: "All Unique Characters",
+            functionName: "allUnique",
+            description: "Create <code>allUnique</code> that returns <code>true</code> if a string has no repeated characters (case-sensitive).",
+            example: "allUnique(\"abcA\") → true",
+            starter: "function allUnique(str) {\n  // Write your code here\n}\n",
+            solution: "function allUnique(str) {\n  const seen=new Set();\n  for (const ch of str){ if(seen.has(ch)) return false; seen.add(ch); }\n  return true;\n}\n",
+            tests: [
+                { input: "abcdef", expected: true },
+                { input: "hello", expected: false },
+                { input: "abcA", expected: true }
+            ],
+            points: 45
+            },
+            {
+            title: "Greatest Common Divisor",
+            functionName: "gcd",
+            description: "Create <code>gcd</code> that returns the greatest common divisor of two positive integers.",
+            example: "gcd(48,18) → 6",
+            starter: "function gcd(a, b) {\n  // Write your code here\n}\n",
+            solution: "function gcd(a,b){ while(b!==0){ [a,b]=[b,a%b]; } return a; }\n",
+            tests: [
+                { input: [48,18], expected: 6 },
+                { input: [7,5], expected: 1 },
+                { input: [54,24], expected: 6 }
+            ],
+            points: 45
+            },
+            {
+            title: "Prime Check",
+            functionName: "isPrime",
+            description: "Create <code>isPrime</code> that returns <code>true</code> if <code>n</code> is a prime number (n ≥ 2).",
+            example: "isPrime(13) → true",
+            starter: "function isPrime(n) {\n  // Write your code here\n}\n",
+            solution: "function isPrime(n){ if(n<2) return false; if(n%2===0) return n===2; for(let i=3;i*i<=n;i+=2){ if(n%i===0) return false; } return true; }\n",
+            tests: [
+                { input: 2, expected: true },
+                { input: 15, expected: false },
+                { input: 13, expected: true }
+            ],
+            points: 45
+            },
+            {
+            title: "Two-Sum Exists",
+            functionName: "hasTwoSum",
+            description: "Create <code>hasTwoSum</code> that returns <code>true</code> if any pair in the array sums to target, else <code>false</code>.",
+            example: "hasTwoSum([2,7,11,15], 9) → true",
+            starter: "function hasTwoSum(arr, target) {\n  // Write your code here\n}\n",
+            solution: "function hasTwoSum(arr,target){ const seen=new Set(); for(const x of arr){ if(seen.has(target-x)) return true; seen.add(x);} return false; }\n",
+            tests: [
+                { input: [[2,7,11,15],9], expected: true },
+                { input: [[1,2,3],7], expected: false },
+                { input: [[-1,4,5],3], expected: true }
+            ],
+            points: 45
+            },
+            {
+            title: "Longest Word Length",
+            functionName: "longestWordLength",
+            description: "Create <code>longestWordLength</code> that returns the length of the longest word in a sentence (words split by spaces).",
+            example: "longestWordLength(\"Web dev is awesome\") → 7",
+            starter: "function longestWordLength(sentence) {\n  // Write your code here\n}\n",
+            solution: "function longestWordLength(sentence){ return sentence.split(/\\s+/).reduce((m,w)=>Math.max(m,w.length),0); }\n",
+            tests: [
+                { input: "Web dev is awesome", expected: 7 },
+                { input: "I love JavaScript", expected: 10 },
+                { input: "a bb ccc", expected: 3 }
+            ],
+            points: 45
+            },
+            {
+            title: "Most Frequent Character",
+            functionName: "mostFrequentChar",
+            description: "Create <code>mostFrequentChar</code> that returns the single character that appears most often (on ties, return the first by appearance).",
+            example: "mostFrequentChar(\"abbccc\") → \"c\"",
+            starter: "function mostFrequentChar(str) {\n  // Write your code here\n}\n",
+            solution: "function mostFrequentChar(str){ const freq={}; let bestChar='', bestCount=0; for(const ch of str){ freq[ch]=(freq[ch]||0)+1; if(freq[ch]>bestCount){ bestCount=freq[ch]; bestChar=ch; } }\n  return bestChar;\n}\n",
+            tests: [
+                { input: "abbccc", expected: "c" },
+                { input: "aab", expected: "a" },
+                { input: "xyz", expected: "x" }
+            ],
+            points: 45
+            }
+
+
+            ],
+            advanced: [
+                {
+                    title: "Fibonacci Sequence",
+                    functionName: "fibonacci",
+                    description: "Create a function called <code>fibonacci</code> that returns the nth number in the Fibonacci sequence",
+                    example: "fibonacci(6) should return 8 (sequence: 0, 1, 1, 2, 3, 5, 8)",
+                    starter: "function fibonacci(n) {\n    // Write your code here\n    \n}",
+                    solution: "function fibonacci(n) {\n    if (n <= 1) return n;\n    let a = 0, b = 1;\n    for (let i = 2; i <= n; i++) {\n        [a, b] = [b, a + b];\n    }\n    return b;\n}",
+                    tests: [
+                        { input: 0, expected: 0 },
+                        { input: 6, expected: 8 },
+                        { input: 10, expected: 55 }
+                    ],
+                    points: 70
+                },
+                {
+                    title: "Modular Exponentiation",
+                    functionName: "modPow",
+                    description: "Create <code>modPow</code> that computes (base^exp) mod m efficiently using fast exponentiation.",
+                    example: "modPow(2, 10, 1000) → 24",
+                    starter: "function modPow(base, exp, m) {\n  // Write your code here\n}\n",
+                    solution: "function modPow(base, exp, m){ base%=m; let res=1%m; while(exp>0){ if(exp&1) res=(res*base)%m; base=(base*base)%m; exp>>=1; } return res; }\n",
+                    tests: [
+                        { input: [2,10,1000], expected: 24 },
+                        { input: [5,0,7], expected: 1 },
+                        { input: [7,128,13], expected: 9 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "Nth Prime",
+                    functionName: "nthPrime",
+                    description: "Create <code>nthPrime</code> that returns the n-th prime number (n ≥ 1).",
+                    example: "nthPrime(6) → 13",
+                    starter: "function nthPrime(n) {\n  // Write your code here\n}\n",
+                    solution: "function nthPrime(n){ if(n===1) return 2; const est = n<6?15:Math.ceil(n*(Math.log(n)+Math.log(Math.log(n)))); const limit=Math.max(est,15); const sieve=new Uint8Array(limit+1); let count=0; for(let i=2;i<=limit;i++){ if(!sieve[i]){ count++; if(count===n) return i; for(let j=i*i;j<=limit;j+=i){ sieve[j]=1; } } } // Fallback expand if estimate too low\n let size=limit*2; while(true){ const s=new Uint8Array(size+1); for(let p=2;p*p<=size;p++){ if(!s[p]) for(let j=p*p;j<=size;j+=p) s[j]=1; }\n count=0; for(let i=2;i<=size;i++) if(!s[i]){ if(++count===n) return i; }\n size*=2; }\n}\n",
+                    tests: [
+                        { input: 1, expected: 2 },
+                        { input: 6, expected: 13 },
+                        { input: 10, expected: 29 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "Count Primes ≤ n",
+                    functionName: "countPrimesUpTo",
+                    description: "Create <code>countPrimesUpTo</code> that returns how many primes are ≤ n using a sieve.",
+                    example: "countPrimesUpTo(10) → 4  (2,3,5,7)",
+                    starter: "function countPrimesUpTo(n) {\n  // Write your code here\n}\n",
+                    solution: "function countPrimesUpTo(n){ if(n<2) return 0; const s=new Uint8Array(n+1); let c=0; for(let i=2;i<=n;i++){ if(!s[i]){ c++; if(i*i<=n) for(let j=i*i;j<=n;j+=i) s[j]=1; } } return c; }\n",
+                    tests: [
+                        { input: 1, expected: 0 },
+                        { input: 10, expected: 4 },
+                        { input: 100, expected: 25 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "Count Inversions",
+                    functionName: "countInversions",
+                    description: "Create <code>countInversions</code> that returns the number of index pairs (i, j) with i < j and a[i] > a[j].",
+                    example: "countInversions([2,4,1,3,5]) → 3",
+                    starter: "function countInversions(arr) {\n  // Write your code here\n}\n",
+                    solution: "function countInversions(arr){ function mergeSort(a){ if(a.length<2) return {a:[...a], c:0}; const m=a.length>>1; const L=mergeSort(a.slice(0,m)); const R=mergeSort(a.slice(m)); let i=0,j=0,c=L.c+R.c,out=[]; while(i<L.a.length && j<R.a.length){ if(L.a[i]<=R.a[j]) out.push(L.a[i++]); else { out.push(R.a[j++]); c+=L.a.length-i; } } while(i<L.a.length) out.push(L.a[i++]); while(j<R.a.length) out.push(R.a[j++]); return {a:out, c}; } return mergeSort(arr).c; }\n",
+                    tests: [
+                        { input: [[2,4,1,3,5]], expected: 3 },
+                        { input: [[1,2,3,4]], expected: 0 },
+                        { input: [[3,2,1]], expected: 3 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "LIS Length",
+                    functionName: "lisLength",
+                    description: "Create <code>lisLength</code> that returns the length of the Longest Increasing Subsequence of an array.",
+                    example: "lisLength([10,9,2,5,3,7,101,18]) → 4",
+                    starter: "function lisLength(arr) {\n  // Write your code here\n}\n",
+                    solution: "function lisLength(arr){ const d=[]; for(const x of arr){ let l=0,r=d.length; while(l<r){ const m=(l+r)>>1; if(d[m]<x) l=m+1; else r=m; } d[l]=x; } return d.length; }\n",
+                    tests: [
+                        { input: [[10,9,2,5,3,7,101,18]], expected: 4 },
+                        { input: [[0,1,0,3,2,3]], expected: 4 },
+                        { input: [[7,7,7,7,7]], expected: 1 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "Edit Distance (Levenshtein)",
+                    functionName: "editDistance",
+                    description: "Create <code>editDistance</code> that returns the Levenshtein distance between two strings.",
+                    example: "editDistance(\"kitten\",\"sitting\") → 3",
+                    starter: "function editDistance(a, b) {\n  // Write your code here\n}\n",
+                    solution: "function editDistance(a,b){ const n=a.length,m=b.length; const dp=Array(n+1).fill(0).map(()=>Array(m+1).fill(0)); for(let i=0;i<=n;i++) dp[i][0]=i; for(let j=0;j<=m;j++) dp[0][j]=j; for(let i=1;i<=n;i++) for(let j=1;j<=m;j++){ if(a[i-1]===b[j-1]) dp[i][j]=dp[i-1][j-1]; else dp[i][j]=1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]); } return dp[n][m]; }\n",
+                    tests: [
+                        { input: ["kitten","sitting"], expected: 3 },
+                        { input: ["flaw","lawn"], expected: 2 },
+                        { input: ["intention","execution"], expected: 5 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "K-th Smallest (Quickselect)",
+                    functionName: "kthSmallest",
+                    description: "Create <code>kthSmallest</code> that returns the k-th smallest element in an unsorted array (1-indexed).",
+                    example: "kthSmallest([7,10,4,3,20,15], 3) → 7",
+                    starter: "function kthSmallest(arr, k) {\n  // Write your code here\n}\n",
+                    solution: "function kthSmallest(arr,k){ k--; let l=0,r=arr.length-1; const a=[...arr]; function part(lo,hi){ const p=a[hi]; let i=lo; for(let j=lo;j<hi;j++){ if(a[j]<=p) [a[i],a[j]]=[a[j],a[i]], i++; } [a[i],a[hi]]=[a[hi],a[i]]; return i; } while(l<=r){ const p=part(l,r); if(p===k) return a[p]; if(p<k) l=p+1; else r=p-1; } }\n",
+                    tests: [
+                        { input: [[7,10,4,3,20,15], 3], expected: 7 },
+                        { input: [[7,10,4,3,20,15], 4], expected: 10 },
+                        { input: [[1,2,3,4,5], 1], expected: 1 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "Maximum Subarray Sum",
+                    functionName: "maxSubarraySum",
+                    description: "Create <code>maxSubarraySum</code> (Kadane's algorithm) that returns the largest sum of a contiguous subarray.",
+                    example: "maxSubarraySum([-2,1,-3,4,-1,2,1,-5,4]) → 6",
+                    starter: "function maxSubarraySum(arr) {\n  // Write your code here\n}\n",
+                    solution: "function maxSubarraySum(arr){ let best=-Infinity, cur=0; for(const x of arr){ cur=Math.max(x,cur+x); best=Math.max(best,cur); } return best; }\n",
+                    tests: [
+                        { input: [[-2,1,-3,4,-1,2,1,-5,4]], expected: 6 },
+                        { input: [[1]], expected: 1 },
+                        { input: [[-1,-2,-3]], expected: -1 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "Climb Stairs (Ways)",
+                    functionName: "climbStairs",
+                    description: "Create <code>climbStairs</code> that returns the number of distinct ways to climb n steps (1 or 2 steps at a time).",
+                    example: "climbStairs(5) → 8",
+                    starter: "function climbStairs(n) {\n  // Write your code here\n}\n",
+                    solution: "function climbStairs(n){ if(n<=2) return n; let a=1,b=2; for(let i=3;i<=n;i++){ [a,b]=[b,a+b]; } return b; }\n",
+                    tests: [
+                        { input: 1, expected: 1 },
+                        { input: 5, expected: 8 },
+                        { input: 10, expected: 89 }
+                    ],
+                    points: 70
+                    },
+                    {
+                    title: "0/1 Knapsack (Max Value)",
+                    functionName: "knapsack01",
+                    description: "Create <code>knapsack01</code> that returns the maximum value achievable with weights and values under capacity.",
+                    example: "knapsack01([2,3,4], [4,5,6], 5) → 9",
+                    starter: "function knapsack01(weights, values, capacity) {\n  // Write your code here\n}\n",
+                    solution: "function knapsack01(W,V,C){ const n=W.length; const dp=new Array(C+1).fill(0); for(let i=0;i<n;i++){ for(let c=C;c>=W[i];c--){ dp[c]=Math.max(dp[c], dp[c-W[i]]+V[i]); } } return dp[C]; }\n",
+                    tests: [
+                        { input: [[2,3,4], [4,5,6], 5], expected: 9 },
+                        { input: [[1,2,3], [6,10,12], 5], expected: 22 },
+                        { input: [[3,4,5], [30,50,60], 8], expected: 80 }
+                    ],
+                    points: 70
+                    }
+
+            ]
+        };
+
+        // --- Ensure every challenge has a hint
+            function generateHint(ch) {
+            const n = (ch.functionName || "").toLowerCase();
+            const t = (ch.title || "").toLowerCase();
+            const d = (ch.description || "").toLowerCase();
+
+            // String
+            if (n.includes("reverse") || t.includes("reverse")) return "💡 Try splitting the string into an array, reversing it, then joining.";
+            if (n.includes("palindrome")) return "💡 Normalize (e.g., toLowerCase) and compare with its reversed version.";
+            if (n.includes("capitalize")) return "💡 Split by spaces, transform each word’s first char with toUpperCase, then join.";
+            if (n.includes("toupper") || d.includes("uppercase")) return "💡 Use str.toUpperCase().";
+            if (n.includes("tolower") || d.includes("lowercase")) return "💡 Use str.toLowerCase().";
+            if (n.includes("startswith")) return "💡 Check the first character or use startsWith().";
+            if (n.includes("endswith") || d.includes("ends with")) return "💡 Use endsWith() to check the suffix.";
+            if (n.includes("length") || d.includes("length")) return "💡 Strings and arrays have a .length property.";
+            if (n.includes("anagram")) return "💡 Sort normalized strings (remove spaces, lowercase) and compare.";
+            if (n.includes("mostfrequent") || t.includes("most frequent")) return "💡 Count characters with an object map and track the best.";
+
+            // Arrays
+            if (n.includes("findmax") || n === "max2" || d.includes("largest")) return "💡 Consider Math.max(...) with the spread operator.";
+            if (n.includes("findindex")) return "💡 Loop and compare each element to the target; return index or -1.";
+            if (n.includes("sumarray")) return "💡 Reduce the array with (acc + x).";
+            if (n.includes("removeduplicates")) return "💡 A Set removes duplicates; spread it back to an array.";
+            if (n.includes("secondlargest")) return "💡 Track current max and second max in one pass.";
+            if (n.includes("has_two_sum") || n.includes("hastwosum")) return "💡 Use a Set of complements while iterating.";
+            if (n.includes("balanced") || t.includes("balanced parentheses")) return "💡 Keep a counter: +1 for '(' and -1 for ')', never go negative.";
+
+            // Math / logic
+            if (n.includes("add") || d.includes("sum")) return "💡 Use the + operator on the provided numbers.";
+            if (n.includes("square")) return "💡 Multiply the number by itself or use n ** 2.";
+            if (n.includes("multiply")) return "💡 Use the * operator.";
+            if (n.includes("remainder") || d.includes("%")) return "💡 Use the modulo operator: a % b.";
+            if (n.includes("dividewhole") || d.includes("floor")) return "💡 Use Math.floor(a / b).";
+            if (n.includes("isprime")) return "💡 Only check divisors up to √n; handle small cases first.";
+            if (n.includes("gcd")) return "💡 Use the Euclidean algorithm with repeated modulo.";
+            if (n.includes("factorial")) return "💡 Iteratively multiply 1×2×...×n; 0! is 1.";
+            if (n.includes("sumdigits")) return "💡 Convert to string, split, and sum Number(ch).";
+            if (n.includes("between10and20")) return "💡 Check inclusive range with >= and <=";
+            if (n.includes("average")) return "💡 Add the numbers then divide by the count.";
+
+            // DP / algorithms (advanced)
+            if (n.includes("modpow")) return "💡 Use fast exponentiation (square-and-multiply) with modulo at each step.";
+            if (n.includes("nthprime")) return "💡 Use a sieve estimate, then sieve & count until hitting the n-th.";
+            if (n.includes("countprimes")) return "💡 Sieve of Eratosthenes marks multiples starting at i*i.";
+            if (n.includes("countinversions")) return "💡 Merge sort can count cross inversions while merging.";
+            if (n.includes("lislength")) return "💡 Maintain a tails array; use binary search to place each number.";
+            if (n.includes("editdistance")) return "💡 Classic DP: dp[i][j] from insert/delete/replace transitions.";
+            if (n.includes("kthsmallest")) return "💡 Quickselect partitions around a pivot until the k-th position is found.";
+            if (n.includes("maxsubarray")) return "💡 Kadane: track running best vs. reset at each element.";
+            if (n.includes("climbstairs")) return "💡 Fibonacci-like: dp[n] = dp[n−1] + dp[n−2].";
+            if (n.includes("knapsack")) return "💡 1D DP over capacity from high→low to avoid reuse in the same round.";
+
+            // Greetings / miscellany
+            if (n.includes("greet") || d.includes("greet")) return "💡 Concatenate 'Hello, ' and the given name (or use template literals).";
+            if (n.includes("ctoF".toLowerCase()) || d.includes("fahrenheit")) return "💡 Use F = C × 9/5 + 32.";
+
+            // Default generic hint
+            return "💡 Re-read the description, consider edge cases, and build up from small examples.";
+            }
+
+            function ensureHints() {
+            for (const diff of Object.keys(challenges)) {
+                for (const ch of challenges[diff]) {
+                if (!ch.hint || typeof ch.hint !== "string" || ch.hint.trim() === "") {
+                    ch.hint = generateHint(ch);
+                }
+                }
+            }
+            }
+            ensureHints();
+
+
+            // --- ELO gates -------------------------------------------------------------
+            function eloTier(elo) {
+                if (elo <= 1200) return 'beginner';
+                if (elo <= 2000) return 'intermediate';
+                return 'advanced';
+            }
+            function canAccess(difficulty, elo = currentELO) {
+                const tier = eloTier(elo);
+                if (tier === 'beginner') return difficulty === 'beginner';
+                if (tier === 'intermediate') return (difficulty === 'beginner' || difficulty === 'intermediate');
+                return true; // advanced can access all
+            }
+            function highestAllowedDifficulty(elo = currentELO) {
+                const tier = eloTier(elo);
+                if (tier === 'advanced') return 'advanced';
+                if (tier === 'intermediate') return 'intermediate';
+                return 'beginner';
+            }
+            const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+            function enforceAccessUI() {
+                // Lock/unlock difficulty buttons
+                const buttons = document.querySelectorAll('.difficulty-btn');
+                const map = { beginner: 0, intermediate: 1, advanced: 2 };
+                Object.entries(map).forEach(([diff, idx]) => {
+                const btn = buttons[idx];
+                if (!btn) return;
+                const allowed = canAccess(diff);
+                btn.disabled = !allowed;
+                btn.style.opacity = allowed ? '1' : '0.45';
+                btn.style.cursor  = allowed ? 'pointer' : 'not-allowed';
+                btn.title = allowed ? '' : '🔒 Locked at your current ELO';
+                });
+
+                // If current selection is no longer allowed, switch to the highest allowed
+                if (!canAccess(currentDifficulty)) {
+                const fallback = highestAllowedDifficulty();
+                selectDifficulty(fallback, buttons[{ beginner:0, intermediate:1, advanced:2 }[fallback]]);
+                showFeedback(`🔒 ${cap(currentDifficulty)} is locked for ELO ${currentELO}. Switched to ${cap(fallback)}.`, 'neutral');
+                }
+
+                // Rank chip (if present)
+                const tier = eloTier(currentELO);
+                const rankText = document.getElementById('eloRankText');
+                const rankIcon = document.getElementById('eloRankIcon');
+                if (rankText) rankText.textContent = cap(tier);
+                if (rankIcon) {
+                rankIcon.className = 'elo-rank-icon ' + (
+                    tier === 'beginner' ? 'rank-beginner' :
+                    tier === 'intermediate' ? 'rank-intermediate' : 'rank-advanced'
+                );
+                }
+
+                // Right-side ELO chip
+                const eloRight = document.getElementById('eloCurrentRating');
+                if (eloRight) eloRight.textContent = `${currentELO} ELO`;
+            }
+
+
+            // --- Auth / header ---------------------------------------------------------
+            function checkLoginStatus() {
+                try {
+                const userData = localStorage.getItem('loggedInUser');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                    currentELO = currentUser.elo || 1250;
+                }
+                } catch (e) {
+                console.log('localStorage not available');
+                }
+
+                const loginLink = document.getElementById('loginLink');
+                const registerLink = document.getElementById('registerLink');
+                const userMenu = document.getElementById('userMenu');
+                const userAvatar = document.getElementById('userAvatar');
+
+                if (currentUser) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (registerLink) registerLink.style.display = 'none';
+                if (userMenu) userMenu.classList.add('show');
+                if (typeof updateHeaderAvatarFromUser === 'function') updateHeaderAvatarFromUser(currentUser);
+                if (userAvatar) userAvatar.title = `Go to ${currentUser.name}'s Profile`;
+                } else {
+                if (loginLink) loginLink.style.display = 'block';
+                if (registerLink) registerLink.style.display = 'block';
+                if (userMenu) userMenu.classList.remove('show');
+                }
+            }
+            function goToProfile() { window.location.href = 'my-profile.html'; }
+
+
+            // --- Difficulty selection (with ELO gate) ---------------------------------
+            function selectDifficulty(difficulty, button) {
+                if (!canAccess(difficulty)) {
+                showFeedback(`🔒 ${cap(difficulty)} is locked for ELO ${currentELO}.`, 'incorrect');
+                enforceAccessUI();
+                return;
+                }
+                document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+                if (button) button.classList.add('active');
+                currentDifficulty = difficulty;
+                currentChallengeIndex = 0;
+                completedChallenges = 0;
+                loadChallenge();
+                updateProgress();
+            }
+
+
+            // --- Load challenge (random) ----------------------------------------------
+            function loadChallenge() {
+                // Guard in case someone forces a locked difficulty
+                if (!canAccess(currentDifficulty)) {
+                showFeedback(`🔒 ${cap(currentDifficulty)} is locked for ELO ${currentELO}.`, 'incorrect');
+                return;
+                }
+
+                const challengeSet = challenges[currentDifficulty];
+                if (!challengeSet || challengeSet.length === 0) {
+                showFeedback('❌ No challenges available for this difficulty.', 'incorrect');
+                return;
+                }
+
+                // Random pick
+                currentChallengeIndex = Math.floor(Math.random() * challengeSet.length);
+                const challenge = challengeSet[currentChallengeIndex];
+
+                document.getElementById('challengeTitle').textContent = challenge.title;
+                document.getElementById('challengeDifficulty').textContent = cap(currentDifficulty);
+
+                const descriptionHTML = `
+                <h3 style="color: #ff8c00; margin-bottom: 1rem;">📝 Challenge Description:</h3>
+                <p>${challenge.description}</p>
+                <div class="challenge-example">
+                    <strong style="color: #ff8c00;">Example:</strong><br>
+                    <span style="color: #4ecdc4;">${challenge.example}</span>
+                </div>`;
+                document.getElementById('challengeDescription').innerHTML = descriptionHTML;
+                document.getElementById('codeInput').value = challenge.starter;
+                showFeedback('Write your solution and click "Run Tests" to check if it\'s correct!', 'neutral');
+            }
+
+
+            // --- ELO UI updater (re-enforces locks) -----------------------------------
+            function updateELODisplaySafe(newELO) {
+                currentELO = newELO;
+
+                // Global header (if present)
+                const headerElo = document.getElementById('userElo');
+                if (headerElo) {
+                headerElo.textContent = newELO;
+                headerElo.style.transform = 'scale(1.3)';
+                headerElo.style.textShadow = '0 0 25px rgba(255, 140, 0, 0.8)';
+                setTimeout(() => {
+                    headerElo.style.transform = 'scale(1)';
+                    headerElo.style.textShadow = '0 0 15px rgba(255, 140, 0, 0.5)';
+                }, 500);
+                }
+
+                enforceAccessUI(); // also updates right-side chip + rank icon/text
+            }
+
+
+            // --- Progress UI -----------------------------------------------------------
+            function updateProgress() {
+                const totalChallenges = 3;
+                const percentage = (completedChallenges / totalChallenges) * 100;
+                document.getElementById('progressBar').style.width = percentage + '%';
+                document.getElementById('progressText').textContent =
+                `${completedChallenges}/${totalChallenges} Challenges Completed`;
+            }
+
+
+            // --- Hint button -----------------------------------------------------------
+            function getHint() {
+                const challengeSet = challenges[currentDifficulty];
+                const challenge = challengeSet[currentChallengeIndex];
+                const hint = (challenge && challenge.hint) ? challenge.hint : generateHint(challenge || {});
+                showFeedback(hint, 'neutral');
+            }
+
+
+            // --- Next / Reset ----------------------------------------------------------
+            function nextChallenge() { loadChallenge(); }
+            function resetCode() {
+                const challenge = challenges[currentDifficulty][currentChallengeIndex];
+                document.getElementById('codeInput').value = challenge.starter;
+                showFeedback('Code reset to starter template', 'neutral');
+            }
+
+
+            // --- Feedback helper -------------------------------------------------------
+            function showFeedback(message, type) {
+                const container = document.getElementById('feedbackContainer');
+                container.innerHTML = `<p>${message}</p>`;
+                container.className = `feedback-container feedback-${type}`;
+            }
+
+
+            // --- Test runner (explicit functionName + auto-advance) --------------------
+            function runTests() {
+                const challenge = challenges[currentDifficulty][currentChallengeIndex];
+                const userCode = document.getElementById('codeInput').value.trim();
+                const fnName = challenge.functionName;
+
+                try {
+                const factory = new Function(
+                    userCode + `\nreturn (typeof ${fnName} === 'function') ? ${fnName} : null;`
+                );
+                const userFunction = factory();
+
+                if (!userFunction) {
+                    showFeedback(`❌ Function "${fnName}" not found. Define it exactly with this name.`, 'incorrect');
+                    return;
+                }
+
+                let passed = 0;
+                const total = challenge.tests.length;
+                for (const test of challenge.tests) {
+                    try {
+                    const result = Array.isArray(test.input)
+                        ? userFunction(...test.input)
+                        : userFunction(test.input);
+                    if (result === test.expected) passed++;
+                    } catch (err) {
+                    showFeedback(`❌ Runtime Error: ${err.message}`, 'incorrect');
+                    return;
+                    }
+                }
+
+                if (passed === total) {
+                    const points = challenge.points;
+                    currentELO += points;
+                    completedChallenges++;
+
+                    updateELODisplaySafe(currentELO);
+                    updateProgress();
+                    showFeedback(`✅ Correct! All tests passed. +${points} ELO`, 'correct');
+
+                    if (currentUser) {
+                    currentUser.elo = currentELO;
+                    currentUser.challengesSolved = (currentUser.challengesSolved || 0) + 1;
+                    try {
+                        localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                        const users = JSON.parse(localStorage.getItem('users') || '[]');
+                        const idx = users.findIndex(u => u.email === currentUser.email);
+                        if (idx !== -1) {
+                        users[idx] = currentUser;
+                        localStorage.setItem('users', JSON.stringify(users));
+                        }
+                    } catch {}
+                    }
+
+                    setTimeout(() => { nextChallenge(); }, 1200);
+                } else {
+                    const lost = Math.floor(challenge.points / 3);
+                    currentELO = Math.max(currentELO - lost, 800);
+                    updateELODisplaySafe(currentELO);
+                    showFeedback(`❌ ${passed}/${total} tests passed. Try again! -${lost} ELO`, 'incorrect');
+                }
+                } catch (err) {
+                showFeedback(`❌ Syntax Error: ${err.message}`, 'incorrect');
+                }
+            }
+
+
+            // --- Shortcuts & textarea niceties ----------------------------------------
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                runTests();
+                }
+            });
+            document.addEventListener('DOMContentLoaded', () => {
+                const codeInput = document.getElementById('codeInput');
+                if (codeInput) {
+                codeInput.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.max(200, this.scrollHeight) + 'px';
+                });
+                codeInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = this.selectionStart, end = this.selectionEnd;
+                    this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                    this.selectionStart = this.selectionEnd = start + 4;
+                    }
+                });
+                }
+            });
+
+
+            // --- Init ------------------------------------------------------------------
+            window.addEventListener('load', function() {
+                checkLoginStatus();
+
+                // Pick the highest difficulty allowed for current ELO
+                const preferred = highestAllowedDifficulty();
+                const idxMap = { beginner: 0, intermediate: 1, advanced: 2 };
+                const buttons = document.querySelectorAll('.difficulty-btn');
+                selectDifficulty(preferred, buttons[idxMap[preferred]]);
+
+                enforceAccessUI();
+                updateProgress();
+            });
+
+
+            // --- Decorative particles (unchanged) -------------------------------------
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                position: fixed; width: ${1 + Math.random() * 2}px; height: ${1 + Math.random() * 2}px;
+                background: #ff8c00; border-radius: 50%; pointer-events: none; opacity: 0.5; z-index: 1;
+                left: ${Math.random() * 100}vw; top: 100vh; box-shadow: 0 0 8px rgba(255, 140, 0, 0.5);
+                `;
+                document.body.appendChild(particle);
+                particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.7 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 150}px)`, opacity: 0 }
+                ], { duration: 4000 + Math.random() * 2000, easing: 'ease-out' })
+                .addEventListener('finish', () => particle.remove());
+            }
+            setInterval(createParticle, 1500);
+                </script>
+                <!-- Shared ELO header sync -->
+<script src="js/elo-global.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => Elo.initHeader());
+</script>
+
+    <script src="auth.js" defer></script>
+</body>
+</html>

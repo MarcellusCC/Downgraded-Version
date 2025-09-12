@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Frontend Development Learning Hub</title>
+    <link rel="stylesheet" href="navigation.css">
+    <style>
+        /* Professional Black Theme with Orange Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 140, 0, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Form Container */
+        .container {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95));
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 450px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            margin-top: 100px;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff8c00, #ffb347);
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255, 140, 0, 0.02) 52px);
+            pointer-events: none;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #ffffff, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #cccccc;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(255, 140, 0, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(40, 40, 40, 0.8);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #ff8c00;
+            background: rgba(40, 40, 40, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 25px rgba(255, 140, 0, 0.2),
+                0 0 0 4px rgba(255, 140, 0, 0.1);
+        }
+
+        input::placeholder {
+            color: #888888;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #ff8c00 0%, #ffb347 100%);
+            color: #000000;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 140, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 2rem;
+            color: #cccccc;
+            position: relative;
+            z-index: 2;
+        }
+
+        .toggle-link a {
+            color: #ff8c00;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .toggle-link a:hover {
+            color: #ffb347;
+            background: rgba(255, 140, 0, 0.1);
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+            padding: 0.5rem;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .success {
+            color: #4ecdc4;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+            padding: 0.5rem;
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+        }
+
+        .password-strength {
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { 
+            color: #ff6b6b; 
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        .strength-medium { 
+            color: #ffa726; 
+            background: rgba(255, 167, 38, 0.1);
+            border: 1px solid rgba(255, 167, 38, 0.3);
+        }
+        .strength-strong { 
+            color: #4ecdc4; 
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
+        /* Loading state */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #000000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn.loading .loading-spinner {
+            display: inline-block;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .container {
+                margin-top: 140px;
+                padding: 2rem 1.5rem;
+                max-width: 90%;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">WebVantage</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team-intro.html" class="nav-link">Team</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="code-editor.html" class="nav-link">Code Editor</a></li>
+                <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+                <li><a href="ai-battle.html" class="nav-link">AI Battle</a></li>
+                <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li><a href="login.html" class="nav-link" id="loginLink">Login</a></li>
+                <li><a href="register.html" class="nav-link" id="registerLink">Register</a></li>
+            </ul>
+            
+        </nav>
+    </header>
+
+    <div class="container fade-in">
+        <h2>Create Account</h2>
+        <form id="signup">
+            <div class="form-group">
+                <label for="signupName">Username</label>
+                <input type="text" id="signupName" name="name" placeholder="Enter your username" required>
+                <div class="error" id="nameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="signupEmail">Email Address</label>
+                <input type="email" id="signupEmail" name="email" placeholder="Enter your email" required>
+                <div class="error" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" name="password" placeholder="Create a strong password" required>
+                <div class="password-strength" id="passwordStrength"></div>
+                <div class="error" id="passwordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                <div class="error" id="confirmError"></div>
+            </div>
+
+            <button type="submit" class="btn">
+                <span class="loading-spinner"></span>
+                Create Account
+            </button>
+            <div class="success" id="signupSuccess"></div>
+        </form>
+
+        <div class="toggle-link">
+            Already have an account? <a href="login.html">Sign In</a>
+        </div>
+    </div>
+
+    <script>
+        // Store users in memory (simulating database)
+        let users = [];
+        
+        // Try to load users from localStorage if available
+        try {
+            const savedUsers = localStorage.getItem('users');
+            if (savedUsers) {
+                users = JSON.parse(savedUsers);
+            }
+        } catch (e) {
+            console.log('localStorage not available, using memory storage');
+        }
+
+        function clearErrors() {
+            const errors = document.querySelectorAll('.error, .success');
+            errors.forEach(error => {
+                error.style.display = 'none';
+                error.textContent = '';
+            });
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function showSuccess(elementId, message) {
+            const successElement = document.getElementById(elementId);
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+        }
+
+        function checkPasswordStrength(password) {
+            const strengthIndicator = document.getElementById('passwordStrength');
+            let strength = 0;
+            let feedback = '';
+
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            switch (strength) {
+                case 0:
+                case 1:
+                case 2:
+                    feedback = '🔴 Weak password - Add more complexity';
+                    strengthIndicator.className = 'password-strength strength-weak';
+                    break;
+                case 3:
+                case 4:
+                    feedback = '🟡 Medium password - Getting better';
+                    strengthIndicator.className = 'password-strength strength-medium';
+                    break;
+                case 5:
+                    feedback = '🟢 Strong password - Excellent!';
+                    strengthIndicator.className = 'password-strength strength-strong';
+                    break;
+            }
+
+            strengthIndicator.textContent = password.length > 0 ? feedback : '';
+            strengthIndicator.style.display = password.length > 0 ? 'block' : 'none';
+            return strength >= 3;
+        }
+
+        function setLoading(button, isLoading) {
+            if (isLoading) {
+                button.classList.add('loading');
+                button.innerHTML = '<span class="loading-spinner"></span>Creating Account...';
+            } else {
+                button.classList.remove('loading');
+                button.innerHTML = '<span class="loading-spinner"></span>Create Account';
+            }
+        }
+
+        // Real-time password strength checking
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupPassword = document.getElementById('signupPassword');
+            if (signupPassword) {
+                signupPassword.addEventListener('input', function(e) {
+                    checkPasswordStrength(e.target.value);
+                });
+            }
+
+            // Sign up form handler
+            document.getElementById('signup').addEventListener('submit', function(e) {
+                e.preventDefault();
+                clearErrors();
+
+                const submitButton = this.querySelector('.btn');
+                setLoading(submitButton, true);
+
+                const name = document.getElementById('signupName').value.trim();
+                const email = document.getElementById('signupEmail').value.trim();
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Simulate loading delay for better UX
+                setTimeout(() => {
+                    let isValid = true;
+
+                    // Validate name
+                    if (name.length < 2) {
+                        showError('nameError', 'Name must be at least 2 characters long');
+                        isValid = false;
+                    }
+
+                    // Validate email
+                    if (!validateEmail(email)) {
+                        showError('emailError', 'Please enter a valid email address');
+                        isValid = false;
+                    }
+
+                    // Check if email already exists
+                    if (users.find(user => user.email === email)) {
+                        showError('emailError', 'Email already registered. Please use a different email.');
+                        isValid = false;
+                    }
+
+                    // Validate password
+                    if (password.length < 8) {
+                        showError('passwordError', 'Password must be at least 8 characters long');
+                        isValid = false;
+                    } else if (!checkPasswordStrength(password)) {
+                        showError('passwordError', 'Password is too weak. Please add more complexity.');
+                        isValid = false;
+                    }
+
+                    // Confirm password
+                    if (password !== confirmPassword) {
+                        showError('confirmError', 'Passwords do not match');
+                        isValid = false;
+                    }
+
+                    if (isValid) {
+                        // Store user
+                        const newUser = { 
+                            name, 
+                            email, 
+                            password, 
+                            elo: 1200,
+                            avatar: 'default',
+                            background: 'default',
+                            description: 'Frontend Development learning enthusiast ready to explore the future of technology!',
+                            joinDate: new Date().toISOString(),
+                            coursesCompleted: 0,
+                            challengesSolved: 0,
+                            battlesWon: 0
+                        };
+                        
+                        users.push(newUser);
+                        
+                        try {
+                            localStorage.setItem('users', JSON.stringify(users));
+                            localStorage.setItem('loggedInUser', JSON.stringify(newUser));
+                        } catch (e) {
+                            console.log('localStorage not available');
+                        }
+                        
+                        showSuccess('signupSuccess', '🎉 Account created successfully! Welcome to Frontend Development Learning Hub!');
+                        
+                        // Redirect to courses page
+                        setTimeout(() => {
+                            window.location.href = 'courses.html';
+                        }, 2000);
+                    }
+
+                    setLoading(submitButton, false);
+                }, 1000);
+            });
+        });
+
+        // Page load animation
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.6s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: ${2 + Math.random() * 3}px;
+                height: ${2 + Math.random() * 3}px;
+                background: #ff8c00;
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0.6;
+                z-index: 1;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+            `;
+            
+            document.body.appendChild(particle);
+            
+            particle.animate([
+                { transform: 'translateY(0) scale(0)', opacity: 0 },
+                { transform: 'translateY(-50vh) scale(1)', opacity: 0.8 },
+                { transform: `translateY(-100vh) scale(0) translateX(${(Math.random() - 0.5) * 100}px)`, opacity: 0 }
+            ], {
+                duration: 4000 + Math.random() * 2000,
+                easing: 'ease-out'
+            }).addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 1200);
+
+        // Enhanced input interactions
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+    <script src="auth.js" defer></script>
+</body>
+</html>
